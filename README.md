@@ -8,9 +8,9 @@ The controller features both partial and full load operation capabilities as wel
 Blade pitch servo and generator models are not included in this controller.
 
 ## Compatibility
-The controller has interfaces to HAWC2 and BLADED.
+The repository includes project and make files to create DLLs to interface the controller to HAWC2 and BLADED.
 
-The controller is written in Fortran and it is compilable with Intel and GFortran compilers.
+The controller is written in Fortran and it is compilable with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
 
 ## References
 When using the Basic DTU Wind Energy controller, please refer to the following publications:
