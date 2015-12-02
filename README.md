@@ -12,3 +12,7 @@ The controller has interfaces to HAWC2 and BLADED.
 
 The controller is written in Fortran and it is compilable with Intel and GFortran compilers.
 
+## References
+When using the Basic DTU Wind Energy controller, please refer to the following publications:
+
+* Hansen, MH & Henriksen, LC 2013, Basic DTU Wind Energy controller. DTU Wind Energy. DTU Wind Energy E, no. 0028
