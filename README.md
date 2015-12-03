@@ -19,4 +19,4 @@ The Basic DTU Wind Energy controller is distributed under the [GNU General Publi
 ## References
 When using the Basic DTU Wind Energy controller, please refer to the following publications:
 
-* Hansen, MH & Henriksen, LC 2013, Basic DTU Wind Energy controller. DTU Wind Energy. DTU Wind Energy E, no. 0028
+* Hansen, MH & Henriksen, LC 2013, Basic DTU Wind Energy controller. DTU Wind Energy. DTU Wind Energy E, no. 0028 [link](http://orbit.dtu.dk/en/publications/basic-dtu-wind-energy-controller(ff8123f8-55d2-4907-af7f-2fa139987c33).html)
