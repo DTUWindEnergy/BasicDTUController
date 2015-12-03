@@ -8,9 +8,13 @@ The controller features both partial and full load operation capabilities as wel
 Blade pitch servo and generator models are not included in this controller.
 
 ## Compatibility
-The repository includes project and make files to create DLLs to interface the controller to HAWC2 and BLADED.
+The repository includes project and make files to create DLLs to interface the controller to HAWC2 and Bladed.
 
-The controller is written in Fortran and it is compilable with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
+The controller is written in Fortran and it is compatible with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
+
+## License
+
+The Basic DTU Wind Energy controller is distributed under the [GNU General Public License v3.0](http://en.wikipedia.org/wiki/GNU_General_Public_License).
 
 ## References
 When using the Basic DTU Wind Energy controller, please refer to the following publications:
