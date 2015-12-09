@@ -1,4 +1,7 @@
 module turbine_controller_mod
+   !
+   ! Module containing the main subroutines for the wind turbine regulation.
+   !
    use dtu_we_controller_fcns
    implicit none
    ! Parameters
@@ -42,39 +45,19 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    ! Main subroutine of the wind turbine controller.
    ! It calls the system monitoring and selects the controller status (normal operation, start-up,
    ! and shut-down).
-   ! 
-   ! Inputs/Outputs
-   ! --------------
-   ! CtrlStatus:
-   !    Integer indicating the status of the controller. (0: Normal operation, <0: Start-up.,
-   !    >0: Shutdown)
-   ! GridFlag:
-   !    Integer indicating the status of the grid.
-   ! dump_array:
-   !    Array for output.
-   ! Inputs
-   ! ------
-   ! GenSpeed:
-   !    Measured generator speed.
-   ! PitchVect:
-   !    Measured pitch angles.
-   ! wsp:
-   !    Measured wind speed from a cup anemometer.
-   ! Pe:
-   !    Measured electrical power.
-   ! TTAccVect:
-   !    Measured tower top acceleration.
-   ! Outputs
-   ! -------
-   ! GenTorqueRef:
-   !    Reference generator torque.
-   ! PitchColRef:
-   !    Reference collective pitch angle.
    !
-   integer , intent(inout) :: CtrlStatus, GridFlag
-   real(mk), intent(in)    :: GenSpeed, PitchVect(3), wsp, Pe, TTAccVect(2)
-   real(mk), intent(out)   :: GenTorqueRef, PitchColRef
-   real(mk), intent(inout) :: dump_array(50)
+   integer , intent(inout) :: CtrlStatus ! Integer indicating the status of the controller.&
+                                         !  (0: Normal operation, <0: Start-up., >0: Shutdown)
+   integer , intent(inout) :: GridFlag   ! Integer indicating the status of the grid.
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
+   real(mk), intent(in)    :: GenSpeed     ! Measured generator speed [rad/s].
+   real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
+   real(mk), intent(in)    :: wsp          ! Measured wind speed [m/s].
+   real(mk), intent(in)    :: Pe           ! Measured electrical power [W].
+   real(mk), intent(in)    :: TTAccVect(2) ! Measured tower top acceleration. Longitudinal and &
+                                           !  lateral components [m/s**2].
+   real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
    real(mk) TTAcc
    !***********************************************************************************************
    ! Wind turbine monitoring
@@ -112,14 +95,18 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    GenTorqueRefOld = GenTorqueRef
 end subroutine
 !**************************************************************************************************
-subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef, PitchColRef, &
-                            dump_array)
+subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef, PitchColRef, dump_array)
    !
    ! Controller for normal operation.
    !
-   real(mk), intent(in)    :: PitchVect(3), GenSpeed, wsp, Pe, TTfa_acc
-   real(mk), intent(out)   :: GenTorqueRef, PitchColRef
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
+   real(mk), intent(in)    :: GenSpeed     ! Measured generator speed [rad/s].
+   real(mk), intent(in)    :: wsp          ! Measured wind speed [m/s].
+   real(mk), intent(in)    :: Pe           ! Measured electrical power [W].
+   real(mk), intent(in)    :: TTfa_acc     ! Measured tower top longitudinal acceleration.
+   real(mk), intent(out)   :: GenTorqueRef   ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: PitchColRef    ! Reference collective pitch [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) WSPfilt
    real(mk) GenSpeedFilt, dGenSpeed_dtFilt
    real(mk) PitchMean, PitchMeanFilt, PitchMin
@@ -187,10 +174,14 @@ subroutine start_up(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCol
    !
    ! Start-up procedures.
    !
-   integer,  intent(inout) :: CtrlStatus
-   real(mk), intent(in)    :: GenSpeed, PitchVect(3), wsp
-   real(mk), intent(out)   :: GenTorqueRef, PitchColRef
-   real(mk), intent(inout) :: dump_array(50)
+   integer,  intent(inout) :: CtrlStatus ! Integer indicating the status of the controller.&
+                                         !  (0: Normal operation, <0: Start-up., >0: Shutdown)
+   real(mk), intent(in)    :: GenSpeed     ! Measured generator speed [rad/s].
+   real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
+   real(mk), intent(in)    :: wsp          ! Measured wind speed [m/s].
+   real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) WSPfilt, GenSpeedFilt, dGenSpeed_dtFilt, PitchMin
    real(mk) GenSpeedFiltErr, err_pitch(2)
    real(mk) kgain_torque(3), kgain_pitch(3, 2)
@@ -289,10 +280,14 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
    !
    ! Shut-down procedures.
    !
-   integer,  intent(in)    :: CtrlStatus
-   real(mk), intent(in)    :: GenSpeed, PitchVect(3), wsp
-   real(mk), intent(out)   :: GenTorqueRef, PitchColRef
-   real(mk), intent(inout) :: dump_array(50)
+   integer,  intent(in)    :: CtrlStatus ! Integer indicating the status of the controller. &
+                                         !  (0: Normal operation, <0: Start-up., >0: Shutdown)
+   real(mk), intent(in)    :: GenSpeed   ! Measured generator speed [rad/s].
+   real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
+   real(mk), intent(in)    :: wsp          ! Measured wind speed [m/s].
+   real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) y(2), WSPfilt, PitchMean, PitchMeanFilt
    ! Filtering
    WSPfilt = lowpass1orderfilt(deltat, stepno, wspfirstordervar, wsp)
@@ -342,11 +337,18 @@ end subroutine
 !**************************************************************************************************
 subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, dump_array)
    !
-   ! Lower level system monitoring
+   ! Lower level system monitoring. It changes the controller status to:
+   ! - (1) if filtered GenSpeed is higher than the overspeed limit.
+   ! - (2) if GridFlag is not 0.
+   ! - (3) if filtered TTAcc is higher than the safety limit.
+   ! - (6) if GenSpeed is negative.
    !
-   integer, intent(inout) :: CtrlStatus, GridFlag
-   real(mk) , intent(in)    :: TTAcc, GenSpeed
-   real(mk) , intent(inout) :: dump_array(50)
+   integer, intent(inout) :: CtrlStatus ! Integer indicating the status of the controller.&
+                                        !  (0: Normal operation, <0: Start-up., >0: Shutdown)
+   integer, intent(inout)  :: GridFlag  ! Integer indicating the status of the grid.
+   real(mk), intent(in)    :: TTAcc     ! Tower top acceleration [m/s**2].
+   real(mk), intent(in)    :: GenSpeed  ! Measured generator speed [rad/s].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenSpeedFilt, dGenSpeed_dtFilt, TTAccFilt
    real(mk) y(2)
    ! Low-pass filtering of the rotor speed
@@ -399,12 +401,18 @@ end subroutine
 subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, WSPfilt, &
                             PitchMin, GenSpeedRef_full, Pe, GenTorqueRef, dump_array)
    !
-   ! Generator torque controller.
+   ! Generator torque controller. Controller that computes the generator torque reference.
    !
-   real(mk), intent(in) :: GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, PitchMin , WSPfilt, &
-                         GenSpeedRef_full, Pe
-   real(mk), intent(out) :: GenTorqueRef
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in) :: GenSpeed          ! Measured generator speed [rad/s].
+   real(mk), intent(in) :: GenSpeedFilt      ! Filtered generator speed [rad/s].
+   real(mk), intent(in) :: dGenSpeed_dtFilt  ! Filtered generator acceleration [rad/s**2].
+   real(mk), intent(in) :: PitchMean         ! Mean pitch angle [rad].
+   real(mk), intent(in) :: PitchMin          ! Minimum pitch angle [rad].
+   real(mk), intent(in) :: WSPfilt           ! Filtered wind speed [m/s].
+   real(mk), intent(in) :: GenSpeedRef_full  ! Reference generator speed [rad/s].
+   real(mk), intent(in) :: Pe                ! Measured electrical power [W].
+   real(mk), intent(out) :: GenTorqueRef     ! Generator torque reference [Nm].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper
@@ -494,12 +502,16 @@ end subroutine
 subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, PitchMin, &
                            GenSpeedRef_full, PitchColRef, dump_array)
    !
-   ! Pitch controller.
+   ! Pitch controller. Controller that computes the reference collective pitch angle.
    !
-   real(mk), intent(in) :: GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PitchMin, &
-                         GenSpeedRef_full, Pe
-   real(mk), intent(out) :: PitchColRef
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in) :: GenSpeedFilt     ! Filtered generator speed [rad/s].
+   real(mk), intent(in) :: dGenSpeed_dtFilt ! Filtered generator acceleration [rad/s**2].
+   real(mk), intent(in) :: PitchMeanFilt    ! Filtered mean pitch angle [rad].
+   real(mk), intent(in) :: PitchMin         ! Minimum pitch angle [rad].
+   real(mk), intent(in) :: GenSpeedRef_full ! Reference generator speed [rad/s].
+   real(mk), intent(in) :: Pe               ! Measured electrical power [W].
+   real(mk), intent(out) :: PitchColRef     ! Reference collective pitch angle [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenSpeedFiltErr, added_term, aero_gain, aero_damp, kgain(3, 2), err_pitch(2)
    ! Rotor speed error
    GenSpeedFiltErr = GenSpeedFilt - GenSpeedRef_full
@@ -548,11 +560,17 @@ end subroutine
 subroutine rotorspeedexcl(GenSpeedFilt, GenTorque, Qg_min_partial, GenTorqueMax_partial, GenSpeedFiltErr, &
                           outmax, outmin, dump_array)
    !
-   ! Rotor speed exclusion zone.
+   ! Rotor speed exclusion zone. Subroutine that changes the generator torque limits and the 
+   ! generator speed error for the generator PID controller to avoid a rotor speed band.
    !
-   real(mk), intent(in) :: GenSpeedFilt, Qg_min_partial, GenTorqueMax_partial, GenTorque
-   real(mk), intent(inout) :: outmax, outmin, GenSpeedFiltErr
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in) :: GenSpeedFilt         ! Filtered measured generator speed [rad/s].
+   real(mk), intent(in) :: Qg_min_partial       ! Generator torque lower limit [Nm].
+   real(mk), intent(in) :: GenTorqueMax_partial ! Generator torque upper limit [Nm].
+   real(mk), intent(in) :: GenTorque          ! Measured generator torque [Nm].
+   real(mk), intent(inout) :: outmax          ! Generator torque maximum value [Nm].
+   real(mk), intent(inout) :: outmin          ! Generator torque minimum value [Nm].
+   real(mk), intent(inout) :: GenSpeedFiltErr ! Filtered generator speed error [rad/s].
+   real(mk), intent(inout) :: dump_array(50)  ! Array for output.
    real(mk) y(2), GenSpeedFiltNotch, x1, x2
    real(mk) :: x
    real(mk) Lwr, Lwr_Tg, Hwr, Hwr_Tg, time_excl_delay
@@ -644,9 +662,10 @@ subroutine drivetraindamper(GenSpeed, Qdamp_ref, dump_array)
    !
    ! Drivetrain damper.
    !
-   real(mk), intent(in) :: GenSpeed
-   real(mk), intent(out) :: Qdamp_ref
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in)  :: GenSpeed  ! Measured generator speed [rad/s].
+   real(mk), intent(out) :: Qdamp_ref ! Generator torque reference component from the drivetrain &
+                                      ! damper [Nm].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) omega_dtfilt
    if ((DT_damper%gain .ne. 0.0_mk) .and. (DT_damper%bandpass%f0 .gt. 0.0_mk)) then
       call damper(stepno, deltat, GenSpeed, DT_damper, Qdamp_ref, omega_dtfilt)
@@ -662,9 +681,10 @@ subroutine towerdamper(TTfa_acc, theta_dam_ref, dump_array)
    !
    ! Longitudinal tower damper.
    !
-   real(mk), intent(in) :: TTfa_acc
-   real(mk), intent(out) :: theta_dam_ref
-   real(mk), intent(inout) :: dump_array(50)
+   real(mk), intent(in) :: TTfa_acc ! Measured tower top longitudinal acceleration [m/s**2].
+   real(mk), intent(out) :: theta_dam_ref ! Reference pitch angle component from longitudinal tower&
+                                          ! damper [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) TTfa_acc_filt
    if ((TTfa_damper%gain .ne. 0.0_mk) .and. (TTfa_damper%bandpass%f0 .gt. 0.0_mk)) then
       call damper(stepno, deltat, TTfa_acc, TTfa_damper, theta_dam_ref, TTfa_acc_filt)

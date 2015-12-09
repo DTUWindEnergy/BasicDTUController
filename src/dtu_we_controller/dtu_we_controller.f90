@@ -1,4 +1,7 @@
 module dtu_we_controller_mod
+   !
+   ! Main module of the Basic DTU Wind Energy Controller. Interface for HAWC2.
+   !
    use dtu_we_controller_fcns
    use turbine_controller_mod
    use safety_system_mod

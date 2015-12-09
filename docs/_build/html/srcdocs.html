@@ -1,0 +1,1788 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Source Documentation &mdash; Basic DTU Wind Energy Controller . documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Basic DTU Wind Energy Controller . documentation" href="index.html"/>
+        <link rel="prev" title="Inputs/Outputs" href="io.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Basic DTU Wind Energy Controller
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Inputs/Outputs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Source Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#f/dtu_we_controller_mod">dtu_we_controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#f/turbine_controller_mod">turbine_controller_mod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#f/safety_system_mod">safety_system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#f/dtu_we_controller_fcns">dtu_we_controller_fcns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#f/misc_mod">misc_mod</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Basic DTU Wind Energy Controller</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Source Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/srcdocs.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="source-documentation">
+<h1>Source Documentation<a class="headerlink" href="#source-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="f/dtu_we_controller_mod">
+<span id="dtu-we-controller"></span><h2>dtu_we_controller<a class="headerlink" href="#f/dtu_we_controller_mod" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Description</p>
+<p>Main module of the Basic DTU Wind Energy Controller. Interface for HAWC2.</p>
+<p class="rubric">Quick access</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_mod/ctrlstatus" title="f/dtu_we_controller_mod/ctrlstatus"><code class="xref f f-var docutils literal"><span class="pre">ctrlstatus</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_mod/time_old" title="f/dtu_we_controller_mod/time_old"><code class="xref f f-var docutils literal"><span class="pre">time_old</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_mod/dump_array" title="f/dtu_we_controller_mod/dump_array"><code class="xref f f-var docutils literal"><span class="pre">dump_array</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Routines:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_mod/init_regulation_advanced" title="f/dtu_we_controller_mod/init_regulation_advanced"><code class="xref f f-func docutils literal"><span class="pre">init_regulation_advanced()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_mod/update_regulation" title="f/dtu_we_controller_mod/update_regulation"><code class="xref f f-func docutils literal"><span class="pre">update_regulation()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_mod/init_regulation" title="f/dtu_we_controller_mod/init_regulation"><code class="xref f f-func docutils literal"><span class="pre">init_regulation()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Needed modules</p>
+<ul class="simple">
+<li><a class="reference internal" href="#f/dtu_we_controller_fcns" title="f/dtu_we_controller_fcns: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module."><code class="xref f f-mod docutils literal"><span class="pre">dtu_we_controller_fcns</span></code></a>: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module.</li>
+<li><a class="reference internal" href="#f/safety_system_mod" title="f/safety_system_mod"><code class="xref f f-mod docutils literal"><span class="pre">safety_system_mod</span></code></a></li>
+<li><a class="reference internal" href="#f/turbine_controller_mod" title="f/turbine_controller_mod: Module containing the main subroutines for the wind turbine regulation."><code class="xref f f-mod docutils literal"><span class="pre">turbine_controller_mod</span></code></a>: Module containing the main subroutines for the wind turbine regulation.</li>
+</ul>
+<p class="rubric">Variables</p>
+<ul>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_mod/dump_array">
+<code class="descclassname">dtu_we_controller_mod/</code><code class="descname">dump_array</code> (50)<em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/dtu_we_controller_mod/dump_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_mod/ctrlstatus">
+<code class="descclassname">dtu_we_controller_mod/</code><code class="descname">ctrlstatus</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/dtu_we_controller_mod/ctrlstatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_mod/time_old">
+<code class="descclassname">dtu_we_controller_mod/</code><code class="descname">time_old</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/dtu_we_controller_mod/time_old" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Subroutines and functions</p>
+<dl class="subroutine">
+<dt id="f/dtu_we_controller_mod/init_regulation">
+<em class="property">subroutine  </em><code class="descclassname">dtu_we_controller_mod/</code><code class="descname">init_regulation</code><span class="sig-paren">(</span><em>array1</em>, <em>array2</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_mod/init_regulation" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Controller parameters initialization.</div></blockquote>
+<p>DEC$ IF .NOT. DEFINED(__LINUX__)
+DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:&#8217;init_regulation&#8217;::init_regulation
+DEC$ END IF</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array1</strong> (100)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>array2</strong> (1)<em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_mod/init_regulation_advanced" title="f/dtu_we_controller_mod/init_regulation_advanced"><code class="xref f f-func docutils literal"><span class="pre">init_regulation_advanced()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/dtu_we_controller_mod/init_regulation_advanced">
+<em class="property">subroutine  </em><code class="descclassname">dtu_we_controller_mod/</code><code class="descname">init_regulation_advanced</code><span class="sig-paren">(</span><em>array1</em>, <em>array2</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_mod/init_regulation_advanced" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Controller parameters initialization with additional inputs.</div></blockquote>
+<p>DEC$ IF .NOT. DEFINED(__LINUX__)
+DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:&#8217;init_regulation_advanced&#8217;::init_regulation_advanced
+DEC$ END IF</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array1</strong> (100)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>array2</strong> (1)<em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_mod/init_regulation" title="f/dtu_we_controller_mod/init_regulation"><code class="xref f f-func docutils literal"><span class="pre">init_regulation()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/dtu_we_controller_mod/update_regulation">
+<em class="property">subroutine  </em><code class="descclassname">dtu_we_controller_mod/</code><code class="descname">update_regulation</code><span class="sig-paren">(</span><em>array1</em>, <em>array2</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_mod/update_regulation" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl class="docutils">
+<dt>Controller interface.</dt>
+<dd><ul class="first last simple">
+<li>sets DLL inputs/outputs.</li>
+<li>sets controller timers.</li>
+<li>calls the safety system monitor (higher level).</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>DEC$ IF .NOT. DEFINED(__LINUX__)
+DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:&#8217;update_regulation&#8217;::update_regulation
+DEC$ END IF</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array1</strong> (100)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>array2</strong> (100)<em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/safety_system_mod/safety_system" title="f/safety_system_mod/safety_system"><code class="xref f f-func docutils literal"><span class="pre">safety_system()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="f/turbine_controller_mod">
+<span id="turbine-controller-mod"></span><h2>turbine_controller_mod<a class="headerlink" href="#f/turbine_controller_mod" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Description</p>
+<p>Module containing the main subroutines for the wind turbine regulation.</p>
+<p class="rubric">Quick access</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#f/turbine_controller_mod/const_power" title="f/turbine_controller_mod/const_power"><code class="xref f f-var docutils literal"><span class="pre">const_power</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gearratio" title="f/turbine_controller_mod/gearratio"><code class="xref f f-var docutils literal"><span class="pre">gearratio</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/generator_cutin" title="f/turbine_controller_mod/generator_cutin"><code class="xref f f-var docutils literal"><span class="pre">generator_cutin</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/partialloadcontrolmode" title="f/turbine_controller_mod/partialloadcontrolmode"><code class="xref f f-var docutils literal"><span class="pre">partialloadcontrolmode</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/stoptype" title="f/turbine_controller_mod/stoptype"><code class="xref f f-var docutils literal"><span class="pre">stoptype</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/addedpitchrate" title="f/turbine_controller_mod/addedpitchrate"><code class="xref f f-var docutils literal"><span class="pre">addedpitchrate</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/deltat" title="f/turbine_controller_mod/deltat"><code class="xref f f-var docutils literal"><span class="pre">deltat</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/err0" title="f/turbine_controller_mod/err0"><code class="xref f f-var docutils literal"><span class="pre">err0</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/errdot0" title="f/turbine_controller_mod/errdot0"><code class="xref f f-var docutils literal"><span class="pre">errdot0</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/excl_flag" title="f/turbine_controller_mod/excl_flag"><code class="xref f f-var docutils literal"><span class="pre">excl_flag</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/genspeed_at_stop" title="f/turbine_controller_mod/genspeed_at_stop"><code class="xref f f-var docutils literal"><span class="pre">genspeed_at_stop</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/genspeedrefmax" title="f/turbine_controller_mod/genspeedrefmax"><code class="xref f f-var docutils literal"><span class="pre">genspeedrefmax</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/genspeedrefmin" title="f/turbine_controller_mod/genspeedrefmin"><code class="xref f f-var docutils literal"><span class="pre">genspeedrefmin</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gentorque_at_stop" title="f/turbine_controller_mod/gentorque_at_stop"><code class="xref f f-var docutils literal"><span class="pre">gentorque_at_stop</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gentorquemax" title="f/turbine_controller_mod/gentorquemax"><code class="xref f f-var docutils literal"><span class="pre">gentorquemax</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gentorquerated" title="f/turbine_controller_mod/gentorquerated"><code class="xref f f-var docutils literal"><span class="pre">gentorquerated</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gentorqueref0" title="f/turbine_controller_mod/gentorqueref0"><code class="xref f f-var docutils literal"><span class="pre">gentorqueref0</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/gentorquerefold" title="f/turbine_controller_mod/gentorquerefold"><code class="xref f f-var docutils literal"><span class="pre">gentorquerefold</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/kopt" title="f/turbine_controller_mod/kopt"><code class="xref f f-var docutils literal"><span class="pre">kopt</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/kopt_dot" title="f/turbine_controller_mod/kopt_dot"><code class="xref f f-var docutils literal"><span class="pre">kopt_dot</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/perated" title="f/turbine_controller_mod/perated"><code class="xref f f-var docutils literal"><span class="pre">perated</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcolref0" title="f/turbine_controller_mod/pitchcolref0"><code class="xref f f-var docutils literal"><span class="pre">pitchcolref0</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcolrefold" title="f/turbine_controller_mod/pitchcolrefold"><code class="xref f f-var docutils literal"><span class="pre">pitchcolrefold</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchstopang" title="f/turbine_controller_mod/pitchstopang"><code class="xref f f-var docutils literal"><span class="pre">pitchstopang</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitnonlin1" title="f/turbine_controller_mod/pitnonlin1"><code class="xref f f-var docutils literal"><span class="pre">pitnonlin1</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/r" title="f/turbine_controller_mod/r"><code class="xref f f-var docutils literal"><span class="pre">r</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/rel_limit" title="f/turbine_controller_mod/rel_limit"><code class="xref f f-var docutils literal"><span class="pre">rel_limit</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/timerexcl" title="f/turbine_controller_mod/timerexcl"><code class="xref f f-var docutils literal"><span class="pre">timerexcl</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/timergencutin" title="f/turbine_controller_mod/timergencutin"><code class="xref f f-var docutils literal"><span class="pre">timergencutin</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/timershutdown" title="f/turbine_controller_mod/timershutdown"><code class="xref f f-var docutils literal"><span class="pre">timershutdown</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/timershutdown2" title="f/turbine_controller_mod/timershutdown2"><code class="xref f f-var docutils literal"><span class="pre">timershutdown2</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/timerstartup" title="f/turbine_controller_mod/timerstartup"><code class="xref f f-var docutils literal"><span class="pre">timerstartup</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/tsr_opt" title="f/turbine_controller_mod/tsr_opt"><code class="xref f f-var docutils literal"><span class="pre">tsr_opt</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/ttfa_pwr_lower" title="f/turbine_controller_mod/ttfa_pwr_lower"><code class="xref f f-var docutils literal"><span class="pre">ttfa_pwr_lower</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/ttfa_pwr_upper" title="f/turbine_controller_mod/ttfa_pwr_upper"><code class="xref f f-var docutils literal"><span class="pre">ttfa_pwr_upper</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/vcutout" title="f/turbine_controller_mod/vcutout"><code class="xref f f-var docutils literal"><span class="pre">vcutout</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/vstorm" title="f/turbine_controller_mod/vstorm"><code class="xref f f-var docutils literal"><span class="pre">vstorm</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/cutinvar" title="f/turbine_controller_mod/cutinvar"><code class="xref f f-var docutils literal"><span class="pre">cutinvar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/cutoutvar" title="f/turbine_controller_mod/cutoutvar"><code class="xref f f-var docutils literal"><span class="pre">cutoutvar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/dt_damper" title="f/turbine_controller_mod/dt_damper"><code class="xref f f-var docutils literal"><span class="pre">dt_damper</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/dt_mode_filt" title="f/turbine_controller_mod/dt_mode_filt"><code class="xref f f-var docutils literal"><span class="pre">dt_mode_filt</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/monivar" title="f/turbine_controller_mod/monivar"><code class="xref f f-var docutils literal"><span class="pre">monivar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/omega2ordervar" title="f/turbine_controller_mod/omega2ordervar"><code class="xref f f-var docutils literal"><span class="pre">omega2ordervar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pid_gen_var" title="f/turbine_controller_mod/pid_gen_var"><code class="xref f f-var docutils literal"><span class="pre">pid_gen_var</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pid_pit_var" title="f/turbine_controller_mod/pid_pit_var"><code class="xref f f-var docutils literal"><span class="pre">pid_pit_var</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchfirstordervar" title="f/turbine_controller_mod/pitchfirstordervar"><code class="xref f f-var docutils literal"><span class="pre">pitchfirstordervar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchgsvar" title="f/turbine_controller_mod/pitchgsvar"><code class="xref f f-var docutils literal"><span class="pre">pitchgsvar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pwr_dt_mode_filt" title="f/turbine_controller_mod/pwr_dt_mode_filt"><code class="xref f f-var docutils literal"><span class="pre">pwr_dt_mode_filt</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/switchfirstordervar" title="f/turbine_controller_mod/switchfirstordervar"><code class="xref f f-var docutils literal"><span class="pre">switchfirstordervar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/switchvar" title="f/turbine_controller_mod/switchvar"><code class="xref f f-var docutils literal"><span class="pre">switchvar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/ttfa_damper" title="f/turbine_controller_mod/ttfa_damper"><code class="xref f f-var docutils literal"><span class="pre">ttfa_damper</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/ttfa_pwrfirstordervar" title="f/turbine_controller_mod/ttfa_pwrfirstordervar"><code class="xref f f-var docutils literal"><span class="pre">ttfa_pwrfirstordervar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/wspfirstordervar" title="f/turbine_controller_mod/wspfirstordervar"><code class="xref f f-var docutils literal"><span class="pre">wspfirstordervar</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/stepno" title="f/turbine_controller_mod/stepno"><code class="xref f f-var docutils literal"><span class="pre">stepno</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/w_region" title="f/turbine_controller_mod/w_region"><code class="xref f f-var docutils literal"><span class="pre">w_region</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Routines:</th><td class="field-body"><a class="reference internal" href="#f/turbine_controller_mod/shut_down" title="f/turbine_controller_mod/shut_down"><code class="xref f f-func docutils literal"><span class="pre">shut_down()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/monitoring" title="f/turbine_controller_mod/monitoring"><code class="xref f f-func docutils literal"><span class="pre">monitoring()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/drivetraindamper" title="f/turbine_controller_mod/drivetraindamper"><code class="xref f f-func docutils literal"><span class="pre">drivetraindamper()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcontroller" title="f/turbine_controller_mod/pitchcontroller"><code class="xref f f-func docutils literal"><span class="pre">pitchcontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/rotorspeedexcl" title="f/turbine_controller_mod/rotorspeedexcl"><code class="xref f f-func docutils literal"><span class="pre">rotorspeedexcl()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/towerdamper" title="f/turbine_controller_mod/towerdamper"><code class="xref f f-func docutils literal"><span class="pre">towerdamper()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Needed modules</p>
+<ul class="simple">
+<li><a class="reference internal" href="#f/dtu_we_controller_fcns" title="f/dtu_we_controller_fcns: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module."><code class="xref f f-mod docutils literal"><span class="pre">dtu_we_controller_fcns</span></code></a>: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module.</li>
+</ul>
+<p class="rubric">Variables</p>
+<ul>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pid_pit_var">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pid_pit_var</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tpid2var" title="f/dtu_we_controller_fcns/tpid2var"><em>tpid2var</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pid_pit_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/kopt_dot">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">kopt_dot</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/kopt_dot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/genspeedrefmin">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">genspeedrefmin</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/genspeedrefmin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gearratio">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gearratio</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gearratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/perated">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">perated</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/perated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/ttfa_pwr_lower">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">ttfa_pwr_lower</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/ttfa_pwr_lower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/dt_mode_filt">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">dt_mode_filt</code><em> [</em><a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><em>tnotch2order</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/dt_mode_filt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/errdot0">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">errdot0</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/errdot0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitchcolrefold">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchcolrefold</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitchcolrefold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/partialloadcontrolmode">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">partialloadcontrolmode</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/partialloadcontrolmode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/ttfa_damper">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">ttfa_damper</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tdamper" title="f/dtu_we_controller_fcns/tdamper"><em>tdamper</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/ttfa_damper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gentorquerated">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gentorquerated</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gentorquerated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/deltat">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">deltat</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/deltat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/timerexcl">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">timerexcl</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/timerexcl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/timerstartup">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">timerstartup</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/timerstartup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pid_gen_var">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pid_gen_var</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tpidvar" title="f/dtu_we_controller_fcns/tpidvar"><em>tpidvar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pid_gen_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/addedpitchrate">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">addedpitchrate</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/addedpitchrate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/timershutdown2">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">timershutdown2</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/timershutdown2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/stepno">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">stepno</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/stepno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/switchfirstordervar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">switchfirstordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/switchfirstordervar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gentorqueref0">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gentorqueref0</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gentorqueref0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitchstopang">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchstopang</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitchstopang" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gentorquerefold">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gentorquerefold</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gentorquerefold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/w_region">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">w_region</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/w_region" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/monivar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">monivar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tsafetysystem" title="f/dtu_we_controller_fcns/tsafetysystem"><em>tsafetysystem</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/monivar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/genspeedrefmax">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">genspeedrefmax</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/genspeedrefmax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/wspfirstordervar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">wspfirstordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/wspfirstordervar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/excl_flag">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">excl_flag</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/excl_flag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/generator_cutin">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">generator_cutin</code><em> [</em><em>logical</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/generator_cutin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/const_power">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">const_power</code><em> [</em><em>logical</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/const_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/timergencutin">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">timergencutin</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/timergencutin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/ttfa_pwrfirstordervar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">ttfa_pwrfirstordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/ttfa_pwrfirstordervar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitnonlin1">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitnonlin1</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitnonlin1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/cutoutvar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">cutoutvar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tcutout" title="f/dtu_we_controller_fcns/tcutout"><em>tcutout</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/cutoutvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/stoptype">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">stoptype</code><em> [</em><em>integer</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/stoptype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitchcolref0">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchcolref0</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitchcolref0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/dt_damper">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">dt_damper</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tdamper" title="f/dtu_we_controller_fcns/tdamper"><em>tdamper</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/dt_damper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/err0">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">err0</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/err0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/kopt">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">kopt</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/kopt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/vcutout">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">vcutout</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/vcutout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/timershutdown">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">timershutdown</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/timershutdown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pwr_dt_mode_filt">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pwr_dt_mode_filt</code><em> [</em><a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><em>tnotch2order</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pwr_dt_mode_filt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/genspeed_at_stop">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">genspeed_at_stop</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/genspeed_at_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/switchvar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">switchvar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tswitch" title="f/dtu_we_controller_fcns/tswitch"><em>tswitch</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/switchvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/omega2ordervar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">omega2ordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tlowpass2order" title="f/misc_mod/tlowpass2order"><em>tlowpass2order</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/omega2ordervar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gentorque_at_stop">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gentorque_at_stop</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gentorque_at_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/tsr_opt">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">tsr_opt</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/tsr_opt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitchgsvar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchgsvar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tpitchgsvar" title="f/dtu_we_controller_fcns/tpitchgsvar"><em>tpitchgsvar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitchgsvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/r">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">r</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/cutinvar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">cutinvar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tcutin" title="f/dtu_we_controller_fcns/tcutin"><em>tcutin</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/cutinvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/gentorquemax">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">gentorquemax</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/gentorquemax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/rel_limit">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">rel_limit</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/rel_limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/pitchfirstordervar">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchfirstordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/pitchfirstordervar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/ttfa_pwr_upper">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">ttfa_pwr_upper</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/ttfa_pwr_upper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/turbine_controller_mod/vstorm">
+<code class="descclassname">turbine_controller_mod/</code><code class="descname">vstorm</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/turbine_controller_mod/vstorm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Subroutines and functions</p>
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/turbine_controller">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">turbine_controller</code><span class="sig-paren">(</span><em>ctrlstatus</em>, <em>gridflag</em>, <em>genspeed</em>, <em>pitchvect</em>, <em>wsp</em>, <em>pe</em>, <em>ttaccvect</em>, <em>gentorqueref</em>, <em>pitchcolref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/turbine_controller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ctrlstatus</strong><em> [</em><em>integer</em><em>,</em><em>inout</em><em>]</em> :: Integer indicating the status of the controller.                                         !  (0: Normal operation, &lt;0: Start-up., &gt;0: Shutdown)</li>
+<li><strong>gridflag</strong><em> [</em><em>integer</em><em>,</em><em>inout</em><em>]</em> :: Integer indicating the status of the grid.</li>
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>pitchvect</strong> (3)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured pitch angles [rad].</li>
+<li><strong>wsp</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured wind speed [m/s].</li>
+<li><strong>pe</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured electrical power [W].</li>
+<li><strong>ttaccvect</strong> (2)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured tower top acceleration. Longitudinal and                                            !  lateral components [m/s**2].</li>
+<li><strong>gentorqueref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference [Nm].</li>
+<li><strong>pitchcolref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference collective pitch [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/dtu_we_controller_mod/update_regulation" title="f/dtu_we_controller_mod/update_regulation"><code class="xref f f-func docutils literal"><span class="pre">update_regulation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/monitoring" title="f/turbine_controller_mod/monitoring"><code class="xref f f-func docutils literal"><span class="pre">monitoring()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/shut_down" title="f/turbine_controller_mod/shut_down"><code class="xref f f-func docutils literal"><span class="pre">shut_down()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/normal_operation">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">normal_operation</code><span class="sig-paren">(</span><em>genspeed</em>, <em>pitchvect</em>, <em>wsp</em>, <em>pe</em>, <em>ttfa_acc</em>, <em>gentorqueref</em>, <em>pitchcolref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/normal_operation" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Controller for normal operation.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>pitchvect</strong> (3)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured pitch angles [rad].</li>
+<li><strong>wsp</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured wind speed [m/s].</li>
+<li><strong>pe</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured electrical power [W].</li>
+<li><strong>ttfa_acc</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured tower top longitudinal acceleration.</li>
+<li><strong>gentorqueref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference [Nm].</li>
+<li><strong>pitchcolref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference collective pitch [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/getoptipitch" title="f/dtu_we_controller_fcns/getoptipitch"><code class="xref f f-func docutils literal"><span class="pre">getoptipitch()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/drivetraindamper" title="f/turbine_controller_mod/drivetraindamper"><code class="xref f f-func docutils literal"><span class="pre">drivetraindamper()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/switch_spline" title="f/dtu_we_controller_fcns/switch_spline"><code class="xref f f-func docutils literal"><span class="pre">switch_spline()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcontroller" title="f/turbine_controller_mod/pitchcontroller"><code class="xref f f-func docutils literal"><span class="pre">pitchcontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/towerdamper" title="f/turbine_controller_mod/towerdamper"><code class="xref f f-func docutils literal"><span class="pre">towerdamper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/start_up">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">start_up</code><span class="sig-paren">(</span><em>ctrlstatus</em>, <em>genspeed</em>, <em>pitchvect</em>, <em>wsp</em>, <em>gentorqueref</em>, <em>pitchcolref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/start_up" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Start-up procedures.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ctrlstatus</strong><em> [</em><em>integer</em><em>,</em><em>inout</em><em>]</em> :: Integer indicating the status of the controller.                                         !  (0: Normal operation, &lt;0: Start-up., &gt;0: Shutdown)</li>
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>pitchvect</strong> (3)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured pitch angles [rad].</li>
+<li><strong>wsp</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured wind speed [m/s].</li>
+<li><strong>gentorqueref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference [Nm].</li>
+<li><strong>pitchcolref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference collective pitch [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/getoptipitch" title="f/dtu_we_controller_fcns/getoptipitch"><code class="xref f f-func docutils literal"><span class="pre">getoptipitch()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/pid2" title="f/dtu_we_controller_fcns/pid2"><code class="xref f f-func docutils literal"><span class="pre">pid2()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/pid" title="f/dtu_we_controller_fcns/pid"><code class="xref f f-func docutils literal"><span class="pre">pid()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/shut_down">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">shut_down</code><span class="sig-paren">(</span><em>ctrlstatus</em>, <em>genspeed</em>, <em>pitchvect</em>, <em>wsp</em>, <em>gentorqueref</em>, <em>pitchcolref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/shut_down" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Shut-down procedures.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ctrlstatus</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em> :: Integer indicating the status of the controller.                                          !  (0: Normal operation, &lt;0: Start-up., &gt;0: Shutdown)</li>
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>pitchvect</strong> (3)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured pitch angles [rad].</li>
+<li><strong>wsp</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured wind speed [m/s].</li>
+<li><strong>gentorqueref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference [Nm].</li>
+<li><strong>pitchcolref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference collective pitch [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/monitoring">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">monitoring</code><span class="sig-paren">(</span><em>ctrlstatus</em>, <em>gridflag</em>, <em>genspeed</em>, <em>ttacc</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/monitoring" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Lower level system monitoring. It changes the controller status to:
+- (1) if filtered GenSpeed is higher than the overspeed limit.
+- (2) if GridFlag is not 0.
+- (3) if filtered TTAcc is higher than the safety limit.
+- (6) if GenSpeed is negative.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ctrlstatus</strong><em> [</em><em>integer</em><em>,</em><em>inout</em><em>]</em> :: Integer indicating the status of the controller.                                        !  (0: Normal operation, &lt;0: Start-up., &gt;0: Shutdown)</li>
+<li><strong>gridflag</strong><em> [</em><em>integer</em><em>,</em><em>inout</em><em>]</em> :: Integer indicating the status of the grid.</li>
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>ttacc</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Tower top acceleration [m/s**2].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/turbine_controller" title="f/turbine_controller_mod/turbine_controller"><code class="xref f f-func docutils literal"><span class="pre">turbine_controller()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/torquecontroller">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">torquecontroller</code><span class="sig-paren">(</span><em>genspeed</em>, <em>genspeedfilt</em>, <em>dgenspeed_dtfilt</em>, <em>pitchmean</em>, <em>wspfilt</em>, <em>pitchmin</em>, <em>genspeedref_full</em>, <em>pe</em>, <em>gentorqueref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/torquecontroller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>genspeedfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered generator speed [rad/s].</li>
+<li><strong>dgenspeed_dtfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered generator acceleration [rad/s**2].</li>
+<li><strong>pitchmean</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Mean pitch angle [rad].</li>
+<li><strong>wspfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered wind speed [m/s].</li>
+<li><strong>pitchmin</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Minimum pitch angle [rad].</li>
+<li><strong>genspeedref_full</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Reference generator speed [rad/s].</li>
+<li><strong>pe</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured electrical power [W].</li>
+<li><strong>gentorqueref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference [Nm].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/switch_spline" title="f/dtu_we_controller_fcns/switch_spline"><code class="xref f f-func docutils literal"><span class="pre">switch_spline()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/rotorspeedexcl" title="f/turbine_controller_mod/rotorspeedexcl"><code class="xref f f-func docutils literal"><span class="pre">rotorspeedexcl()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/pid" title="f/dtu_we_controller_fcns/pid"><code class="xref f f-func docutils literal"><span class="pre">pid()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/pitchcontroller">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">pitchcontroller</code><span class="sig-paren">(</span><em>genspeedfilt</em>, <em>dgenspeed_dtfilt</em>, <em>pitchmeanfilt</em>, <em>pe</em>, <em>pitchmin</em>, <em>genspeedref_full</em>, <em>pitchcolref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/pitchcontroller" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genspeedfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered generator speed [rad/s].</li>
+<li><strong>dgenspeed_dtfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered generator acceleration [rad/s**2].</li>
+<li><strong>pitchmeanfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered mean pitch angle [rad].</li>
+<li><strong>pe</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured electrical power [W].</li>
+<li><strong>pitchmin</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Minimum pitch angle [rad].</li>
+<li><strong>genspeedref_full</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Reference generator speed [rad/s].</li>
+<li><strong>pitchcolref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference collective pitch angle [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/notch2orderfilt" title="f/misc_mod/notch2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">notch2orderfilt()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/pid2" title="f/dtu_we_controller_fcns/pid2"><code class="xref f f-func docutils literal"><span class="pre">pid2()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/rotorspeedexcl">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">rotorspeedexcl</code><span class="sig-paren">(</span><em>genspeedfilt</em>, <em>gentorque</em>, <em>qg_min_partial</em>, <em>gentorquemax_partial</em>, <em>genspeedfilterr</em>, <em>outmax</em>, <em>outmin</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/rotorspeedexcl" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genspeedfilt</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Filtered measured generator speed [rad/s].</li>
+<li><strong>gentorque</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator torque [Nm].</li>
+<li><strong>qg_min_partial</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Generator torque lower limit [Nm].</li>
+<li><strong>gentorquemax_partial</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Generator torque upper limit [Nm].</li>
+<li><strong>genspeedfilterr</strong><em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Filtered generator speed error [rad/s].</li>
+<li><strong>outmax</strong><em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Generator torque maximum value [Nm].</li>
+<li><strong>outmin</strong><em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Generator torque minimum value [Nm].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/notch2orderfilt" title="f/misc_mod/notch2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">notch2orderfilt()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/switch_spline" title="f/dtu_we_controller_fcns/switch_spline"><code class="xref f f-func docutils literal"><span class="pre">switch_spline()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/drivetraindamper">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">drivetraindamper</code><span class="sig-paren">(</span><em>genspeed</em>, <em>qdamp_ref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/drivetraindamper" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Drivetrain damper.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genspeed</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured generator speed [rad/s].</li>
+<li><strong>qdamp_ref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Generator torque reference component from the drivetrain                                       ! damper [Nm].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/turbine_controller_mod/towerdamper">
+<em class="property">subroutine  </em><code class="descclassname">turbine_controller_mod/</code><code class="descname">towerdamper</code><span class="sig-paren">(</span><em>ttfa_acc</em>, <em>theta_dam_ref</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/turbine_controller_mod/towerdamper" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Longitudinal tower damper.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ttfa_acc</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured tower top longitudinal acceleration [m/s**2].</li>
+<li><strong>theta_dam_ref</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em> :: Reference pitch angle component from longitudinal tower                                          ! damper [rad].</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em> :: Array for output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="f/safety_system_mod">
+<span id="safety-system"></span><h2>safety_system<a class="headerlink" href="#f/safety_system_mod" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Quick access</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#f/safety_system_mod/safetysystemvar" title="f/safety_system_mod/safetysystemvar"><code class="xref f f-var docutils literal"><span class="pre">safetysystemvar</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Routines:</th><td class="field-body"><a class="reference internal" href="#f/safety_system_mod/safety_system" title="f/safety_system_mod/safety_system"><code class="xref f f-func docutils literal"><span class="pre">safety_system()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Needed modules</p>
+<ul class="simple">
+<li><a class="reference internal" href="#f/dtu_we_controller_fcns" title="f/dtu_we_controller_fcns: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module."><code class="xref f f-mod docutils literal"><span class="pre">dtu_we_controller_fcns</span></code></a>: Module with general function that are specific of the DTU Wind Energy Controller. Types are also defined in this module.</li>
+</ul>
+<p class="rubric">Variables</p>
+<ul>
+<li><dl class="variable">
+<dt id="f/safety_system_mod/safetysystemvar">
+<code class="descclassname">safety_system_mod/</code><code class="descname">safetysystemvar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tsafetysystem" title="f/dtu_we_controller_fcns/tsafetysystem"><em>tsafetysystem</em></a><em>]</em><a class="headerlink" href="#f/safety_system_mod/safetysystemvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Subroutines and functions</p>
+<dl class="subroutine">
+<dt id="f/safety_system_mod/safety_system">
+<em class="property">subroutine  </em><code class="descclassname">safety_system_mod/</code><code class="descname">safety_system</code><span class="sig-paren">(</span><em>stepno</em>, <em>deltat</em>, <em>omega</em>, <em>ttaccvect</em>, <em>emergpitchstop</em>, <em>activemechbrake</em>, <em>dump_array</em><span class="sig-paren">)</span><a class="headerlink" href="#f/safety_system_mod/safety_system" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Safety system. Higher level of system monitoring. It activates the emergency pitch stop and
+the mechanical brake if the rotor speed or the tower top acceleration exceed certain levels.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em> :: Time step number.</li>
+<li><strong>deltat</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Time step size.</li>
+<li><strong>omega</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured rotor speed.</li>
+<li><strong>ttaccvect</strong> (2)<em> [</em><em>real</em><em>,</em><em>in</em><em>]</em> :: Measured tower top acceleration. Longitudinal and                                            ! lateral components [m/s**2].</li>
+<li><strong>emergpitchstop</strong><em> [</em><em>integer</em><em>,</em><em>out</em><em>]</em> :: Flag for emergency pitch stop.</li>
+<li><strong>activemechbrake</strong><em> [</em><em>integer</em><em>,</em><em>out</em><em>]</em> :: Flag for emergency brake activation.</li>
+<li><strong>dump_array</strong> (50)<em> [</em><em>real</em><em>,</em><em>inout</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/dtu_we_controller_mod/update_regulation" title="f/dtu_we_controller_mod/update_regulation"><code class="xref f f-func docutils literal"><span class="pre">update_regulation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="f/dtu_we_controller_fcns">
+<span id="dtu-we-controller-fcns"></span><h2>dtu_we_controller_fcns<a class="headerlink" href="#f/dtu_we_controller_fcns" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Description</p>
+<p>Module with general function that are specific of the DTU Wind Energy Controller. Types are
+also defined in this module.</p>
+<p class="rubric">Quick access</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Types:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_fcns/tcutin" title="f/dtu_we_controller_fcns/tcutin"><code class="xref f f-type docutils literal"><span class="pre">tcutin</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tcutout" title="f/dtu_we_controller_fcns/tcutout"><code class="xref f f-type docutils literal"><span class="pre">tcutout</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tdamper" title="f/dtu_we_controller_fcns/tdamper"><code class="xref f f-type docutils literal"><span class="pre">tdamper</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/texclzone" title="f/dtu_we_controller_fcns/texclzone"><code class="xref f f-type docutils literal"><span class="pre">texclzone</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tpid2var" title="f/dtu_we_controller_fcns/tpid2var"><code class="xref f f-type docutils literal"><span class="pre">tpid2var</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tpidvar" title="f/dtu_we_controller_fcns/tpidvar"><code class="xref f f-type docutils literal"><span class="pre">tpidvar</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tpitchgsvar" title="f/dtu_we_controller_fcns/tpitchgsvar"><code class="xref f f-type docutils literal"><span class="pre">tpitchgsvar</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tsafetysystem" title="f/dtu_we_controller_fcns/tsafetysystem"><code class="xref f f-type docutils literal"><span class="pre">tsafetysystem</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/tswitch" title="f/dtu_we_controller_fcns/tswitch"><code class="xref f f-type docutils literal"><span class="pre">tswitch</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/twpdata" title="f/dtu_we_controller_fcns/twpdata"><code class="xref f f-type docutils literal"><span class="pre">twpdata</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_fcns/excluzone" title="f/dtu_we_controller_fcns/excluzone"><code class="xref f f-var docutils literal"><span class="pre">excluzone</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/opdatavar" title="f/dtu_we_controller_fcns/opdatavar"><code class="xref f f-var docutils literal"><span class="pre">opdatavar</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/maxwplines" title="f/dtu_we_controller_fcns/maxwplines"><code class="xref f f-var docutils literal"><span class="pre">maxwplines</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Routines:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_fcns/pid" title="f/dtu_we_controller_fcns/pid"><code class="xref f f-func docutils literal"><span class="pre">pid()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/pid2" title="f/dtu_we_controller_fcns/pid2"><code class="xref f f-func docutils literal"><span class="pre">pid2()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/getoptipitch" title="f/dtu_we_controller_fcns/getoptipitch"><code class="xref f f-func docutils literal"><span class="pre">getoptipitch()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/switch_spline" title="f/dtu_we_controller_fcns/switch_spline"><code class="xref f f-func docutils literal"><span class="pre">switch_spline()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/interpolate" title="f/dtu_we_controller_fcns/interpolate"><code class="xref f f-func docutils literal"><span class="pre">interpolate()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Needed modules</p>
+<ul class="simple">
+<li><a class="reference internal" href="#f/misc_mod" title="f/misc_mod: Module where filters and the corresponding types are defined."><code class="xref f f-mod docutils literal"><span class="pre">misc_mod</span></code></a>: Module where filters and the corresponding types are defined.</li>
+</ul>
+<p class="rubric">Types</p>
+<ul>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tpidvar">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tpidvar</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tpidvar" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">outset</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kpro</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outpro</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outdif</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outmax</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">error1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">velmax</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outmin</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kdif</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kint</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">error1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outset1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outset1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tpid2var">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tpid2var</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tpid2var" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">outset</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kpro</code> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outpro</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outdif</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outmax</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">error1</code> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">velmax</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outmin</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kdif</code> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kint</code> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">error1_old</code> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outset1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outset1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">outres</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/twpdata">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">twpdata</code><a class="headerlink" href="#f/dtu_we_controller_fcns/twpdata" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">wpdata</code> (<a class="reference internal" href="#f/dtu_we_controller_fcns/maxwplines" title="f/dtu_we_controller_fcns/maxwplines">maxwplines</a>,2)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">lines</code><em> [</em><em>integer</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tdamper">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tdamper</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tdamper" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">delay</code><em> [</em><a class="reference internal" href="#f/misc_mod/ttdelay" title="f/misc_mod/ttdelay"><em>ttdelay</em></a><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">td</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">notch</code><em> [</em><a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><em>tnotch2order</em></a><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">gain</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">bandpass</code><em> [</em><a class="reference internal" href="#f/misc_mod/tbandpassfilt" title="f/misc_mod/tbandpassfilt"><em>tbandpassfilt</em></a><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/texclzone">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">texclzone</code><a class="headerlink" href="#f/dtu_we_controller_fcns/texclzone" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">notch</code><em> [</em><a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><em>tnotch2order</em></a><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">hwr_tg</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">lwr</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">lwr_tg</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">hwr</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">time_excl_delay</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tcutin">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tcutin</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tcutin" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">delay</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">time</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tcutout">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tcutout</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tcutout" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">torquedelay</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitchdelay2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitchvelmax2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitchvelmax</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">time</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stoptype</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitchdelay</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tswitch">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tswitch</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tswitch" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">rel_sp_open_qg</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitang_upper</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">pitang_lower</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tsafetysystem">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tsafetysystem</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tsafetysystem" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">rystevagtfirstordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">omega2ordervar</code><em> [</em><a class="reference internal" href="#f/misc_mod/tlowpass2order" title="f/misc_mod/tlowpass2order"><em>tlowpass2order</em></a><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">overspeed</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">rystevagtlevel</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/dtu_we_controller_fcns/tpitchgsvar">
+<em class="property">type  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">tpitchgsvar</code><a class="headerlink" href="#f/dtu_we_controller_fcns/tpitchgsvar" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">invkk2_speed</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">invkk1_speed</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">invkk2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">invkk1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">kp_speed</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Variables</p>
+<ul>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_fcns/maxwplines">
+<code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">maxwplines</code><em> [</em><em>integer</em><em>,</em><em>parameter=</em>100<em>]</em><a class="headerlink" href="#f/dtu_we_controller_fcns/maxwplines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_fcns/excluzone">
+<code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">excluzone</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/texclzone" title="f/dtu_we_controller_fcns/texclzone"><em>texclzone</em></a><em>]</em><a class="headerlink" href="#f/dtu_we_controller_fcns/excluzone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/dtu_we_controller_fcns/opdatavar">
+<code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">opdatavar</code><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/twpdata" title="f/dtu_we_controller_fcns/twpdata"><em>twpdata</em></a><em>]</em><a class="headerlink" href="#f/dtu_we_controller_fcns/opdatavar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Subroutines and functions</p>
+<dl class="function">
+<dt id="f/dtu_we_controller_fcns/switch_spline">
+<em class="property">function  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">switch_spline</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>x1</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/switch_spline" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that goes from 0 at x0 to 1 at x1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x0</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x1</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>switch_spline</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/rotorspeedexcl" title="f/turbine_controller_mod/rotorspeedexcl"><code class="xref f f-func docutils literal"><span class="pre">rotorspeedexcl()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/dtu_we_controller_fcns/interpolate">
+<em class="property">function  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>x1</em>, <em>f0</em>, <em>f1</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear interpolation of x through the points (x0, f0) and (x1, f1)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x0</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x1</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>f0</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>f1</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>interpolate</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/getoptipitch" title="f/dtu_we_controller_fcns/getoptipitch"><code class="xref f f-func docutils literal"><span class="pre">getoptipitch()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/dtu_we_controller_fcns/getoptipitch">
+<em class="property">function  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">getoptipitch</code><span class="sig-paren">(</span><em>wsp</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/getoptipitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes pitch angle from look-up table based on wind speed input</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wsp</strong><em> [</em><em>real</em><em>]</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><strong>getoptipitch</strong><em> [</em><em>real</em><em>]</em></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Call to:</th><td class="field-body"><a class="reference internal" href="#f/dtu_we_controller_fcns/interpolate" title="f/dtu_we_controller_fcns/interpolate"><code class="xref f f-func docutils literal"><span class="pre">interpolate()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/dtu_we_controller_fcns/pid">
+<em class="property">function  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">pid</code><span class="sig-paren">(</span><em>stepno</em>, <em>dt</em>, <em>kgain</em>, <em>pidvar</em>, <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/pid" title="Permalink to this definition">¶</a></dt>
+<dd><p>PID controller with one input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>kgain</strong> (3)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>pidvar</strong><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tpidvar" title="f/dtu_we_controller_fcns/tpidvar"><em>tpidvar</em></a><em>]</em></li>
+<li><strong>error</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>pid</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/dtu_we_controller_fcns/pid2">
+<em class="property">function  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">pid2</code><span class="sig-paren">(</span><em>stepno</em>, <em>dt</em>, <em>kgain</em>, <em>pidvar</em>, <em>error</em>, <em>added_term</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/pid2" title="Permalink to this definition">¶</a></dt>
+<dd><p>PID controller with two inputs. Used for the pitch angle with feebacks from generator speed
+and power errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>kgain</strong> (3,2)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>pidvar</strong><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tpid2var" title="f/dtu_we_controller_fcns/tpid2var"><em>tpid2var</em></a><em>]</em></li>
+<li><strong>error</strong> (2)<em> [</em><em>real</em><em>]</em></li>
+<li><strong>added_term</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>pid2</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcontroller" title="f/turbine_controller_mod/pitchcontroller"><code class="xref f f-func docutils literal"><span class="pre">pitchcontroller()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="subroutine">
+<dt id="f/dtu_we_controller_fcns/damper">
+<em class="property">subroutine  </em><code class="descclassname">dtu_we_controller_fcns/</code><code class="descname">damper</code><span class="sig-paren">(</span><em>stepno</em>, <em>dt</em>, <em>x</em>, <em>filters</em>, <em>y</em>, <em>x_filt</em><span class="sig-paren">)</span><a class="headerlink" href="#f/dtu_we_controller_fcns/damper" title="Permalink to this definition">¶</a></dt>
+<dd><p>General damper based on bandpass filter, notch filter, and a time delay.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>filters</strong><em> [</em><a class="reference internal" href="#f/dtu_we_controller_fcns/tdamper" title="f/dtu_we_controller_fcns/tdamper"><em>tdamper</em></a><em>,</em><em>in</em><em>]</em></li>
+<li><strong>y</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>x_filt</strong><em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/turbine_controller_mod/drivetraindamper" title="f/turbine_controller_mod/drivetraindamper"><code class="xref f f-func docutils literal"><span class="pre">drivetraindamper()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/towerdamper" title="f/turbine_controller_mod/towerdamper"><code class="xref f f-func docutils literal"><span class="pre">towerdamper()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/bandpassfilt" title="f/misc_mod/bandpassfilt"><code class="xref f f-func docutils literal"><span class="pre">bandpassfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/notch2orderfilt" title="f/misc_mod/notch2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">notch2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/timedelay" title="f/misc_mod/timedelay"><code class="xref f f-func docutils literal"><span class="pre">timedelay()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="f/misc_mod">
+<span id="misc-mod"></span><h2>misc_mod<a class="headerlink" href="#f/misc_mod" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Description</p>
+<p>Module where filters and the corresponding types are defined.</p>
+<p class="rubric">Quick access</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Types:</th><td class="field-body"><a class="reference internal" href="#f/misc_mod/tbandpassfilt" title="f/misc_mod/tbandpassfilt"><code class="xref f f-type docutils literal"><span class="pre">tbandpassfilt</span></code></a>, <a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><code class="xref f f-type docutils literal"><span class="pre">tfirstordervar</span></code></a>, <a class="reference internal" href="#f/misc_mod/tlowpass2order" title="f/misc_mod/tlowpass2order"><code class="xref f f-type docutils literal"><span class="pre">tlowpass2order</span></code></a>, <a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><code class="xref f f-type docutils literal"><span class="pre">tnotch2order</span></code></a>, <a class="reference internal" href="#f/misc_mod/ttdelay" title="f/misc_mod/ttdelay"><code class="xref f f-type docutils literal"><span class="pre">ttdelay</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference internal" href="#f/misc_mod/degrad" title="f/misc_mod/degrad"><code class="xref f f-var docutils literal"><span class="pre">degrad</span></code></a>, <a class="reference internal" href="#f/misc_mod/pi" title="f/misc_mod/pi"><code class="xref f f-var docutils literal"><span class="pre">pi</span></code></a>, <a class="reference internal" href="#f/misc_mod/raddeg" title="f/misc_mod/raddeg"><code class="xref f f-var docutils literal"><span class="pre">raddeg</span></code></a>, <a class="reference internal" href="#f/misc_mod/mk" title="f/misc_mod/mk"><code class="xref f f-var docutils literal"><span class="pre">mk</span></code></a>, <a class="reference internal" href="#f/misc_mod/vertext32" title="f/misc_mod/vertext32"><code class="xref f f-var docutils literal"><span class="pre">vertext32</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Routines:</th><td class="field-body"><a class="reference internal" href="#f/misc_mod/timedelay" title="f/misc_mod/timedelay"><code class="xref f f-func docutils literal"><span class="pre">timedelay()</span></code></a>, <a class="reference internal" href="#f/misc_mod/bandpassfilt" title="f/misc_mod/bandpassfilt"><code class="xref f f-func docutils literal"><span class="pre">bandpassfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/notch2orderfilt" title="f/misc_mod/notch2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">notch2orderfilt()</span></code></a>, <a class="reference internal" href="#f/misc_mod/lowpass1orderfilt" title="f/misc_mod/lowpass1orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass1orderfilt()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Types</p>
+<ul>
+<li><dl class="type">
+<dt id="f/misc_mod/tfirstordervar">
+<em class="property">type  </em><code class="descclassname">misc_mod/</code><code class="descname">tfirstordervar</code><a class="headerlink" href="#f/misc_mod/tfirstordervar" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">tau</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1_old</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/misc_mod/tlowpass2order">
+<em class="property">type  </em><code class="descclassname">misc_mod/</code><code class="descname">tlowpass2order</code><a class="headerlink" href="#f/misc_mod/tlowpass2order" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">f0</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">zeta</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1_old</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/misc_mod/tnotch2order">
+<em class="property">type  </em><code class="descclassname">misc_mod/</code><code class="descname">tnotch2order</code><a class="headerlink" href="#f/misc_mod/tnotch2order" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">f0</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">zeta2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">zeta1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1_old</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/misc_mod/tbandpassfilt">
+<em class="property">type  </em><code class="descclassname">misc_mod/</code><code class="descname">tbandpassfilt</code><a class="headerlink" href="#f/misc_mod/tbandpassfilt" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">f0</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">tau</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x1_old</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">x2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">zeta</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y2</code><em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">y1_old</code><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+<li><dl class="type">
+<dt id="f/misc_mod/ttdelay">
+<em class="property">type  </em><code class="descclassname">misc_mod/</code><code class="descname">ttdelay</code><a class="headerlink" href="#f/misc_mod/ttdelay" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type fields:</th><td class="field-body"><ul class="first last simple">
+<li><code class="descname">% </code><code class="descname">xz</code> (40)<em> [</em><em>real</em><em>]</em></li>
+<li><code class="descname">% </code><code class="descname">stepno1</code><em> [</em><em>integer</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Variables</p>
+<ul>
+<li><dl class="variable">
+<dt id="f/misc_mod/raddeg">
+<code class="descclassname">misc_mod/</code><code class="descname">raddeg</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/misc_mod/raddeg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/misc_mod/pi">
+<code class="descclassname">misc_mod/</code><code class="descname">pi</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/misc_mod/pi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/misc_mod/vertext32">
+<code class="descclassname">misc_mod/</code><code class="descname">vertext32</code><em> [</em><em>character</em><em>]</em><a class="headerlink" href="#f/misc_mod/vertext32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/misc_mod/mk">
+<code class="descclassname">misc_mod/</code><code class="descname">mk</code><em> [</em><em>integer</em><em>,</em><em>parameter=</em>kind(1.0d0)<em>]</em><a class="headerlink" href="#f/misc_mod/mk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="variable">
+<dt id="f/misc_mod/degrad">
+<code class="descclassname">misc_mod/</code><code class="descname">degrad</code><em> [</em><em>real</em><em>]</em><a class="headerlink" href="#f/misc_mod/degrad" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+<p class="rubric">Subroutines and functions</p>
+<dl class="function">
+<dt id="f/misc_mod/lowpass1orderfilt">
+<em class="property">function  </em><code class="descclassname">misc_mod/</code><code class="descname">lowpass1orderfilt</code><span class="sig-paren">(</span><em>dt</em>, <em>stepno</em>, <em>filt</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#f/misc_mod/lowpass1orderfilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>First order low-pass filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>filt</strong><em> [</em><a class="reference internal" href="#f/misc_mod/tfirstordervar" title="f/misc_mod/tfirstordervar"><em>tfirstordervar</em></a><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>lowpass1orderfilt</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/torquecontroller" title="f/turbine_controller_mod/torquecontroller"><code class="xref f f-func docutils literal"><span class="pre">torquecontroller()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/monitoring" title="f/turbine_controller_mod/monitoring"><code class="xref f f-func docutils literal"><span class="pre">monitoring()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/shut_down" title="f/turbine_controller_mod/shut_down"><code class="xref f f-func docutils literal"><span class="pre">shut_down()</span></code></a>, <a class="reference internal" href="#f/safety_system_mod/safety_system" title="f/safety_system_mod/safety_system"><code class="xref f f-func docutils literal"><span class="pre">safety_system()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/misc_mod/lowpass2orderfilt">
+<em class="property">function  </em><code class="descclassname">misc_mod/</code><code class="descname">lowpass2orderfilt</code><span class="sig-paren">(</span><em>dt</em>, <em>stepno</em>, <em>filt</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#f/misc_mod/lowpass2orderfilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second order low-pass filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>filt</strong><em> [</em><a class="reference internal" href="#f/misc_mod/tlowpass2order" title="f/misc_mod/tlowpass2order"><em>tlowpass2order</em></a><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>lowpass2orderfilt</strong> (2)<em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/monitoring" title="f/turbine_controller_mod/monitoring"><code class="xref f f-func docutils literal"><span class="pre">monitoring()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/shut_down" title="f/turbine_controller_mod/shut_down"><code class="xref f f-func docutils literal"><span class="pre">shut_down()</span></code></a>, <a class="reference internal" href="#f/safety_system_mod/safety_system" title="f/safety_system_mod/safety_system"><code class="xref f f-func docutils literal"><span class="pre">safety_system()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/start_up" title="f/turbine_controller_mod/start_up"><code class="xref f f-func docutils literal"><span class="pre">start_up()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/normal_operation" title="f/turbine_controller_mod/normal_operation"><code class="xref f f-func docutils literal"><span class="pre">normal_operation()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Call to:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/misc_mod/lowpass2orderfilt" title="f/misc_mod/lowpass2orderfilt"><code class="xref f f-func docutils literal"><span class="pre">lowpass2orderfilt()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/misc_mod/notch2orderfilt">
+<em class="property">function  </em><code class="descclassname">misc_mod/</code><code class="descname">notch2orderfilt</code><span class="sig-paren">(</span><em>dt</em>, <em>stepno</em>, <em>filt</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#f/misc_mod/notch2orderfilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second order notch filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>filt</strong><em> [</em><a class="reference internal" href="#f/misc_mod/tnotch2order" title="f/misc_mod/tnotch2order"><em>tnotch2order</em></a><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>notch2orderfilt</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/turbine_controller_mod/rotorspeedexcl" title="f/turbine_controller_mod/rotorspeedexcl"><code class="xref f f-func docutils literal"><span class="pre">rotorspeedexcl()</span></code></a>, <a class="reference internal" href="#f/turbine_controller_mod/pitchcontroller" title="f/turbine_controller_mod/pitchcontroller"><code class="xref f f-func docutils literal"><span class="pre">pitchcontroller()</span></code></a>, <a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/misc_mod/bandpassfilt">
+<em class="property">function  </em><code class="descclassname">misc_mod/</code><code class="descname">bandpassfilt</code><span class="sig-paren">(</span><em>dt</em>, <em>stepno</em>, <em>filt</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#f/misc_mod/bandpassfilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second order band-pass filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>filt</strong><em> [</em><a class="reference internal" href="#f/misc_mod/tbandpassfilt" title="f/misc_mod/tbandpassfilt"><em>tbandpassfilt</em></a><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>bandpassfilt</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="f/misc_mod/timedelay">
+<em class="property">function  </em><code class="descclassname">misc_mod/</code><code class="descname">timedelay</code><span class="sig-paren">(</span><em>dt</em>, <em>stepno</em>, <em>filt</em>, <em>td</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#f/misc_mod/timedelay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time delay.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>stepno</strong><em> [</em><em>integer</em><em>]</em></li>
+<li><strong>filt</strong><em> [</em><a class="reference internal" href="#f/misc_mod/ttdelay" title="f/misc_mod/ttdelay"><em>ttdelay</em></a><em>]</em></li>
+<li><strong>td</strong><em> [</em><em>real</em><em>]</em></li>
+<li><strong>x</strong><em> [</em><em>real</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first"><strong>timedelay</strong><em> [</em><em>real</em><em>]</em></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Called from:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#f/dtu_we_controller_fcns/damper" title="f/dtu_we_controller_fcns/damper"><code class="xref f f-func docutils literal"><span class="pre">damper()</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="io.html" class="btn btn-neutral" title="Inputs/Outputs" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, ..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'.',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,4 +1,7 @@
 module misc_mod
+   !
+   ! Module where filters and the corresponding types are defined.
+   !
    implicit none
    ! Version number
    character(len=32) :: vertext32 = '(ver. 2.0)'
@@ -69,7 +72,7 @@ function lowpass1orderfilt(dt, stepno, filt, x)
 end function lowpass1orderfilt
 !**************************************************************************************************
 function lowpass2orderfilt(dt, stepno, filt, x)
-   ! Second order low-pass filter
+   ! Second order low-pass filter.
    real(mk) lowpass2orderfilt(2), dt, x
    integer stepno
    type(Tlowpass2order) filt
@@ -163,7 +166,7 @@ function notch2orderfilt(dt,stepno,filt,x)
 end function notch2orderfilt
 !**************************************************************************************************
 function bandpassfilt(dt, stepno, filt, x)
-   ! Second order band-pass filter
+   ! Second order band-pass filter.
    real(mk) bandpassfilt, dt, x
    integer stepno
    type(Tbandpassfilt) filt
@@ -210,7 +213,7 @@ function bandpassfilt(dt, stepno, filt, x)
 end function bandpassfilt
 !**************************************************************************************************
 function timedelay(dt, stepno, filt, Td, x)
-   ! Time delay
+   ! Time delay.
    integer stepno, n, k
    real(mk) x, timedelay, dt, Td
    type(Ttdelay) filt

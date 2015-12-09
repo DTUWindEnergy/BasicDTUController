@@ -5,32 +5,16 @@ module safety_system_mod
 contains
 subroutine safety_system(stepno, deltat, omega, TTAccVect, EmergPitchStop, ActiveMechBrake, dump_array)
    !
-   ! Safety system. Higher level of system monitoring.
-   ! 
-   ! Input/Output
-   ! ------------
-   ! dump_array:
-   !    Array for outputs printing.
-   ! Inputs
-   ! ------
-   ! stepno:
-   !    Time step number.
-   ! deltat:
-   !    Time step size.
-   ! omega:
-   !    Measured rotor speed.
-   ! TTAccVect:
-   !    Measured tower top acceleration.
-   ! Outputs
-   ! -------
-   ! EmergPitchStop
-   !    Flag for emergency pitch stop.
-   ! ActiveMechBrake
-   !    Flag for emergency brake activation.
+   ! Safety system. Higher level of system monitoring. It activates the emergency pitch stop and 
+   ! the mechanical brake if the rotor speed or the tower top acceleration exceed certain levels.
    !
-   integer, intent(in) :: stepno
-   real(mk), intent(in) :: omega, TTAccVect(2), deltat
-   integer, intent(out) :: EmergPitchStop, ActiveMechBrake
+   integer, intent(in) :: stepno ! Time step number.
+   real(mk), intent(in) :: omega ! Measured rotor speed.
+   real(mk), intent(in) :: TTAccVect(2)    ! Measured tower top acceleration. Longitudinal and &
+                                           ! lateral components [m/s**2].
+   real(mk), intent(in) :: deltat          ! Time step size.
+   integer, intent(out) :: EmergPitchStop  ! Flag for emergency pitch stop.
+   integer, intent(out) :: ActiveMechBrake ! Flag for emergency brake activation.
    real(mk), intent(inout) :: dump_array(50)
    real(mk) omegafilt, y(2), TTAccFilt, TTAcc
    ! Low-pass filtering of the rotor speed

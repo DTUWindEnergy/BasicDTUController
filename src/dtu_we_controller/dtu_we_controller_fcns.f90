@@ -1,4 +1,8 @@
 module dtu_we_controller_fcns
+   !
+   ! Module with general function that are specific of the DTU Wind Energy Controller. Types are 
+   ! also defined in this module.
+   !
    use misc_mod
    implicit none
    ! Constants
@@ -31,7 +35,7 @@ module dtu_we_controller_fcns
    end type
    type Tcutin
       real(mk) time, delay
-   endtype
+   end type
    type Tcutout
       integer stoptype
       real(mk) time, pitchdelay, pitchdelay2, torquedelay, pitchvelmax, pitchvelmax2
@@ -154,8 +158,9 @@ function PID(stepno, dt, kgain, PIDvar, error)
    endif
    ! Satisfy max velocity
    if (PIDvar%velmax .gt. eps) then
-      if ((abs(PIDvar%outres-PIDvar%outres1_old)/dt) .gt. PIDvar%velmax) &
+      if ((abs(PIDvar%outres-PIDvar%outres1_old)/dt) .gt. PIDvar%velmax) then
          PIDvar%outres = PIDvar%outres1_old + dsign(PIDvar%velmax*dt, PIDvar%outres-PIDvar%outres1_old)
+      endif
    endif
    ! Anti-windup on integral term and save results
    PIDvar%outset1 = PIDvar%outres - PIDvar%outpro - PIDvar%outdif
@@ -226,8 +231,9 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    endif
    ! Satisfy max velocity
    if (PIDvar%velmax .gt. eps) then
-      if ((abs(PIDvar%outres - PIDvar%outres1_old)/dt) .gt. PIDvar%velmax) &
+      if ((abs(PIDvar%outres - PIDvar%outres1_old)/dt) .gt. PIDvar%velmax) then
          PIDvar%outres = PIDvar%outres1_old + dsign(PIDvar%velmax*dt, PIDvar%outres-PIDvar%outres1_old)
+      endif
    endif
    ! Anti-windup on integral term and save results
    PIDvar%outset1 = PIDvar%outres - PIDvar%outpro - PIDvar%outdif
@@ -254,6 +260,6 @@ subroutine damper(stepno, dt, x, filters, y, x_filt)
    x_filt = notch2orderfilt(dt, stepno, filters%notch, x_filt)
    x_filt = timedelay(dt, stepno, filters%delay, filters%Td, x_filt)
    y = filters%gain*x_filt
-end subroutine
+end subroutine damper
 !**************************************************************************************************
 end module dtu_we_controller_fcns

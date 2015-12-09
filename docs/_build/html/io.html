@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Inputs/Outputs &mdash; Basic DTU Wind Energy Controller . documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Basic DTU Wind Energy Controller . documentation" href="index.html"/>
+        <link rel="next" title="Source Documentation" href="srcdocs.html"/>
+        <link rel="prev" title="Overview" href="overview.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Basic DTU Wind Energy Controller
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Inputs/Outputs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#init-regulation">init_regulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#init-regulation-advanced">init_regulation_advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-regulation">update_regulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="srcdocs.html">Source Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Basic DTU Wind Energy Controller</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Inputs/Outputs</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/io.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="inputs-outputs">
+<h1>Inputs/Outputs<a class="headerlink" href="#inputs-outputs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="init-regulation">
+<h2>init_regulation<a class="headerlink" href="#init-regulation" title="Permalink to this headline">¶</a></h2>
+<p>The following parameters need to be specified as parameters in <code class="docutils literal"><span class="pre">init_regulation()</span></code></p>
+<ul class="simple">
+<li>1:  Rated power [kW]</li>
+<li>2:  Minimum rotor speed [rad/s]</li>
+<li>3:  Rated rotor speed [rad/s]</li>
+<li>4:  Maximum allowable generator torque [Nm]</li>
+<li>5:  Minimum pitch angle, PitchMin [deg], if <a href="#id1"><span class="problematic" id="id2">|PitchMin|</span></a>&gt;90, then a table of &lt;wsp,PitchMin&gt; is read from a file named &#8216;wptable.n&#8217;, where n=int(PitchMin)</li>
+<li>6:  Maximum pitch angle [deg]</li>
+<li>7:  Maximum pitch velocity operation [deg/s]</li>
+<li>8:  Frequency of generator speed filter [Hz]</li>
+<li>9:  Damping ratio of speed filter [-]</li>
+<li>10:  Frequency of free-free DT torsion mode [Hz], if zero no notch filter used</li>
+</ul>
+<p>Partial load control parameters</p>
+<ul class="simple">
+<li>11:  Optimal Cp tracking K factor [Nm/(rad/s)^2], Qg=K*Omega^2, K=eta*0.5*rho*A*Cp_opt*R^3/lambda_opt^3</li>
+<li>12:  Proportional gain of torque controller [Nm/(rad/s)]</li>
+<li>13:  Integral gain of torque controller [Nm/rad]</li>
+<li>14:  Differential gain of torque controller [Nm/(rad/s^2)]</li>
+</ul>
+<p>Full load control parameters</p>
+<ul class="simple">
+<li>15:  Generator control switch [1=constant power, 2=constant torque]</li>
+<li>16:  Proportional gain of pitch controller [rad/(rad/s)]</li>
+<li>17:  Integral gain of pitch controller [rad/rad]</li>
+<li>18:  Differential gain of pitch controller [rad/(rad/s^2)]</li>
+<li>19:  Proportional power error gain [rad/W]</li>
+<li>20:  Integral power error gain [rad/(Ws)]</li>
+<li>21:  Coefficient of linear term in aerodynamic gain scheduling, KK1 [deg]</li>
+<li>22:  Coefficient of quadratic term in aerodynamic gain scheduling, KK2 [deg^2] (if zero, KK1 = pitch angle at double gain)</li>
+<li>23:  Relative speed for double nonlinear gain [-]</li>
+</ul>
+<p>Cut-in simulation parameters</p>
+<ul class="simple">
+<li>24:  Cut-in time [s]</li>
+<li>25:  Time delay for soft start of torque [1/1P]</li>
+</ul>
+<p>Cut-out simulation parameters</p>
+<ul class="simple">
+<li>26:  Cut-out time [s]</li>
+<li>27:  Time constant for linear torque cut-out [s]</li>
+<li>28:  Stop type [1=normal, 2=emergency]</li>
+<li>29:  Time delay for pitch stop after shut-down signal [s]</li>
+<li>30:  Maximum pitch velocity during initial period of stop [deg/s]</li>
+<li>31:  Time period of initial pitch stop phase [s] (maintains pitch speed specified in constant 30)</li>
+<li>32:  Maximum pitch velocity during final phase of stop [deg/s]</li>
+</ul>
+<p>Expert parameters (keep default values unless otherwise given)</p>
+<ul class="simple">
+<li>33:  Lower angle above lowest minimum pitch angle for switch [deg]</li>
+<li>34:  Upper angle above lowest minimum pitch angle for switch [deg], if equal then hard switch</li>
+<li>35:  Ratio between filtered speed and reference speed for fully open torque limits [%]</li>
+<li>36:  Time constant of 1st order filter on wind speed used for minimum pitch [1/1P]</li>
+<li>37:  Time constant of 1st order filter on pitch angle used for gain scheduling [1/1P]</li>
+</ul>
+<p>Drivetrain damper</p>
+<ul class="simple">
+<li>38:  Proportional gain of active DT damper [Nm/(rad/s)], requires frequency in input 10</li>
+</ul>
+<p>Overspeed</p>
+<ul class="simple">
+<li>39:  Overspeed percentage before initiating turbine controller alarm (shut-down) [%]</li>
+</ul>
+<p>Additional non-linear pitch control term (not used when all zero)</p>
+<ul class="simple">
+<li>40:  Err0 [rad/s]</li>
+<li>41:  ErrDot0 [rad/s^2]</li>
+<li>42:  PitNonLin1 [rad/s]</li>
+</ul>
+<p>Storm control command</p>
+<ul class="simple">
+<li>43:  Wind speed &#8216;Vstorm&#8217; above which derating of rotor speed is used [m/s]</li>
+<li>44:  Cut-out wind speed (only used for derating of rotor speed in storm) [m/s]</li>
+</ul>
+<p>Safety system parameters</p>
+<ul class="simple">
+<li>45:  Overspeed percentage before initiating safety system alarm (shut-down) [%]</li>
+<li>46:  Max low-pass filtered tower top acceleration level before initiating turbine controller alarm (shut-down) [m/s^2]</li>
+</ul>
+<p>Turbine parameter</p>
+<ul class="simple">
+<li>47:  Nominal rotor diameter [m]</li>
+</ul>
+<p>Parameters for rotor inertia reduction in variable speed region</p>
+<ul class="simple">
+<li>48:  Proportional gain on rotor acceleration in variable speed region [Nm/(rad/s^2)] (not used when zero)</li>
+</ul>
+<p>Parameters for alternative partial load controller with PI regulated TSR tracking</p>
+<ul class="simple">
+<li>49:  Optimal tip speed ratio [-] (only used when K=constant 11 = 0 otherwise  Qg=K*Omega^2 is used)</li>
+</ul>
+<p>Parameters for adding aerodynamic drivetrain damping on gain scheduling</p>
+<ul class="simple">
+<li>50:  Proportional gain of aerodynamic DT damping [Nm/(rad/s)]</li>
+<li>51:  Coefficient of linear term in aerodynamic DT damping scheduling, KK1 [deg]</li>
+<li>52:  Coefficient of quadratic term in aerodynamic DT damping scheduling, KK2 [deg^2]</li>
+</ul>
+</div>
+<div class="section" id="init-regulation-advanced">
+<h2>init_regulation_advanced<a class="headerlink" href="#init-regulation-advanced" title="Permalink to this headline">¶</a></h2>
+<p>When using the <code class="docutils literal"><span class="pre">init_regulation_advanced()</span></code> the following inputs need to be added</p>
+<p>Torque exclusion zone</p>
+<ul class="simple">
+<li>53:  Torque exclusion zone: Low speed [rad/s]</li>
+<li>54:  Torque exclusion zone: Low speed generator toque [Nm]</li>
+<li>55:  Torque exclusion zone: High speed [rad/s]</li>
+<li>56:  Torque exclusion zone: High speed generator toque [Nm]</li>
+<li>57:  Time constant of reference switching at exclusion zone [s]</li>
+</ul>
+<p>DT torsion mode damper</p>
+<ul class="simple">
+<li>58:  Frequency of notch filter [Hz]</li>
+<li>59:  Damping of BP filter [-]</li>
+<li>60:  Damping of notch filter [-]</li>
+<li>61:  Phase lag of damper [s] =&gt;  max 40*dt</li>
+</ul>
+<p>Fore-aft Tower mode damper</p>
+<ul class="simple">
+<li>62:  Frequency of BP filter [Hz]</li>
+<li>63:  Frequency of notch fiter [Hz]</li>
+<li>64:  Damping of BP filter [-]</li>
+<li>65:  Damping of notch filter [-]</li>
+<li>66:  Gain of damper [-]</li>
+<li>67:  Phase lag of damper [s] =&gt;  max 40*dt</li>
+<li>68:  Time constant of 1st order filter on PWR used for fore-aft Tower mode damper GS [Hz]</li>
+<li>69:  Lower PWR limit used for fore-aft Tower mode damper GS [-]</li>
+<li>70:  Upper PWR limit used for fore-aft Tower mode damper GS [-]</li>
+</ul>
+<p>Side-to-side Tower mode filter</p>
+<ul class="simple">
+<li>71:  Frequency of Tower side-to-sede notch filter [Hz]</li>
+<li>72:  Damping of notch filter [-]</li>
+<li>73:  Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2]</li>
+</ul>
+<p>Additional filters</p>
+<ul class="simple">
+<li>74:  Time constant of 1st order filter on pitch angle used for switch [1/1P]</li>
+<li>75:  Time constant of 1st order filter on tower top acceleration used for ShakeGuard [1/1P]</li>
+</ul>
+<blockquote>
+<div>Gear ratio</div></blockquote>
+<ul class="simple">
+<li>76:  Gear ratio (To be used only if input #2 refers to HSS)</li>
+</ul>
+</div>
+<div class="section" id="update-regulation">
+<h2>update_regulation<a class="headerlink" href="#update-regulation" title="Permalink to this headline">¶</a></h2>
+<p>Inputs:</p>
+<ul class="simple">
+<li>1: general time                            [s]</li>
+<li>2: constraint bearing1 shaft_rot 1 only 2  [rad/s] Generator speed (Default LSS, if HSS insert gear ratio in input #76)</li>
+<li>3: constraint bearing2 pitch1 1 only 1     [rad]</li>
+<li>4: constraint bearing2 pitch2 1 only 1     [rad]</li>
+<li>5: constraint bearing2 pitch3 1 only 1     [rad]</li>
+<li>6-8: wind free_wind 1 0.0 0.0 hub height     [m/s] global coords at hub height</li>
+<li>9: elec. power   [W]</li>
+<li>10: grid flag   [1=no grid,0=grid]</li>
+<li>11: Tower top x-acceleration   [m/s^2]</li>
+<li>12: Tower top y-acceleration   [m/s^2]</li>
+</ul>
+<p>Outputs:</p>
+<ul class="simple">
+<li>1: Generator torque reference               [Nm]</li>
+<li>2: Pitch angle reference of blade 1         [rad]</li>
+<li>3: Pitch angle reference of blade 2         [rad]</li>
+<li>4: Pitch angle reference of blade 3         [rad]</li>
+<li>5: Power reference                          [W]</li>
+<li>6: Filtered wind speed                      [m/s]</li>
+<li>7: Filtered rotor speed                     [rad/s]</li>
+<li>8: Filtered rotor speed error for torque    [rad/s]</li>
+<li>9: Bandpass filtered rotor speed            [rad/s]</li>
+<li>10: Proportional term of torque contr.       [Nm]</li>
+<li>11: Integral term of torque controller       [Nm]</li>
+<li>12: Minimum limit of torque                  [Nm]</li>
+<li>13: Maximum limit of torque                  [Nm]</li>
+<li>14: Torque limit switch based on pitch       [-]</li>
+<li>15: Filtered rotor speed error for pitch     [rad/s]</li>
+<li>16: Power error for pitch                    [W]</li>
+<li>17: Proportional term of pitch controller    [rad]</li>
+<li>18: Integral term of pitch controller        [rad]</li>
+<li>19: Minimum limit of pitch                   [rad]</li>
+<li>20: Maximum limit of pitch                   [rad]</li>
+<li>21: Torque reference from DT damper          [Nm]</li>
+<li>22: Status signal                            [-]</li>
+<li>23: Total added pitch rate                   [rad/s]</li>
+<li>24: Filtered pitch angle                     [rad]</li>
+<li>25: Flag for mechnical brake                 [0=off/1=on]</li>
+<li>26: Flag for emergency pitch stop            [0=off/1=on]</li>
+<li>27: LP filtered acceleration level           [m/s^2]</li>
+<li>28: Rotor speed exlusion zone region         [-]</li>
+<li>29: Filtered tower top acc. for tower damper [m/s^2]</li>
+<li>30: Reference pitch from tower damper        [rad]</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="srcdocs.html" class="btn btn-neutral float-right" title="Source Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, ..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'.',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
