@@ -12,6 +12,17 @@ The repository includes project and make files to create DLLs to interface the c
 
 The controller is written in Fortran and it is compatible with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
 
+## Documentation
+
+The documentation is written in [Sphinx](http://sphinx-doc.org/) and can be built by typing:
+
+    $ cd docs
+    $ make html
+  
+The documentations requires the [Fortran Sphynx](https://github.com/VACUMM/sphinx-fortran) extension that can be pip installed by typing:
+
+    $ pip install sphinx-fortran
+
 ## License
 
 The Basic DTU Wind Energy controller is distributed under the [GNU General Public License v3.0](http://en.wikipedia.org/wiki/GNU_General_Public_License).
