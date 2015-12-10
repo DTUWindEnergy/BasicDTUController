@@ -30,6 +30,14 @@ The documentations requires the [Fortran Sphynx](https://github.com/VACUMM/sphin
 
     $ pip install sphinx-fortran
 
+## Tests
+
+For users that compiled using the shipped makefiles a set of tests are present in the folder "src/_tests". 
+- Rudimentary matlab and fortran tests are present in this folder to dynamically load the compiled dlls and perform a simple call.
+- Running `make` within this folder will perform the Fortran tests using different "Fortran" method to load a dll (i.e. cray-pointer or C-integer handles).
+
+
+
 ## License
 
 The Basic DTU Wind Energy controller is distributed under the [GNU General Public License v3.0](http://en.wikipedia.org/wiki/GNU_General_Public_License).
