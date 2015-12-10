@@ -35,7 +35,7 @@ endif
 # --- INCLUDES 
 # --------------------------------------------------------------------------------
 # We add obj_dir to include path (for old compilers)
-INCS=-I$(INC_DIR) -I$(OBJ_DIR)
+INCS=-I$(OBJ_DIR) -I$(INC_DIR) 
 INCS+=$(INC_EXTRA)
 # --------------------------------------------------------------------------------
 # --- DEFINITIONS
@@ -117,12 +117,12 @@ all: $(RULES)
 
 clean:OBJ_DIRS:=$(wildcard $(OBJ_DIR_BASE)*)
 clean:
-	@mkdir DUMMY
+	@$(MKDIR) DUMMY
 	@$(RMDIR) DUMMY $(OBJ_DIRS) $(ERR_TO_NULL)
 	@echo "[ OK ] $(LIB_NAME_BASE) lib cleaned"
 	@echo ""
 
-purge: clean
+purge: clean $(LIB_DIR)
 	@$(RM) $(LIB_DIR)$(SLASH)$(LIB_NAME)* $(ERR_TO_NULL)
 	@echo "[ OK ] $(LIB_NAME_BASE) lib purged"
 	@echo ""

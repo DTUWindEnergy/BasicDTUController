@@ -38,7 +38,9 @@ clean: $(SUBCLEAN)
 	@echo "[ OK ] make clean in subfolders"
 	@echo ""
 
-purge: $(SUBPURGE)
+purge: $(SUBPURGE) 
+	@$(MKDIR) DUMMY
+	@$(RMDIR) DUMMY $(wildcard _lib*) $(ERR_TO_NULL)
 	@echo "[ OK ] make purge in subfolders"
 	@echo ""
 
