@@ -12,7 +12,7 @@ ifeq ($(FCOMPILER),1)
     FFLAGS_EXTRA= -libs:static -threads
     ARFLAGS_EXTRA=
     ifeq ($(OS_NAME),windows)
-         LDFLAGS_EXTR+=/INCREMENTAL:NO
+         LDFLAGS_EXTRA+=/INCREMENTAL:NO
 #          LIBS_EXTRA+=libifcoremt.lib
     endif
     ifeq ($(OS_NAME),linux)

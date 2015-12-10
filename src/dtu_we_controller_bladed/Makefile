@@ -13,12 +13,12 @@ SRC= dtu_we_controller_bladed.f90
 LIBS_EXTRA=-L $(LIB_DIR) -Wl,-static -ldtu_we_controller -Wl,-Bdynamic
 
 ifeq ($(FCOMPILER),1)
-    FFLAGS_EXTRA=-libs:static -threads
+    FFLAGS_EXTRA= -libs:static -threads
     ARFLAGS_EXTRA=
     ifeq ($(OS_NAME),windows)
-         LDFLAGS_EXTR+=/INCREMENTAL:NO
-         LIBS_EXTRA=/LIBPATH:$(LIB_DIR) dtu_we_controller.lib kernel32.lib
-#          LIBS_EXTRA+=libifcoremd.lib 
+         LDFLAGS_EXTRA+=/INCREMENTAL:NO
+         LIBS_EXTRA=/LIBPATH:$(LIB_DIR) dtu_we_controller.lib
+#          LIBS_EXTRA+=libifcoremt.lib
     endif
     ifeq ($(OS_NAME),linux)
 		 # USING Static Intel libs to avoid dependencies
@@ -36,4 +36,3 @@ endif
 # --- Default makefile to compile dll 
 # --------------------------------------------------------------------------------
 include ../_mkf/MakefileDll.mk
-
