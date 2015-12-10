@@ -88,9 +88,6 @@ ifeq ($(OS_NAME),windows)
     else
 	    # WINDOWS - IFORT
         LDFLAGS=$(LD_DLL) /def:$(LIB_NAME).def  
-        ifeq ($(ARCHI),ia32)
-            LDFLAGS+=/DLL kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-        endif
     endif
 endif
 LDFLAGS+= $(LDFLAGS_EXTRA)
@@ -153,11 +150,12 @@ $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll): $(LIB_DIR) $(INC_DIR) $(OBJ_DIR) $(OBJ)
 	@echo "- Compiling dynamic library: " $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)
 	@echo "----------------------------------------------------------------------"
 ifeq ($(OS_NAME),windows)
-	$(LD) $(LDFLAGS) $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" 
+	$(LD) $(LDFLAGS)  $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" $(OBJ_DIR)$(SLASH)*.$(o)  $(LIBS) 
 # 	dlltool -z $(LIB_NAME).def --export-all-symbols $(OBJ_DIR)$(SLASH)\*.$(o) -e exports.o
 #     gcc dll.o exports.o -o dll.dll
 else
-	$(FC) $(DEFS) $(INCS) $(LDFLAGS) -shared -Wl,-soname,$(LIB_NAME).$(dll).1  $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) 
+# 	$(FC) $(DEFS) $(INCS) -shared $(LDFLAGS) -Wl,-soname,$(LIB_NAME).$(dll).1  $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) 
+	$(FC) $(DEFS) $(INCS) -shared  $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) $(LDFLAGS) -Wl,-soname,$(LIB_NAME).$(dll).1 $ $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS)
 endif
 	@echo "[ OK ] Compilation of dynamic library $(LIB_NAME)"
 	@echo ""
