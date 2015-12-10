@@ -10,7 +10,7 @@ SRC= misc_mod.f90 dtu_we_controller_fcns.f90 turbine_controller.f90 safety_syste
 
 ifeq ($(FCOMPILER),1)
 FFLAGS_EXTRA= -libs:static -threads
-AFLAGS_EXTRA=
+ARFLAGS_EXTRA=
 endif
 
 # --------------------------------------------------------------------------------

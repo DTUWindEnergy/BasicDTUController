@@ -35,10 +35,17 @@ endif
 # --- INCLUDES 
 # --------------------------------------------------------------------------------
 INCS=-I$(INC_DIR)
+INCS+=$(INC_EXTRA)
 # --------------------------------------------------------------------------------
 # --- DEFINITIONS
 # --------------------------------------------------------------------------------
 DEFS=$(OS_DEF) -D__MAKEFILE__
+DEFS+=$(DEFS_EXTRA)
+# --------------------------------------------------------------------------------
+# --- LIBS
+# --------------------------------------------------------------------------------
+LIBS=
+LIBS+=$(LIBS_EXTRA)
 # --------------------------------------------------------------------------------
 # --- Compiler Flags 
 # --------------------------------------------------------------------------------
@@ -146,7 +153,7 @@ $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll): $(LIB_DIR) $(INC_DIR) $(OBJ_DIR) $(OBJ)
 	@echo "- Compiling dynamic library: " $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)
 	@echo "----------------------------------------------------------------------"
 ifeq ($(OS_NAME),windows)
-	$(LD) $(LDFLAGS) $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" $(OBJ_DIR)$(SLASH)*.$(o)
+	$(LD) $(LDFLAGS) $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" 
 # 	dlltool -z $(LIB_NAME).def --export-all-symbols $(OBJ_DIR)$(SLASH)\*.$(o) -e exports.o
 #     gcc dll.o exports.o -o dll.dll
 else
