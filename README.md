@@ -8,9 +8,16 @@ The controller features both partial and full load operation capabilities as wel
 Blade pitch servo and generator models are not included in this controller.
 
 ## Compatibility
-The repository includes project and make files to create DLLs to interface the controller to HAWC2 and Bladed.
+The repository includes Visual Studio project (for Windows) and Makefiles (for Windows and Linux) to create DLLs to interface the controller to HAWC2 and Bladed.
 
 The controller is written in Fortran and it is compatible with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
+
+## Compilation
+
+- For compilation using Visual Studio open the Visual Studio Solution or Projec files (*.sln, *.vfproj)
+
+- For compilation using Makefile, read the instructions in src/Makefile.README.txt
+
 
 ## Documentation
 
