@@ -53,8 +53,8 @@ module dtu_we_controller_fcns
       real(mk) kp_speed, invkk1_speed, invkk2_speed
    end type
    ! Custom Types
-   type(Twpdata) OPdatavar
-   type(Texclzone) ExcluZone
+   type(Twpdata), save   :: OPdatavar
+   type(Texclzone), save :: ExcluZone
 !**************************************************************************************************
 contains
 !**************************************************************************************************
@@ -217,6 +217,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
       PIDvar%outres = PIDvar%outmax
    endif
    ! Write out values if the output is not-a-number
+   ! NOTE: ebra: isnan is not standard
    if (isnan(PIDvar%outres)) then
       write(*, *)  'PIDvar%outres=', PIDvar%outres
       write(*, *)  'PIDvar%outpro=', PIDvar%outpro
