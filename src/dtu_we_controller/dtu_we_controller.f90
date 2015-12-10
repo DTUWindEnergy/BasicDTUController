@@ -1,4 +1,4 @@
-module dtu_we_controller_mod
+module dtu_we_controller
    !
    ! Main module of the Basic DTU Wind Energy Controller. Interface for HAWC2.
    !
@@ -11,14 +11,12 @@ module dtu_we_controller_mod
    real(mk) time_old
 contains
 !**************************************************************************************************
-subroutine init_regulation(array1, array2)
-   !
-   ! Controller parameters initialization.
-   !
-   !DEC$ IF .NOT. DEFINED(__LINUX__)
-   !DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_regulation'::init_regulation
+subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
+   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ ATTRIBUTES DLLEXPORT :: init_regulation
    !DEC$ END IF
-   real(mk) array1(100), array2(1)
+   real(mk), dimension(100), intent(inout) :: array1
+   real(mk), dimension(1), intent(inout)   :: array2
    ! Local vars
    integer i, ifejl
    character(len=32) text32
@@ -281,14 +279,12 @@ subroutine init_regulation(array1, array2)
    return
 end subroutine init_regulation
 !**************************************************************************************************
-subroutine init_regulation_advanced(array1, array2)
-   !
-   ! Controller parameters initialization with additional inputs.
-   !
-   !DEC$ IF .NOT. DEFINED(__LINUX__)
-   !DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_regulation_advanced'::init_regulation_advanced
+subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation_advanced')
+   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ ATTRIBUTES DLLEXPORT::init_regulation_advanced
    !DEC$ END IF
-   real(mk) array1(100),array2(1)
+   real(mk), dimension(100), intent(inout)  ::  array1
+   real(mk), dimension(1)  , intent(inout) ::  array2
    ! Torque exclusion zone
    !  constant  53 ; Torque exclusion zone: Low speed [rad/s]
    !  constant  54 ; Torque exclusion zone: Low speed generator toque [Nm]
@@ -357,17 +353,18 @@ subroutine init_regulation_advanced(array1, array2)
    TimerExcl = -0.02_mk
 end subroutine init_regulation_advanced
 !**************************************************************************************************
-subroutine update_regulation(array1, array2)
+subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !
    ! Controller interface. 
    !  - sets DLL inputs/outputs.
    !  - sets controller timers.
    !  - calls the safety system monitor (higher level).
    !
-   !DEC$ IF .NOT. DEFINED(__LINUX__)
-   !DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'update_regulation'::update_regulation
+   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ ATTRIBUTES DLLEXPORT :: update_regulation
    !DEC$ END IF
-   real(mk) array1(100),array2(100)
+   real(mk), dimension(100), intent(inout) :: array1
+   real(mk), dimension(100), intent(inout) :: array2
    ! Input array1 must contain
    !
    !    1: general time                            [s]
@@ -516,4 +513,4 @@ subroutine update_regulation(array1, array2)
    return
 end subroutine update_regulation
 !**************************************************************************************************
-end module dtu_we_controller_mod
+end module dtu_we_controller
