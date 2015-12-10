@@ -1,16 +1,23 @@
+module dtu_we_controller_bladed
+
+contains
 !**************************************************************************************************
-subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG)
-   !DEC$ IF .NOT. DEFINED(__LINUX__)
-   !DEC$ ATTRIBUTES DLLEXPORT, ALIAS:'DISCON' :: DISCON
+subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name='discon')
+   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ ATTRIBUTES DLLEXPORT :: discon
    !DEC$ END IF
-   use dtu_we_controller_mod
+   use dtu_we_controller
    implicit none
+   !
+   ! ebra NOTE:  These real and integer types below are non-standard, platform and compiler dependent. 
+   ! Consider using iso_c_binding (C_DOUBLE, C_INT)  or iso_fortran_env (REAL32). Iso_c_binding is the best.
+   !
    ! Passed Variables:
-   real(4),    intent(inout) :: avrSWAP   (*)     ! The swap array, used to pass data to, and receive data from, the DLL controller.
-   integer(4), intent(out)   :: aviFAIL           ! A flag used to indicate the success of this DLL call set as follows: 0 if the DLL call was successful, >0 if the DLL call was successful but cMessage should be issued as a warning messsage, <0 if the DLL call was unsuccessful or for any other reason the simulation is to be stopped at this point with cMessage as the error message.
-   integer(1), intent(in)    :: accINFILE (*)     ! The address of the first record of an array of 1-byte CHARACTERs giving the name of the parameter input file, 'basic_dtu_we_controller.IN'.
-   integer(1), intent(out)   :: avcMSG    (*)     ! The address of the first record of an array of 1-byte CHARACTERS giving the message contained in cMessage, which will be displayed by the calling program if aviFAIL <> 0.
-   integer(1), intent(in)    :: avcOUTNAME(*)     ! The address of the first record of an array of 1-byte CHARACTERS giving the simulation run name without extension.
+   real(4),   dimension(*),  intent(inout) :: avrSWAP     ! The swap array, used to pass data to, and receive data from, the DLL controller.
+   integer(4), dimension(*), intent(out)   :: aviFAIL           ! A flag used to indicate the success of this DLL call set as follows: 0 if the DLL call was successful, >0 if the DLL call was successful but cMessage should be issued as a warning messsage, <0 if the DLL call was unsuccessful or for any other reason the simulation is to be stopped at this point with cMessage as the error message.
+   integer(1), dimension(*), intent(in)    :: accINFILE     ! The address of the first record of an array of 1-byte CHARACTERs giving the name of the parameter input file, 'basic_dtu_we_controller.IN'.
+   integer(1), dimension(*), intent(out)   :: avcMSG      ! The address of the first record of an array of 1-byte CHARACTERS giving the message contained in cMessage, which will be displayed by the calling program if aviFAIL <> 0.
+   integer(1), dimension(*), intent(in)    :: avcOUTNAME    ! The address of the first record of an array of 1-byte CHARACTERS giving the simulation run name without extension.
    real(8) array1(100), array2(100)
    integer(4) :: i, iostat, callno = 0
    
@@ -64,3 +71,5 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG)
 
    return
 end subroutine DISCON
+
+end module dtu_we_controller_bladed
