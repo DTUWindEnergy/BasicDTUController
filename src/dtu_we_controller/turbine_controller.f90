@@ -20,22 +20,22 @@ module turbine_controller_mod
    real(mk) GenSpeed_at_stop, GenTorque_at_stop
    real(mk) excl_flag
    ! Types
-   type(Tlowpass2order) omega2ordervar
-   type(Tfirstordervar) pitchfirstordervar
-   type(Tfirstordervar) wspfirstordervar
-   type(Tfirstordervar) switchfirstordervar
-   type(Tpidvar) PID_gen_var
-   type(Tnotch2order) DT_mode_filt
-   type(Tnotch2order) pwr_DT_mode_filt
-   type(Tpid2var) PID_pit_var
-   type(Tdamper) DT_damper
-   type(Tdamper) TTfa_damper
-   type(Tfirstordervar) TTfa_PWRfirstordervar
-   type(Tcutin) CutinVar
-   type(Tcutout) CutoutVar
-   type(Tswitch) SwitchVar
-   type(TSafetySystem) MoniVar
-   type(TPitchGSvar) PitchGSVar
+   type(Tlowpass2order), save :: omega2ordervar
+   type(Tfirstordervar), save :: pitchfirstordervar
+   type(Tfirstordervar), save :: wspfirstordervar
+   type(Tfirstordervar), save :: switchfirstordervar
+   type(Tpidvar), save        :: PID_gen_var
+   type(Tnotch2order), save   :: DT_mode_filt
+   type(Tnotch2order), save   :: pwr_DT_mode_filt
+   type(Tpid2var), save       :: PID_pit_var
+   type(Tdamper), save        :: DT_damper
+   type(Tdamper), save        :: TTfa_damper
+   type(Tfirstordervar), save :: TTfa_PWRfirstordervar
+   type(Tcutin), save         :: CutinVar
+   type(Tcutout), save        :: CutoutVar
+   type(Tswitch), save        :: SwitchVar
+   type(TSafetySystem), save  :: MoniVar
+   type(TPitchGSvar), save    :: PitchGSVar
 !**************************************************************************************************
 contains
 !**************************************************************************************************

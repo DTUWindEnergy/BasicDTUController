@@ -81,6 +81,7 @@ ifeq ($(OS),Windows_NT)
     LD=link.exe
     LD_OUT=/out:
     LD_DLL=/nologo /dll
+    LD_L=/LIBPATH:
     AR=Lib
     AR_OUT=/out:
     CAT=type
@@ -109,6 +110,7 @@ else
     LD=ld
     LD_OUT=-o
     LD_DLL=
+    LD_L=-L 
     AR=ar
     AR_OUT=
     CAT=cat

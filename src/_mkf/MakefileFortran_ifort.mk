@@ -48,7 +48,7 @@ FF_DEBUGINFO=
 #     FF_DEBUG    = -check:bounds -check:format -check:output_conversion -check:pointers -check:uninit -debug:full -fpe0 -gen-interface -traceback
 FF_DEBUG    = -check:bounds -check:format -check:output_conversion -check:pointers -check:uninit -debug:full -gen-interface
 FF_F95      = -assume:norealloc_lhs
-FF_DLL      = /libs:dll 
+FF_DLL      = 
 FF_SAVE     = /Qsave
 endif
 # Checking that compiler is present

@@ -34,11 +34,19 @@ endif
 # --------------------------------------------------------------------------------
 # --- INCLUDES 
 # --------------------------------------------------------------------------------
-INCS=-I$(INC_DIR)
+# We add obj_dir to include path (for old compilers)
+INCS=-I$(OBJ_DIR) -I$(INC_DIR) 
+INCS+=$(INC_EXTRA)
 # --------------------------------------------------------------------------------
 # --- DEFINITIONS
 # --------------------------------------------------------------------------------
 DEFS=$(OS_DEF) -D__MAKEFILE__
+DEFS+=$(DEFS_EXTRA)
+# --------------------------------------------------------------------------------
+# --- LIBS
+# --------------------------------------------------------------------------------
+LIBS=
+LIBS+=$(LIBS_EXTRA)
 # --------------------------------------------------------------------------------
 # --- Compiler Flags 
 # --------------------------------------------------------------------------------
@@ -81,9 +89,6 @@ ifeq ($(OS_NAME),windows)
     else
 	    # WINDOWS - IFORT
         LDFLAGS=$(LD_DLL) /def:$(LIB_NAME).def  
-        ifeq ($(ARCHI),ia32)
-            LDFLAGS+=/DLL kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-        endif
     endif
 endif
 LDFLAGS+= $(LDFLAGS_EXTRA)
@@ -112,12 +117,12 @@ all: $(RULES)
 
 clean:OBJ_DIRS:=$(wildcard $(OBJ_DIR_BASE)*)
 clean:
-	@mkdir DUMMY
+	@$(MKDIR) DUMMY
 	@$(RMDIR) DUMMY $(OBJ_DIRS) $(ERR_TO_NULL)
 	@echo "[ OK ] $(LIB_NAME_BASE) lib cleaned"
 	@echo ""
 
-purge: clean
+purge: clean $(LIB_DIR)
 	@$(RM) $(LIB_DIR)$(SLASH)$(LIB_NAME)* $(ERR_TO_NULL)
 	@echo "[ OK ] $(LIB_NAME_BASE) lib purged"
 	@echo ""
@@ -146,11 +151,12 @@ $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll): $(LIB_DIR) $(INC_DIR) $(OBJ_DIR) $(OBJ)
 	@echo "- Compiling dynamic library: " $(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)
 	@echo "----------------------------------------------------------------------"
 ifeq ($(OS_NAME),windows)
-	$(LD) $(LDFLAGS) $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" $(OBJ_DIR)$(SLASH)*.$(o)
+	$(LD) $(LDFLAGS)  $(LD_OUT)"$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll)" $(OBJ_DIR)$(SLASH)*.$(o)  $(LIBS) 
 # 	dlltool -z $(LIB_NAME).def --export-all-symbols $(OBJ_DIR)$(SLASH)\*.$(o) -e exports.o
 #     gcc dll.o exports.o -o dll.dll
 else
-	$(FC) $(DEFS) $(INCS) $(LDFLAGS) -shared -Wl,-soname,$(LIB_NAME).$(dll).1  $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) 
+# 	$(FC) $(DEFS) $(INCS) -shared $(LDFLAGS) -Wl,-soname,$(LIB_NAME).$(dll).1  $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS) $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) 
+	$(FC) $(DEFS) $(INCS) -shared  $(LD_OUT)$(LIB_DIR)$(SLASH)$(LIB_NAME).$(dll) $(LDFLAGS) -Wl,-soname,$(LIB_NAME).$(dll).1 $ $(OBJ_DIR)$(SLASH)*.$(o) $(LIBS)
 endif
 	@echo "[ OK ] Compilation of dynamic library $(LIB_NAME)"
 	@echo ""

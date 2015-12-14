@@ -1,3 +1,11 @@
 _build*
 _lib*
 simple-fortran-parser
+
+# _mkf repository
+_mkf/.gitignore
+_mkf/MakefileC.mk
+_mkf/MakefileCUDA.mk
+_mkf/MakefileInc.mk
+_mkf/MakefileMKL.mk
+_mkf/MakefileSupport.mk
