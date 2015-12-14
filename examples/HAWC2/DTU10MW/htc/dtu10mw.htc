@@ -351,7 +351,7 @@ begin dll;
       constant   2   0.5236    ; Minimum rotor speed [rad/s]
       constant   3   1.005     ; Rated rotor speed [rad/s]
       constant   4  15.6E+06   ; Maximum allowable generator torque [Nm]
-      constant   5  100.0      ; Minimum pitch angle, theta_min [deg],
+      constant   5  89.0      ; Minimum pitch angle, theta_min [deg],
                                 ; if |theta_min|>90, then a table of <wsp,theta_min> is read ;
                                 ; from a file named 'wptable.n', where n=int(theta_min)
       constant   6  82.0        ; Maximum pitch angle [deg]
@@ -462,98 +462,14 @@ begin dll;
       mbdy state acc towertop   1 1.0 global only 1 ; Tower top x-acceleration [m/s^2]
       mbdy state acc towertop   1 1.0 global only 2 ; Tower top y-acceleration [m/s^2]
     end output;
- ;  begin actions;
- ;     mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
- ;  end actions;
-  end type2_dll;
-;
-   begin type2_dll;
-     name generator_servo ;
-     filename  ./control/generator_servo.dll ;
-     dll_subroutine_init init_generator_servo ;
-     dll_subroutine_update update_generator_servo ;
-     arraysizes_init  7 1 ;
-     arraysizes_update  4 8 ;
-     begin init ;
-       constant 1  20.0    ; Frequency of 2nd order servo model of generator-converter system [Hz]
-       constant 2  0.9     ; Damping ratio 2nd order servo model of generator-converter system [-]
-       constant 3 15.6E+06 ; Maximum allowable LSS torque (pull-out torque) [Nm]
-       constant 4 0.94     ; Generator efficiency [-]
-       constant 5 1.0      ; Gearratio [-]
-       constant 6 0.0      ; Time for half value in softstart of torque [s]
-       constant 7 1000    ; Time for grid loss [s]
-     end init ;
-;
-     begin output;
-       general time                          ;   Time [s]
-       dll inpvec 1 1                        ;   Electrical torque reference [Nm]
-       constraint bearing1 shaft_rot 1 only 2;   Generator LSS speed [rad/s]
-       mbdy momentvec shaft 1 1 shaft only 3 ;   Shaft moment [kNm] (Qshaft)
-     end output;
-;
-      begin actions;
-         mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
-      end actions;
-   end type2_dll;
-;
-   begin type2_dll;
-     name mech_brake ;
-     filename  ./control/mech_brake.dll ;
-     dll_subroutine_init init_mech_brake ;
-     dll_subroutine_update update_mech_brake ;
-     arraysizes_init    7 1 ;
-     arraysizes_update  4 6 ;
-    begin init ;
-      constant 1  9.36E+06   ; Fully deployed maximum brake torque [Nm] (0.6*max torque)
-      constant 2     100.0   ; Parameter alpha used in Q = tanh(omega*alpha), typically 1e2/Omega_nom
-      constant 3       0.5 ; Delay time for before brake starts to deploy [s]
-      constant 4       0.6 ; Time for brake to become fully deployed [s]
-     end init ;
-;
-     begin output;
-       general time                           ; Time [s]
-       constraint bearing1 shaft_rot 1 only 2 ; Generator LSS speed [rad/s]
-       dll inpvec 1 25                        ; Command to deploy mechanical disc brake [0,1]
-     end output;
-;
-     begin actions;
-        mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
-     end actions;
-   end type2_dll;
-;
-  begin type2_dll;
-    name servo_with_limits ;
-    filename  ./control/servo_with_limits.dll ;
-    dll_subroutine_init init_servo_with_limits ;
-    dll_subroutine_update update_servo_with_limits ;
-    arraysizes_init  10 1 ;
-    arraysizes_update  5 9 ;
-    begin init ;
-      constant 1   3    ; Number of blades [-]
-      constant 2   1.0  ; Frequency of 2nd order servo model of pitch system [Hz]
-      constant 3   0.7  ; Damping ratio 2nd order servo model of pitch system [-]
-      constant 4  10.0  ; Max. pitch speed [deg/s]
-      constant 5  15.0  ; Max. pitch acceleration [deg/s^2]
-      constant 6  -5.0  ; Min. pitch angle [deg]
-      constant  7 90.0  ; Max. pitch angle [deg]
-      constant  8 1000   ; Time for pitch runaway [s]
-      constant  9 -1    ; Time for stuck blade 1 [s]
-      constant 10 0       ; Angle of stuck blade 1 [deg]
-    end init ;
-    begin output;
-      general time        ;  Time                         [s]
-       dll inpvec 1 2     ;  Pitch1 demand angle          [rad]
-       dll inpvec 1 3     ;  Pitch2 demand angle          [rad]
-       dll inpvec 1 4     ;  Pitch3 demand angle          [rad]
-       dll inpvec 1 26    ;  Flag for emergency pitch stop         [0=off/1=on]
-    end output;
-;
-    begin actions;
+   begin actions;
+      mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
       constraint bearing2 angle pitch1 ; Angle pitch1 bearing    [rad]
       constraint bearing2 angle pitch2 ; Angle pitch2 bearing    [rad]
       constraint bearing2 angle pitch3 ; Angle pitch3 bearing    [rad]
-    end actions;
+   end actions;
   end type2_dll;
+;
 end dll;
 ;
 ;----------------------------------------------------------------------------------------------------------------------
