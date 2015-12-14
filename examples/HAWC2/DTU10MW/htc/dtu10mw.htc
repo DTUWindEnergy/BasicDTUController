@@ -370,8 +370,8 @@ begin dll;
       constant  16   0.524485E+00  ; Proportional gain of pitch controller [rad/(rad/s)]
       constant  17   0.141233E+00  ; Integral gain of pitch controller [rad/rad]
       constant  18   0.0        ; Differential gain of pitch controller [rad/(rad/s^2)]
-      constant  19   0.4e-8     ; Proportional power error gain [rad/W]
-      constant  20   0.4e-8     ; Integral power error gain [rad/(Ws)]
+      constant  19   0.0;0.4e-8     ; Proportional power error gain [rad/W]
+      constant  20   0.0;0.4e-8     ; Integral power error gain [rad/(Ws)]
       constant  21   198.32888  ; Coefficient of linear term in aerodynamic gain scheduling, KK1 [deg]
       constant  22   693.22213  ; Coefficient of quadratic term in aerodynamic gain scheduling, KK2 [deg^2] &
                                 ; (if zero, KK1 = pitch angle at double gain)
@@ -463,7 +463,7 @@ begin dll;
       mbdy state acc towertop   1 1.0 global only 2 ; Tower top y-acceleration [m/s^2]
     end output;
    begin actions;
-      mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
+      mbdy moment_int shaft 1 3 shaft towertop 2 ;   Generator LSS torque [Nm]
       constraint bearing2 angle pitch1 ; Angle pitch1 bearing    [rad]
       constraint bearing2 angle pitch2 ; Angle pitch2 bearing    [rad]
       constraint bearing2 angle pitch3 ; Angle pitch3 bearing    [rad]
