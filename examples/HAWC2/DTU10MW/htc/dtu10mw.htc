@@ -351,7 +351,7 @@ begin dll;
       constant   2   0.5236    ; Minimum rotor speed [rad/s]
       constant   3   1.005     ; Rated rotor speed [rad/s]
       constant   4  15.6E+06   ; Maximum allowable generator torque [Nm]
-      constant   5  89.0      ; Minimum pitch angle, theta_min [deg],
+      constant   5  0.0      ; Minimum pitch angle, theta_min [deg],
                                 ; if |theta_min|>90, then a table of <wsp,theta_min> is read ;
                                 ; from a file named 'wptable.n', where n=int(theta_min)
       constant   6  82.0        ; Maximum pitch angle [deg]
@@ -457,8 +457,8 @@ begin dll;
       constraint bearing2 pitch2 1 only 1; [rad]
       constraint bearing2 pitch3 1 only 1; [rad]
       wind free_wind 1 0.0 0.0 -119      ; Global coordinates at hub height
-      dll inpvec 2 2                     ; Elec. power from generator servo .dll
-      dll inpvec 2 8                     ; Grid state flag from generator servo .dll
+      dll inpvec 1 5                     ; Elec. power from generator servo .dll
+      general constant 0                     ; Grid state flag from generator servo .dll
       mbdy state acc towertop   1 1.0 global only 1 ; Tower top x-acceleration [m/s^2]
       mbdy state acc towertop   1 1.0 global only 2 ; Tower top y-acceleration [m/s^2]
     end output;
@@ -476,8 +476,8 @@ end dll;
 ;
 begin output;
   filename ./res/dtu10mw ;
-  time 1 900 ;
-  data_format  hawc_binary;
+  time 0 900 ;
+  ;data_format  hawc_binary;
   buffer 1 ;
 ;
   general time;
