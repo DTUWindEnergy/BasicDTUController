@@ -21,6 +21,8 @@ The controller is written in Fortran and it is compatible with Intel and GFortra
 
 ## Documentation
 
+The documentation can be found [here](http://dtuwindenergy.github.io/BasicDTUController/index.html).
+
 The documentation is written in [Sphinx](http://sphinx-doc.org/) and can be built by typing:
 
     $ cd docs
