@@ -5,7 +5,7 @@ begin simulation;
   solvertype   1 ;
   on_no_convergence continue ;
   convergence_limits 1E3 1.0 1E-7 ;
-  logfile ./logfiles/dtu10mw.log ;
+  logfile ./logfiles/dtu10mw_with_actuators.log ;
   begin newmark;
     deltat    0.02;
   end newmark;
@@ -341,7 +341,7 @@ begin dll;
   begin type2_dll;
     name dtu_we_controller ;
     filename  ./control/dtu_we_controller.dll ;
-    dll_subroutine_init init_regulation ;
+    dll_subroutine_init init_regulation_advanced ;
     dll_subroutine_update update_regulation ;
     arraysizes_init  100 1 ;
     arraysizes_update  50 100 ;
@@ -417,6 +417,37 @@ begin dll;
       constant 50    0.0  ; Proportional gain of aerodynamic DT damping [Nm/(rad/s)]
       constant 51    0.0  ; Coefficient of linear term in aerodynamic DT damping scheduling, KK1 [deg]
       constant 52    0.0  ; Coefficient of quadratic term in aerodynamic DT damping scheduling, KK2 [deg^2]
+      ;Torque exclusion zone--------------------------------------------------------------
+      constant  53  0.584; Torque exclusion zone: Low speed [rad/s] = 5.5; 5.9 rpm
+      constant  54  6.634e6 ;4.5e6 Torque exclusion zone: Low speed generator toque [Nm]
+      constant  55  0.714; 6388;.7645 ; Torque exclusion zone: High speed [rad/s] = 6.5 6.1 rpm
+      constant  56  4.438e6 ;2.5e6 Torque exclusion zone: High speed generator toque [Nm]
+      constant  57  25 ; Time constant of reference switching at exclusion zone [s]
+      ;1st DT torsion mode damper-------------------------------------------------------------
+      constant 58  1.77  ; Frequency of notch filter [Hz]
+      constant 59  0.2  ; Damping of BP filter [-]
+      constant 60  0.01 ; Damping of notch filter [-]
+      constant 61   0.1 ; Phase lag of damper [s] =>  max 40*dt
+;Fore-aft Tower mode damper-------------------------------------------------------------
+      constant 62  0.30  ; Frequency of BP filter [Hz]
+      constant 63  0.47 ; Frequency of notch fiter [Hz]
+      constant 64  0.02 ; Damping of BP filter [-]
+      constant 65  0.01 ; Damping of notch filter [-]
+      constant 66  2e-2; Gain of damper [-]
+      constant 67  0.3  ; Phase lag of damper [s] =>  max 40*dt
+      ;--------------------------------------------------------------------------------
+      constant 68  0.18; Time constant of 1st order filter on PWR used for fore-aft Tower mode damper GS [Hz]
+      constant 69  0.5 ; Lower PWR limit used for fore-aft Tower mode damper GS [-]
+      constant 70  0.8 ; Upper PWR limit used for fore-aft Tower mode damper GS [-]
+;Side-to-side Tower mode filter-------------------------------------------------------------
+      constant 71  0.256 ; Frequency of Tower side-to-side notch filter [Hz]
+      constant 72  0.01 ; Damping of notch filter [-]
+;Safety system parameters
+      constant 73  5.1 ; Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2]
+      constant 74  1 ;
+      constant 75  1 ;
+; Gear ratio
+      constant 76  1 ;
     end init ;
 ;
     begin output ;
@@ -425,26 +456,108 @@ begin dll;
       constraint bearing2 pitch1 1 only 1; [rad]
       constraint bearing2 pitch2 1 only 1; [rad]
       constraint bearing2 pitch3 1 only 1; [rad]
-      wind free_wind 1 0.0 0.0 -119      ; Wind speed at hub height [m/s]
-      dll inpvec 1 5                     ; Elec. power from generator servo .dll [W]
-      general constant 0                 ; Grid state flag from generator servo .dll
+      wind free_wind 1 0.0 0.0 -119      ; Global coordinates at hub height
+      dll type2_dll generator_servo inpvec 2                     ; Elec. power from generator servo .dll
+      dll type2_dll generator_servo inpvec 8                     ; Grid state flag from generator servo .dll
       mbdy state acc towertop   1 1.0 global only 1 ; Tower top x-acceleration [m/s^2]
       mbdy state acc towertop   1 1.0 global only 2 ; Tower top y-acceleration [m/s^2]
     end output;
-   begin actions;
-      mbdy moment_int shaft 1 3 shaft towertop 2 ;   Generator LSS torque [Nm]
+;
+  end type2_dll;
+;
+   begin type2_dll;
+     name generator_servo ;
+     filename  ./control/generator_servo.dll ;
+     dll_subroutine_init init_generator_servo ;
+     dll_subroutine_update update_generator_servo ;
+     arraysizes_init  7 1 ;
+     arraysizes_update  4 8 ;
+     begin init ;
+       constant 1  20.0    ; Frequency of 2nd order servo model of generator-converter system [Hz]
+       constant 2  0.9     ; Damping ratio 2nd order servo model of generator-converter system [-]
+       constant 3 15.6E+06 ; Maximum allowable LSS torque (pull-out torque) [Nm]
+       constant 4 0.94     ; Generator efficiency [-]
+       constant 5 1.0      ; Gearratio [-]
+       constant 6 0.0      ; Time for half value in softstart of torque [s]
+       constant 7 1000    ; Time for grid loss [s]
+     end init ;
+;
+     begin output;
+       general time                          ;   Time [s]
+       dll type2_dll dtu_we_controller inpvec 1                        ;   Electrical torque reference [Nm]
+       constraint bearing1 shaft_rot 1 only 2;   Generator LSS speed [rad/s]
+       mbdy momentvec shaft 1 1 shaft only 3 ;   Shaft moment [kNm] (Qshaft)
+     end output;
+;
+     begin actions;
+        mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
+     end actions;
+   end type2_dll;
+;
+   begin type2_dll;
+     name mech_brake ;
+     filename  ./control/mech_brake.dll ;
+     dll_subroutine_init init_mech_brake ;
+     dll_subroutine_update update_mech_brake ;
+     arraysizes_init    7 1 ;
+     arraysizes_update  4 6 ;
+    begin init ;
+      constant 1  9.36E+06   ; Fully deployed maximum brake torque [Nm] (0.6*max torque)
+      constant 2     100.0   ; Parameter alpha used in Q = tanh(omega*alpha), typically 1e2/Omega_nom
+      constant 3       0.5 ; Delay time for before brake starts to deploy [s]
+      constant 4       0.6 ; Time for brake to become fully deployed [s]
+     end init ;
+;
+     begin output;
+       general time                           ; Time [s]
+       constraint bearing1 shaft_rot 1 only 2 ; Generator LSS speed [rad/s]
+       dll type2_dll dtu_we_controller inpvec 25                        ; Command to deploy mechanical disc brake [0,1]
+     end output;
+;
+     begin actions;
+        mbdy moment_int shaft 1 -3 shaft towertop 2 ;   Generator LSS torque [Nm]
+     end actions;
+   end type2_dll;
+;
+  begin type2_dll;
+    name servo_with_limits ;
+    filename  ./control/servo_with_limits.dll ;
+    dll_subroutine_init init_servo_with_limits ;
+    dll_subroutine_update update_servo_with_limits ;
+    arraysizes_init  10 1 ;
+    arraysizes_update  5 9 ;
+    begin init ;
+      constant 1   3    ; Number of blades [-]
+      constant 2   1.0  ; Frequency of 2nd order servo model of pitch system [Hz]
+      constant 3   0.7  ; Damping ratio 2nd order servo model of pitch system [-]
+      constant 4  10.0  ; Max. pitch speed [deg/s]
+      constant 5  15.0  ; Max. pitch acceleration [deg/s^2]
+      constant 6  -5.0  ; Min. pitch angle [deg]
+      constant  7 90.0  ; Max. pitch angle [deg]
+      constant  8 1000   ; Time for pitch runaway [s]
+      constant  9 -1    ; Time for stuck blade 1 [s]
+      constant 10 0       ; Angle of stuck blade 1 [deg]
+    end init ;
+    begin output;
+      general time        ;  Time                         [s]
+       dll type2_dll dtu_we_controller inpvec 2     ;  Pitch1 demand angle          [rad]
+       dll type2_dll dtu_we_controller inpvec 3     ;  Pitch2 demand angle          [rad]
+       dll type2_dll dtu_we_controller inpvec 4     ;  Pitch3 demand angle          [rad]
+       dll type2_dll dtu_we_controller inpvec 26    ;  Flag for emergency pitch stop         [0=off/1=on]
+    end output;
+;
+    begin actions;
       constraint bearing2 angle pitch1 ; Angle pitch1 bearing    [rad]
       constraint bearing2 angle pitch2 ; Angle pitch2 bearing    [rad]
       constraint bearing2 angle pitch3 ; Angle pitch3 bearing    [rad]
-   end actions;
+    end actions;
   end type2_dll;
-;
 end dll;
 ;
 ;----------------------------------------------------------------------------------------------------------------------
 ;
 begin output;
-  filename ./res/dtu10mw ;
+  filename ./res/dtu10mw_with_actuators ;
   time 0 900 ;
   ;data_format  hawc_binary;
   buffer 1 ;

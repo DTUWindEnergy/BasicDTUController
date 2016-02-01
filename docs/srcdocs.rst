@@ -3,7 +3,7 @@ Source Documentation
 dtu_we_controller
 ^^^^^^^^^^^^^^^^^
 
-.. f:automodule:: dtu_we_controller_mod
+.. f:automodule:: dtu_we_controller
 
 turbine_controller_mod
 ^^^^^^^^^^^^^^^^^^^^^^

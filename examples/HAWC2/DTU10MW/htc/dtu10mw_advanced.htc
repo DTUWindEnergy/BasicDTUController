@@ -5,7 +5,7 @@ begin simulation;
   solvertype   1 ;
   on_no_convergence continue ;
   convergence_limits 1E3 1.0 1E-7 ;
-  logfile ./logfiles/dtu10mw.log ;
+  logfile ./logfiles/dtu10mw_advanced.log ;
   begin newmark;
     deltat    0.02;
   end newmark;
@@ -341,7 +341,7 @@ begin dll;
   begin type2_dll;
     name dtu_we_controller ;
     filename  ./control/dtu_we_controller.dll ;
-    dll_subroutine_init init_regulation ;
+    dll_subroutine_init init_regulation_advanced ;
     dll_subroutine_update update_regulation ;
     arraysizes_init  100 1 ;
     arraysizes_update  50 100 ;
@@ -417,6 +417,37 @@ begin dll;
       constant 50    0.0  ; Proportional gain of aerodynamic DT damping [Nm/(rad/s)]
       constant 51    0.0  ; Coefficient of linear term in aerodynamic DT damping scheduling, KK1 [deg]
       constant 52    0.0  ; Coefficient of quadratic term in aerodynamic DT damping scheduling, KK2 [deg^2]
+      ;Torque exclusion zone--------------------------------------------------------------
+      constant  53  0.584; Torque exclusion zone: Low speed [rad/s] = 5.5; 5.9 rpm
+      constant  54  6.634e6 ;4.5e6 Torque exclusion zone: Low speed generator toque [Nm]
+      constant  55  0.714; 6388;.7645 ; Torque exclusion zone: High speed [rad/s] = 6.5 6.1 rpm
+      constant  56  4.438e6 ;2.5e6 Torque exclusion zone: High speed generator toque [Nm]
+      constant  57  25 ; Time constant of reference switching at exclusion zone [s]
+      ;1st DT torsion mode damper-------------------------------------------------------------
+      constant 58  1.77  ; Frequency of notch filter [Hz]
+      constant 59  0.2  ; Damping of BP filter [-]
+      constant 60  0.01 ; Damping of notch filter [-]
+      constant 61   0.1 ; Phase lag of damper [s] =>  max 40*dt
+;Fore-aft Tower mode damper-------------------------------------------------------------
+      constant 62  0.30  ; Frequency of BP filter [Hz]
+      constant 63  0.47 ; Frequency of notch fiter [Hz]
+      constant 64  0.02 ; Damping of BP filter [-]
+      constant 65  0.01 ; Damping of notch filter [-]
+      constant 66  2e-2; Gain of damper [-]
+      constant 67  0.3  ; Phase lag of damper [s] =>  max 40*dt
+      ;--------------------------------------------------------------------------------
+      constant 68  0.18; Time constant of 1st order filter on PWR used for fore-aft Tower mode damper GS [Hz]
+      constant 69  0.5 ; Lower PWR limit used for fore-aft Tower mode damper GS [-]
+      constant 70  0.8 ; Upper PWR limit used for fore-aft Tower mode damper GS [-]
+;Side-to-side Tower mode filter-------------------------------------------------------------
+      constant 71  0.256 ; Frequency of Tower side-to-side notch filter [Hz]
+      constant 72  0.01 ; Damping of notch filter [-]
+;Safety system parameters
+      constant 73  5.1 ; Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2]
+      constant 74  1 ;
+      constant 75  1 ;
+; Gear ratio
+      constant 76  1 ;
     end init ;
 ;
     begin output ;
@@ -444,7 +475,7 @@ end dll;
 ;----------------------------------------------------------------------------------------------------------------------
 ;
 begin output;
-  filename ./res/dtu10mw ;
+  filename ./res/dtu10mw_advanced ;
   time 0 900 ;
   ;data_format  hawc_binary;
   buffer 1 ;

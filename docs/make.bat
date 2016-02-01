@@ -1,4 +1,3 @@
-rm -r ./_build
 @ECHO OFF
 
 REM Command file for Sphinx documentation
