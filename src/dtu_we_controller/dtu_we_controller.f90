@@ -29,7 +29,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !  constant   2 ; Minimum rotor speed [rad/s]
    !  constant   3 ; Rated rotor speed [rad/s]
    !  constant   4 ; Maximum allowable generator torque [Nm]
-   !  constant   5 ; Minimum pitch angle, PitchMin [deg], 
+   !  constant   5 ; Minimum pitch angle, PitchMin [deg],
    !               ; if |PitchMin|>90, then a table of <wsp,PitchMin> is read ;
    !               ; from a file named 'wptable.n', where n=int(PitchMin)
    !  constant   6 ; Maximum pitch angle [deg]
@@ -76,12 +76,12 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Overspeed
    !  constant  39 ; Overspeed percentage before initiating turbine controller alarm (shut-down) [%]
    ! Additional non-linear pitch control term (not used when all zero)
-   !  constant  40 ; Err0 [rad/s] 
+   !  constant  40 ; Err0 [rad/s]
    !  constant  41 ; ErrDot0 [rad/s^2]
    !  constant  42 ; PitNonLin1 [rad/s]
    ! Storm control command
    !  constant  43 ; Wind speed 'Vstorm' above which derating of rotor speed is used [m/s]
-   !  constant  44 ; Cut-out wind speed (only used for derating of rotor speed in storm) [m/s]	  
+   !  constant  44 ; Cut-out wind speed (only used for derating of rotor speed in storm) [m/s]
    ! Safety system parameters
    !  constant  45 ; Overspeed percentage before initiating safety system alarm (shut-down) [%]
    !  constant  46 ; Max low-pass filtered tower top acceleration level before initiating turbine controller alarm (shut-down) [m/s^2]
@@ -99,7 +99,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Output array2 contains nothing for init
    !
    ! Overall parameters
-   PeRated             = array1( 1)*1.d3
+   PeRated             = array1( 1)*1000.0_mk
    GenSpeedRefMin      = array1( 2)
    GenSpeedRefMax      = array1( 3)
    GenTorqueMax        = array1( 4)
@@ -156,7 +156,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Expert parameters (keep default values unless otherwise given)
    SwitchVar%pitang_lower   = array1(33)*degrad
    SwitchVar%pitang_upper   = array1(34)*degrad
-   SwitchVar%rel_sp_open_Qg = array1(35)*1.d-2
+   SwitchVar%rel_sp_open_Qg = array1(35)*0.01_mk
    wspfirstordervar%tau     = array1(36)*2.0_mk*pi/GenSpeedRefMax
    pitchfirstordervar%tau   = array1(37)*2.0_mk*pi/GenSpeedRefMax
    ! Drivetrain damper
@@ -175,7 +175,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    MoniVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    SafetySystemVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    ! Wind speed table
-   if (dabs(minimum_pitch_angle).lt.90.0_mk*degrad) then 
+   if (dabs(minimum_pitch_angle).lt.90.0_mk*degrad) then
      OPdatavar%lines=2
      OPdatavar%wpdata(1,1) = 0.0_mk
      OPdatavar%wpdata(2,1) = 99.0_mk
@@ -189,7 +189,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
        read(88,*,iostat=ifejl) OPdatavar%lines
        if (ifejl.eq.0) then
          do i=1,OPdatavar%lines
-           read(88,*,iostat=ifejl) OPdatavar%wpdata(i,1),OPdatavar%wpdata(i,2) 
+           read(88,*,iostat=ifejl) OPdatavar%wpdata(i,1),OPdatavar%wpdata(i,2)
            if (ifejl.ne.0) then
              write(6,*) ' *** ERROR *** Could not read lines in minimum '&
                       //'pitch table in file wpdata.'//trim(adjustl(text32))
@@ -251,13 +251,13 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! -Drive train mode damper
    DT_damper%notch%f0   = 10.0_mk*DT_damper%notch%f0
    DT_damper%bandpass%zeta = 0.7_mk
-   DT_damper%notch%zeta2   = 0.01
+   DT_damper%notch%zeta2   = 0.01_mk
    DT_damper%Td            = 0.0_mk
    ! -Tower top fore-aft mode damper
    TTfa_damper%bandpass%f0   = 1.0_mk
    TTfa_damper%notch%f0      = 1.0_mk
    TTfa_damper%bandpass%zeta = 0.7_mk
-   TTfa_damper%notch%zeta2   = 0.01
+   TTfa_damper%notch%zeta2   = 0.01_mk
    TTfa_damper%gain          = 0.0_mk
    TTfa_damper%Td            = 1.0_mk
    TTfa_PWRfirstordervar%tau = 1.0_mk
@@ -269,7 +269,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! -"Rystevagt" monitor for Safety System
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
-   GearRatio = 1
+   GearRatio = 1.0_mk
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
@@ -295,7 +295,7 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    !  constant  58 ; Frequency of notch filter [Hz]
    !  constant  59 ; Damping of BP filter [-]
    !  constant  60 ; Damping of notch filter [-]
-   !  constant  61 ; Phase lag of damper [s] =>  max 40*dt 
+   !  constant  61 ; Phase lag of damper [s] =>  max 40*dt
    ! Fore-aft Tower mode damper
    !  constant  62 ; Frequency of BP filter [Hz]
    !  constant  63 ; Frequency of notch fiter [Hz]
@@ -335,7 +335,7 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    TTfa_damper%notch%zeta2   = array1(65)
    TTfa_damper%gain          = array1(66)
    TTfa_damper%Td            = array1(67)
-   TTfa_PWRfirstordervar%tau = 1.0_mk/(2.0_mk*pi*array1(68)) 
+   TTfa_PWRfirstordervar%tau = 1.0_mk/(2.0_mk*pi*array1(68))
    TTfa_PWR_lower = array1(69)
    TTfa_PWR_upper = array1(70)
    !Tower top side-to- mode filter
@@ -355,7 +355,7 @@ end subroutine init_regulation_advanced
 !**************************************************************************************************
 subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !
-   ! Controller interface. 
+   ! Controller interface.
    !  - sets DLL inputs/outputs.
    !  - sets controller timers.
    !  - calls the safety system monitor (higher level).
@@ -436,12 +436,12 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    PitchVect(3) = array1(5)
    ! Wind speed as horizontal vector sum
    wsp = dsqrt(array1(6)**2 + array1(7)**2)
-   if (stepno.eq.1) then 
+   if (stepno.eq.1) then
       Pe = 0.0_mk ! Elec. power
-      GridFlag = 0 ! Grid flag
+      GridFlag = 0.0_mk ! Grid flag
    else
       Pe=array1(9) ! Elec. power
-      GridFlag = int(array1(10)) ! Grid flag
+      GridFlag = array1(10) ! Grid flag
    endif
    ! Tower top acceleration
    TT_acc(1) = array1(11)
@@ -501,13 +501,13 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    array2(19) = dump_array(15)         !   19: Minimum limit of pitch                   [rad]
    array2(20) = dump_array(16)         !   20: Maximum limit of pitch                   [rad]
    array2(21) = dump_array(17)         !   21: Torque reference from DT damper          [Nm]
-   array2(22) = int(dump_array(18))    !   22: Status signal                            [-]
+   array2(22) = dump_array(18)         !   22: Status signal                            [-]
    array2(23) = dump_array(19)         !   23: Total added pitch rate                   [rad/s]
    array2(24) = dump_array(20)         !   24: Filtered pitch angle                     [rad]
-   array2(25) = ActiveMechBrake      !   25: Flag for mechnical brake                 [0=off/1=on]
+   array2(25) = ActiveMechBrake        !   25: Flag for mechnical brake                 [0=off/1=on]
    array2(26) = EmergPitchStop         !   26: Flag for emergency pitch stop            [0=off/1=on]
    array2(27) = dump_array(23)         !   27: LP filtered acceleration level           [m/s^2]
-   array2(28) = int(dump_array(24))    !   28: Rotor speed exlusion zone region         [-]
+   array2(28) = dump_array(24)         !   28: Rotor speed exlusion zone region         [-]
    array2(29) = dump_array(25)         !   29: Filtered tower top acc. for tower damper [m/s^2]
    array2(30) = dump_array(26)         !   30: Reference pitch from tower damper        [rad]
    return
