@@ -22,6 +22,9 @@ module turbine_controller_mod
    ! Types
    type(Tlowpass2order), save :: omega2ordervar
    type(Tfirstordervar), save :: pitchfirstordervar
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ! ###Added by mmir
+   type(Tfirstordervar) Qgfirstordervar
    type(Tfirstordervar), save :: wspfirstordervar
    type(Tfirstordervar), save :: switchfirstordervar
    type(Tpidvar), save        :: PID_gen_var
@@ -109,6 +112,10 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) WSPfilt
    real(mk) GenSpeedFilt, dGenSpeed_dtFilt
+   
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   real(mk) GenSpeedFilt4Qg, dGenSpeed_dtFilt4Qg    !###Added by mmir, this is because we need to filter the generator speed for the generator torque controller.
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    real(mk) PitchMean, PitchMeanFilt, PitchMin
    real(mk) GenSpeedRef_full
    real(mk) Qdamp_ref, theta_dam_ref, P_filt
@@ -122,6 +129,11 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    y = lowpass2orderfilt(deltat, stepno, omega2ordervar, GenSpeed)
    GenSpeedFilt = y(1)
    dGenSpeed_dtFilt = y(2)
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   !### Added by mmir:
+   !Low-pass filtering of the rotor speed for generator torque controller
+   GenSpeedFilt4Qg  = lowpass1orderfilt(deltat, stepno, Qgfirstordervar, GenSpeed)
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ! Low-pass filtering of the mean pitch angle for gain scheduling
    PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
    PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad)

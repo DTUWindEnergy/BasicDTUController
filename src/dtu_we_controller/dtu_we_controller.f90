@@ -159,6 +159,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    SwitchVar%rel_sp_open_Qg = array1(35)*1.d-2
    wspfirstordervar%tau     = array1(36)*2.0_mk*pi/GenSpeedRefMax
    pitchfirstordervar%tau   = array1(37)*2.0_mk*pi/GenSpeedRefMax
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Qgfirstordervar%tau      = 0.05_mk*2.0_mk*pi/GenSpeedRefMax  !###Added by mmir
+   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ! Drivetrain damper
    DT_damper%gain      = array1(38)
    DT_damper%bandpass%f0  = DT_mode_filt%f0
@@ -269,7 +272,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! -"Rystevagt" monitor for Safety System
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
-   GearRatio = 1
+   ! GearRatio = 1
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
@@ -480,7 +483,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    ! Output
    !***********************************************************************************************
-   array2( 1) = GenTorqueRef*GearRatio !    1: Generator torque reference               [Nm]
+   array2( 1) = GenTorqueRef/GearRatio !    1: Generator torque reference               [Nm]
    array2( 2) = PitchColRef            !    2: Pitch angle reference of blade 1         [rad]
    array2( 3) = PitchColRef            !    3: Pitch angle reference of blade 2         [rad]
    array2( 4) = PitchColRef            !    4: Pitch angle reference of blade 3         [rad]

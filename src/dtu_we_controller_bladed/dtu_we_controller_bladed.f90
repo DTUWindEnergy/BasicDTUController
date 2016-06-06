@@ -2,9 +2,9 @@ module dtu_we_controller_bladed
 
 contains
 !**************************************************************************************************
-subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name='discon')
+subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name='DISCON')
    !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
-   !DEC$ ATTRIBUTES DLLEXPORT :: discon
+   !DEC$ ATTRIBUTES DLLEXPORT :: DISCON
    !DEC$ END IF
    use dtu_we_controller
    implicit none
@@ -36,7 +36,7 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
       array1 = 0.0_mk
    endif
 
-      array1( 1) = dble(nint(avrSWAP( 2)*1000.0_mk)/1000.0_mk)   !    1: general time
+      array1( 1) = dble(nint(avrSWAP( 2)*10000.0_mk)/10000.0_mk)   !    1: general time
       array1( 2) = dble(avrSWAP(20))                         !    2: constraint bearing1 shaft_rot 1 only 2 
       array1( 3) = dble(avrSWAP( 4))                         !    3: constraint bearing2 pitch1 1 only 1
       array1( 4) = dble(avrSWAP(33))                         !    4: constraint bearing2 pitch2 1 only 1
@@ -44,7 +44,7 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
       array1( 6) = 0.0_mk                                      !  6-8: wind free_wind 1 0.0 0.0 hub height
       array1( 7) = dble(avrSWAP(27))
       array1( 8) = 0.0_mk
-      array1( 9) = dble(avrSWAP(15))                         !    9: elec. power
+      array1( 9) = dble(avrSWAP(20))*dble(avrSWAP(47))                         !    9: elec. power
       array1(10) = int(0)                                    !   10: grid flag  ; [1=no grid,0=grid]
       array1(11) = dble(avrSWAP(53))                         !   11: Tower top x-acceleration
       array1(12) = dble(avrSWAP(54))                         !   12: Tower top y-acceleration
