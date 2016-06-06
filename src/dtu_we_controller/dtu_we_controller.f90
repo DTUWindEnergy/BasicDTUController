@@ -269,7 +269,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! -"Rystevagt" monitor for Safety System
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
-   GearRatio = 1
+   ! GearRatio = 1 !###mmir: Removed hard-coded GearRatio of 1
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
@@ -480,7 +480,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    ! Output
    !***********************************************************************************************
-   array2( 1) = GenTorqueRef*GearRatio !    1: Generator torque reference               [Nm]
+   array2( 1) = GenTorqueRef/GearRatio !    1: Generator torque reference               [Nm] ###mmir: To convert the generator torque from LSS to HSS, it should be divided by the gearbox ratio.
    array2( 2) = PitchColRef            !    2: Pitch angle reference of blade 1         [rad]
    array2( 3) = PitchColRef            !    3: Pitch angle reference of blade 2         [rad]
    array2( 4) = PitchColRef            !    4: Pitch angle reference of blade 3         [rad]
