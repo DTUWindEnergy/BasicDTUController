@@ -228,7 +228,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
       write(*, *)  'PIDvar%Kdif(1)=', PIDvar%Kdif(1)
       write(*, *)  'Padded_term=', added_term
       write(*, *)  'PIDvar%outset=', PIDvar%outset
-      pause
+      ! pause
    endif
    ! Satisfy max velocity
    if (PIDvar%velmax .gt. eps) then

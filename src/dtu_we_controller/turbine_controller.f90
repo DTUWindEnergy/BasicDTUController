@@ -386,6 +386,8 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, dump_array)
       stoptype = 1
       GenSpeed_at_stop = GenSpeed
       GenTorque_at_stop = GenTorqueRefOld
+      write (*,*) 'Overspeed! At: ', GenSpeedFilt
+      !pause
    endif
    !***********************************************************************************************
    ! Acceleration monitoring
@@ -395,6 +397,8 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, dump_array)
       stoptype = 1
       GenSpeed_at_stop = GenSpeed
       GenTorque_at_stop = GenTorqueRefOld
+      write (*,*) 'Over acceleration! At:', TTAccFilt
+      !pause
    endif
    !***********************************************************************************************
    ! Reverse speed monitoring
@@ -404,6 +408,8 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, dump_array)
       stoptype = 1
       GenSpeed_at_stop = GenSpeed
       GenTorque_at_stop = GenTorqueRefOld
+      write (*,*) 'Reverse speed! At:', GenSpeedFilt
+      !pause
    endif
    ! Write into dump array
    dump_array(18) = CtrlStatus

@@ -29,6 +29,7 @@ subroutine safety_system(stepno, deltat, omega, TTAccVect, EmergPitchStop, Activ
    if (omegafilt .gt. SafetySystemVar%overspeed) then
       EmergPitchStop = 1
       ActiveMechBrake = 1
+      write (*,*) 'Rotational speed exceeds the limit with a value:', omegafilt-SafetySystemVar%overspeed
    endif
    !***********************************************************************************************
    ! Tower top acceleration monitoring
@@ -36,6 +37,7 @@ subroutine safety_system(stepno, deltat, omega, TTAccVect, EmergPitchStop, Activ
    if (TTAccFilt .gt. SafetySystemVar%RysteVagtLevel) then
       EmergPitchStop = 1
       ActiveMechBrake = 1
+      write (*,*) 'Tower top acceleration exceeds the limit with a value:', TTAccFilt-SafetySystemVar%RysteVagtLevel
    endif
 end subroutine
 end module safety_system_mod
