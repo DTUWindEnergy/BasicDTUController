@@ -344,7 +344,7 @@ begin dll;
     dll_subroutine_init init_regulation_advanced ;
     dll_subroutine_update update_regulation ;
     arraysizes_init  100 1 ;
-    arraysizes_update  50 100 ;
+    arraysizes_update 100 100 ;
     begin init ;
        ; Overall parameters
       constant   1 10000.0     ; Rated power [kW]
@@ -470,8 +470,8 @@ begin dll;
      filename  ./control/generator_servo.dll ;
      dll_subroutine_init init_generator_servo ;
      dll_subroutine_update update_generator_servo ;
-     arraysizes_init  7 1 ;
-     arraysizes_update  4 8 ;
+     arraysizes_init  100 1 ;
+     arraysizes_update 100 100 ;
      begin init ;
        constant 1  20.0    ; Frequency of 2nd order servo model of generator-converter system [Hz]
        constant 2  0.9     ; Damping ratio 2nd order servo model of generator-converter system [-]
@@ -499,8 +499,8 @@ begin dll;
      filename  ./control/mech_brake.dll ;
      dll_subroutine_init init_mech_brake ;
      dll_subroutine_update update_mech_brake ;
-     arraysizes_init    7 1 ;
-     arraysizes_update  4 6 ;
+     arraysizes_init    100 1 ;
+     arraysizes_update  100 100 ;
     begin init ;
       constant 1  9.36E+06   ; Fully deployed maximum brake torque [Nm] (0.6*max torque)
       constant 2     100.0   ; Parameter alpha used in Q = tanh(omega*alpha), typically 1e2/Omega_nom
@@ -524,8 +524,8 @@ begin dll;
     filename  ./control/servo_with_limits.dll ;
     dll_subroutine_init init_servo_with_limits ;
     dll_subroutine_update update_servo_with_limits ;
-    arraysizes_init  10 1 ;
-    arraysizes_update  5 9 ;
+    arraysizes_init  100 1 ;
+    arraysizes_update 100 100 ;
     begin init ;
       constant 1   3    ; Number of blades [-]
       constant 2   1.0  ; Frequency of 2nd order servo model of pitch system [Hz]
