@@ -344,7 +344,7 @@ begin dll;
     dll_subroutine_init init_regulation_advanced ;
     dll_subroutine_update update_regulation ;
     arraysizes_init  100 1 ;
-    arraysizes_update  50 100 ;
+    arraysizes_update 100 100 ;
     begin init ;
        ; Overall parameters
       constant   1 10000.0     ; Rated power [kW]
