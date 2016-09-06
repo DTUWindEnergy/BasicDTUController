@@ -1,5 +1,0 @@
-LIBRARY dtu_we_controller.dll
-EXPORTS
-init_regulation
-init_regulation_advanced
-update_regulation

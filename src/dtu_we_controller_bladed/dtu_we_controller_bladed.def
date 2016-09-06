@@ -1,3 +1,0 @@
-LIBRARY dtu_we_controller_bladed.dll
-EXPORTS
-discon
