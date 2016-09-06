@@ -196,3 +196,18 @@ Outputs:
 - 28: Rotor speed exlusion zone region         [-]
 - 29: Filtered tower top acc. for tower damper [m/s^2]
 - 30: Reference pitch from tower damper        [rad]
+
+Controller Status
+~~~~~~~~~~~~~~~~~
+
+The output number 22 returns a controller status flag that can be usefull to better understand the behaviour of the controller under operations. The flag can have the following values:
+
+- -2 when the turbine in idling before cut-in and the controller is pitching out;
+- -1 during the start-up procedure;
+- 0 when the controller is operating in power production;
+- 1 shutdown activated when the filtered generator speed is higher than the overspeed limit. 
+- 2 shutdown activated when  Input 10 is not 0. 
+- 4 normal shutdown activated when  with the timer Input 26;
+- 5 emergency shutdown activated when  with the timer Input 26;
+- 3 shutdown activated when filtered tower top acceleration is higher than the safety limit. 
+- 6 shutdown activated when the generator speed is negative.
