@@ -21,6 +21,7 @@ module turbine_controller_mod
    real(mk) excl_flag
    ! Types
    type(Tlowpass2order), save :: omega2ordervar
+   type(Tlowpass2order), save :: power2ordervar
    type(Tfirstordervar), save :: pitchfirstordervar
    type(Tfirstordervar), save :: wspfirstordervar
    type(Tfirstordervar), save :: switchfirstordervar
@@ -108,7 +109,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    real(mk), intent(out)   :: PitchColRef    ! Reference collective pitch [rad].
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) WSPfilt
-   real(mk) GenSpeedFilt, dGenSpeed_dtFilt
+   real(mk) GenSpeedFilt, dGenSpeed_dtFilt,PeFilt
    real(mk) PitchMean, PitchMeanFilt, PitchMin
    real(mk) GenSpeedRef_full
    real(mk) Qdamp_ref, theta_dam_ref, P_filt
@@ -122,6 +123,9 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    y = lowpass2orderfilt(deltat, stepno, omega2ordervar, GenSpeed)
    GenSpeedFilt = y(1)
    dGenSpeed_dtFilt = y(2)
+   ! Low pass filtered power
+   y = lowpass2orderfilt(deltat, stepno, power2ordervar, Pe)
+   PeFilt=y(1)
    ! Low-pass filtering of the mean pitch angle for gain scheduling
    PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
    PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad)
@@ -154,7 +158,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    !***********************************************************************************************
    ! PID regulation of collective pitch angle  
    !***********************************************************************************************
-   call pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, PitchMin, &
+   call pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt, PitchMin, &
                         GenSpeedRef_full, PitchColRef, dump_array)
    !***********************************************************************************************
    ! Active Tower damping based on filtered tower top aceleration
@@ -416,7 +420,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper
-   real(mk) kgain(3), GenSpeedFiltErr, outmin, outmax
+   real(mk) kgain(3), GenSpeedErr, GenSpeedFiltErr, outmin, outmax
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
@@ -432,6 +436,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
       GenSpeedRef = min(max(GenSpeedRef, GenSpeedRefMin), GenSpeedRefMax)
    end select
    ! Rotor speed error
+   GenSpeedErr = GenSpeed - GenSpeedRef
    GenSpeedFiltErr = GenSpeedFilt - GenSpeedRef
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
@@ -489,9 +494,9 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    ! Compute PID feedback to generator torque demand
    !-----------------------------------------------------------------------------------------------
    kgain = 1.0_mk
-   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedFiltErr)
+   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedErr)
    ! Write into dump array
-   dump_array(4) = GenSpeedFiltErr
+   dump_array(4) = GenSpeedErr
    dump_array(6) = PID_gen_var%outpro
    dump_array(7) = PID_gen_var%outset
    dump_array(8) = PID_gen_var%outmin
@@ -499,7 +504,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    dump_array(10) = switch
 end subroutine
 !**************************************************************************************************
-subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, PitchMin, &
+subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt, PitchMin, &
                            GenSpeedRef_full, PitchColRef, dump_array)
    !
    ! Pitch controller. Controller that computes the reference collective pitch angle.
@@ -509,7 +514,7 @@ subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, Pi
    real(mk), intent(in) :: PitchMeanFilt    ! Filtered mean pitch angle [rad].
    real(mk), intent(in) :: PitchMin         ! Minimum pitch angle [rad].
    real(mk), intent(in) :: GenSpeedRef_full ! Reference generator speed [rad/s].
-   real(mk), intent(in) :: Pe               ! Measured electrical power [W].
+   real(mk), intent(in) :: PeFilt               ! Measured electrical power [W].
    real(mk), intent(out) :: PitchColRef     ! Reference collective pitch angle [rad].
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenSpeedFiltErr, added_term, aero_gain, aero_damp, kgain(3, 2), err_pitch(2)
@@ -529,7 +534,7 @@ subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, Pi
    aero_gain = 1.0_mk + PitchGSVar%invkk1*PitchMeanFilt + PitchGSVar%invkk2*PitchMeanFilt**2
    kgain = 1.0_mk/aero_gain
    ! Nonlinear gain to avoid large rotor speed excursion
-   if (rel_limit .ne. 0.0_mk) then
+   if ((rel_limit .ne. 0.0_mk).and.(GenSpeedFiltErr.gt.0.0_mk)) then
      kgain = kgain*(GenSpeedFiltErr**2 / (GenSpeedRef_full*(rel_limit - 1.0_mk))**2 + 1.0_mk)
    endif
    ! Gainscheduling according to dQaero/dOmega
@@ -541,10 +546,10 @@ subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, Pe, Pi
    !-----------------------------------------------------------------------------------------------
    if (DT_mode_filt%f0 .gt. 0.0_mk) then
      err_pitch(1) = notch2orderfilt(deltat, stepno, DT_mode_filt, GenSpeedFiltErr)
-     err_pitch(2) = notch2orderfilt(deltat, stepno, pwr_DT_mode_filt, Pe - PeRated)
+     err_pitch(2) = notch2orderfilt(deltat, stepno, pwr_DT_mode_filt, PeFilt - PeRated)
    else
      err_pitch(1) = GenSpeedFiltErr
-     err_pitch(2) = Pe - PeRated
+     err_pitch(2) = PeFilt - PeRated
    endif
    PitchColRef = PID2(stepno, deltat, kgain, PID_pit_var, err_pitch, AddedPitchRate)
    ! Write into dump array

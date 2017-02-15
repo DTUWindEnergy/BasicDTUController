@@ -109,6 +109,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Generator speed second order low pass filter
    omega2ordervar%f0   = array1( 8)
    omega2ordervar%zeta = array1( 9)
+   power2ordervar%f0   = array1( 8)
+   power2ordervar%zeta = array1( 9)
    MoniVar%omega2ordervar%f0           = omega2ordervar%f0
    MoniVar%omega2ordervar%zeta         = omega2ordervar%zeta
    SafetySystemVar%omega2ordervar%f0   = omega2ordervar%f0
