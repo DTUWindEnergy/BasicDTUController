@@ -20,7 +20,7 @@
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool" CommandLine="call $(SolutionDir)get_git_version.bat" Description="Extracting HAWCStab2 version info from git repository"/>
+				<Tool Name="VFPreBuildEventTool" CommandLine="call $(SolutionDir)get_git_version.bat" Description="Extracting version info from git repository"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true" ResourceFile="$(IntDir).embed.manifest.res"/></Configuration></Configurations>
 	<Files>
