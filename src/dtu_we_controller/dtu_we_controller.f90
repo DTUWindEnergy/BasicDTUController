@@ -23,6 +23,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    character(len=32) text32
    real(mk) minimum_pitch_angle
    logical findes
+   call write_textversion
    write(6, *) TextVersion
    ! Input array1 must contain
    ! Overall parameters
