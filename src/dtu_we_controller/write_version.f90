@@ -17,8 +17,8 @@ contains
   write(text3b,'(I3)') vinfo(2)
 ! Combine text
   TextVersion='Basic DTU Wind Energy Controller (ver. '//trim(adjustl(text3a))//&
-              '.'//trim(adjustl(text3b))//' git repo no. '//trim(adjustl(text35))//&
-              ')'
+              '.'//trim(adjustl(text3b))//' '//trim(adjustl(text35))//&
+              ') loaded ...'
   return
   end subroutine write_textversion
 !***********************************************************************

@@ -24,7 +24,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    real(mk) minimum_pitch_angle
    logical findes
    call write_textversion
-   write(6, *) TextVersion
+   write(6, *) trim(adjustl(TextVersion))
    ! Input array1 must contain
    ! Overall parameters
    !  constant   1 ; Rated power [kW]
