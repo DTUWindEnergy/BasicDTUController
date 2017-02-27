@@ -5,6 +5,7 @@ module dtu_we_controller
    use dtu_we_controller_fcns
    use turbine_controller_mod
    use safety_system_mod
+   use write_version_mod
    implicit none
    integer  CtrlStatus
    real(mk) dump_array(50)
@@ -22,7 +23,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    character(len=32) text32
    real(mk) minimum_pitch_angle
    logical findes
-   write(6, *) 'Basic DTU Wind Energy Controller ' //trim(adjustl(vertext32))// ' loaded...'
+   write(6, *) TextVersion
    ! Input array1 must contain
    ! Overall parameters
    !  constant   1 ; Rated power [kW]
@@ -124,7 +125,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    PID_gen_var%Kint = array1(13)
    PID_gen_var%Kdif = array1(14)
    ! Full load control parameters
-   const_power         = (int(array1(15)).eq.1)
+   TorqueCtrlRatio=min(1.0_mk,max(0.0_mk,array1(15)))
    ! - Gains
    PID_pit_var%kpro(1) = array1(16)
    PID_pit_var%kint(1) = array1(17)

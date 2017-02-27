@@ -20,7 +20,7 @@
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPreBuildEventTool" CommandLine="call $(SolutionDir)get_git_version.bat" Description="Extracting HAWCStab2 version info from git repository"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true" ResourceFile="$(IntDir).embed.manifest.res"/></Configuration></Configurations>
 	<Files>
@@ -31,5 +31,6 @@
 		<File RelativePath=".\dtu_we_controller_fcns.f90"/>
 		<File RelativePath=".\misc_mod.f90"/>
 		<File RelativePath=".\safety_system.f90"/>
-		<File RelativePath=".\turbine_controller.f90"/></Filter></Files>
+		<File RelativePath=".\turbine_controller.f90"/>
+		<File RelativePath=".\write_version.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>

@@ -126,7 +126,7 @@ function PID(stepno, dt, kgain, PIDvar, error)
    type(Tpidvar) PIDvar
    ! Local vars
    real(mk) eps
-   parameter(eps = 1.d-6_mk)
+   parameter(eps = 0.000001_mk)
    ! Initiate
    if (stepno.eq.1) then
       PIDvar%outset1 = 0.0_mk
@@ -184,7 +184,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    type(Tpid2var) PIDvar
    ! Local vars
    real(mk) eps
-   parameter(eps=1.d-6_mk)
+   parameter(eps=0.000001_mk)
    ! Initiate
    if (stepno .eq. 1) then
       PIDvar%outset1 = 0.0_mk

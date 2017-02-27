@@ -5,19 +5,19 @@ module turbine_controller_mod
    use dtu_we_controller_fcns
    implicit none
    ! Parameters
-   logical const_power, generator_cutin
+   logical generator_cutin
    integer PartialLoadControlMode, stoptype
    real(mk) deltat
    real(mk) GenSpeedRefMax, GenSpeedRefMin, PeRated, GenTorqueRated, PitchStopAng, GenTorqueMax
-   real(mk) TTfa_PWR_lower, TTfa_PWR_upper
-   real(mk) Kopt, Kopt_dot, TSR_opt, R
+   real(mk) TTfa_PWR_lower, TTfa_PWR_upper, TorqueCtrlRatio
+   real(mk) Kopt, Kopt_dot, TSR_opt, R, GearRatio
    real(mk) Vcutout, Vstorm
    real(mk) Err0, ErrDot0, PitNonLin1, rel_limit
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0, PitchColRefOld, GenTorqueRefOld
    real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
-   real(mk) GenSpeed_at_stop, GenTorque_at_stop, GearRatio
+   real(mk) GenSpeed_at_stop, GenTorque_at_stop
    real(mk) excl_flag
    ! Types
    type(Tlowpass2order), save :: omega2ordervar
@@ -420,7 +420,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper
-   real(mk) kgain(3), GenSpeedErr, GenSpeedFiltErr, outmin, outmax
+   real(mk) kgain(3), GenSpeedFiltErr, outmin, outmax
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
@@ -436,19 +436,13 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
       GenSpeedRef = min(max(GenSpeedRef, GenSpeedRefMin), GenSpeedRefMax)
    end select
    ! Rotor speed error
-   GenSpeedErr = GenSpeed - GenSpeedRef
    GenSpeedFiltErr = GenSpeedFilt - GenSpeedRef
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
-   if (const_power) then
-     GenTorqueMin_full = min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin), &
-                              GenTorqueMax)
-     GenTorqueMax_full = GenTorqueMin_full
-   else
-     GenTorqueMin_full = GenTorqueRated
-     GenTorqueMax_full = GenTorqueMin_full
-   endif
+   GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) &
+                     + min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)*TorqueCtrlRatio
+   GenTorqueMax_full = GenTorqueMin_full
    !-----------------------------------------------------------------------------------------------
    ! Limits for partial load that opens in both ends
    !-----------------------------------------------------------------------------------------------
@@ -494,9 +488,9 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    ! Compute PID feedback to generator torque demand
    !-----------------------------------------------------------------------------------------------
    kgain = 1.0_mk
-   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedErr)
+   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedFiltErr)
    ! Write into dump array
-   dump_array(4) = GenSpeedErr
+   dump_array(4) = GenSpeedFiltErr
    dump_array(6) = PID_gen_var%outpro
    dump_array(7) = PID_gen_var%outset
    dump_array(8) = PID_gen_var%outmin
