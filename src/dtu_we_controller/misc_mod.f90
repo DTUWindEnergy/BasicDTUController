@@ -36,7 +36,7 @@ module misc_mod
    end type Tbandpassfilt
    !  Time delay
    type Ttdelay
-      real(mk) xz(40) 
+      real(mk) xz(40)
       integer stepno1
    end type Ttdelay
 contains
@@ -46,7 +46,7 @@ function lowpass1orderfilt(dt, stepno, filt, x)
    integer stepno
    real(mk) lowpass1orderfilt, dt, x, y, a1, b1, b0, tau
    type(Tfirstordervar) filt
-   ! Step 
+   ! Step
    if ((stepno .eq. 1) .and. (stepno .gt. filt%stepno1)) then
       filt%x1_old = x
       filt%y1_old = x
@@ -218,7 +218,7 @@ function timedelay(dt, stepno, filt, Td, x)
    real(mk) x, timedelay, dt, Td
    type(Ttdelay) filt
    n = nint(Td/dt)
-   ! Step 
+   ! Step
    if ((stepno .eq. 1)) then
       do k = 1, 40
          filt%xz(k) = x

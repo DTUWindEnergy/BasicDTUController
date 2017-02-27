@@ -6,7 +6,7 @@ module turbine_controller_mod
    implicit none
    ! Parameters
    logical const_power, generator_cutin
-   integer PartialLoadControlMode, stoptype, GearRatio
+   integer PartialLoadControlMode, stoptype
    real(mk) deltat
    real(mk) GenSpeedRefMax, GenSpeedRefMin, PeRated, GenTorqueRated, PitchStopAng, GenTorqueMax
    real(mk) TTfa_PWR_lower, TTfa_PWR_upper
@@ -17,7 +17,7 @@ module turbine_controller_mod
    integer :: stepno = 0, w_region = 0
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0, PitchColRefOld, GenTorqueRefOld
    real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
-   real(mk) GenSpeed_at_stop, GenTorque_at_stop
+   real(mk) GenSpeed_at_stop, GenTorque_at_stop, GearRatio
    real(mk) excl_flag
    ! Types
    type(Tlowpass2order), save :: omega2ordervar
@@ -129,7 +129,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    ! Low-pass filtering of the mean pitch angle for gain scheduling
    PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
    PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad)
-   ! Low-pass filtering of the nacelle wind speed 
+   ! Low-pass filtering of the nacelle wind speed
    WSPfilt = lowpass1orderfilt(deltat, stepno, wspfirstordervar, wsp)
    ! Minimum pitch angle may vary with filtered wind speed
    PitchMin = GetOptiPitch(WSPfilt)
@@ -144,7 +144,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    endif
    GenSpeedRef_full = max(min(GenSpeedRef_full, GenSpeedRefMax), GenSpeedRefMin)
    !***********************************************************************************************
-   ! PID regulation of generator torque 
+   ! PID regulation of generator torque
    !***********************************************************************************************
    call torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, WSPfilt, PitchMin, &
                          GenSpeedRef_full, Pe, GenTorqueRef, dump_array)
@@ -156,7 +156,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    x = switch_spline(TimerGenCutin, CutinVar%delay, 2.0_mk*CutinVar%delay)
    GenTorqueRef = min(max(GenTorqueRef + Qdamp_ref*x, 0.0_mk), GenTorqueMax)
    !***********************************************************************************************
-   ! PID regulation of collective pitch angle  
+   ! PID regulation of collective pitch angle
    !***********************************************************************************************
    call pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt, PitchMin, &
                         GenSpeedRef_full, PitchColRef, dump_array)
@@ -198,7 +198,7 @@ subroutine start_up(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCol
    PitchMean = (PitchVect(1) + PitchVect(2) + PitchVect(3)) / 3.0_mk
    PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
    PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad)
-   ! Low-pass filtering of the nacelle wind speed 
+   ! Low-pass filtering of the nacelle wind speed
    WSPfilt = lowpass1orderfilt(deltat, stepno, wspfirstordervar, wsp)
    ! Minimum pitch angle may vary with filtered wind speed
    PitchMin = GetOptiPitch(WSPfilt)
@@ -317,8 +317,8 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
    end select
    ! Pitch seetings
    select case(CtrlStatus)
-     case(1, 3, 4) ! Two pitch speed stop 
-       if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then 
+     case(1, 3, 4) ! Two pitch speed stop
+       if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then
          PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax2)
        elseif (TimerShutdown2 .gt. CutoutVar%pitchdelay) then
          PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
@@ -359,7 +359,7 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, dump_array)
    y = lowpass2orderfilt(deltat, stepno, MoniVar%omega2ordervar, GenSpeed)
    GenSpeedFilt = y(1)
    dGenSpeed_dtFilt = y(2)
-   ! Low-pass filtering of the nacelle wind speed 
+   ! Low-pass filtering of the nacelle wind speed
    TTAccFilt = lowpass1orderfilt(deltat, stepno, MoniVar%rystevagtfirstordervar, TTAcc)
    !***********************************************************************************************
    ! Grid monitoring
@@ -441,11 +441,11 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
-   if (const_power) then 
+   if (const_power) then
      GenTorqueMin_full = min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin), &
                               GenTorqueMax)
      GenTorqueMax_full = GenTorqueMin_full
-   else 
+   else
      GenTorqueMin_full = GenTorqueRated
      GenTorqueMax_full = GenTorqueMin_full
    endif
@@ -454,7 +454,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !-----------------------------------------------------------------------------------------------
    select case (PartialLoadControlMode)
      ! Torque limits for K Omega^2 control of torque
-     case (1) 
+     case (1)
        ! Calculate the constant limits for opening and closing of torque limits
        GenSpeed_min1 = GenSpeedRefMin
        GenSpeed_min2 = GenSpeedRefMin/SwitchVar%rel_sp_open_Qg
@@ -565,7 +565,7 @@ end subroutine
 subroutine rotorspeedexcl(GenSpeedFilt, GenTorque, Qg_min_partial, GenTorqueMax_partial, GenSpeedFiltErr, &
                           outmax, outmin, dump_array)
    !
-   ! Rotor speed exclusion zone. Subroutine that changes the generator torque limits and the 
+   ! Rotor speed exclusion zone. Subroutine that changes the generator torque limits and the
    ! generator speed error for the generator PID controller to avoid a rotor speed band.
    !
    real(mk), intent(in) :: GenSpeedFilt         ! Filtered measured generator speed [rad/s].

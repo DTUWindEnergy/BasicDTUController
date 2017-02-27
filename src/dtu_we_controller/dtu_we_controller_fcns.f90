@@ -1,6 +1,6 @@
 module dtu_we_controller_fcns
    !
-   ! Module with general function that are specific of the DTU Wind Energy Controller. Types are 
+   ! Module with general function that are specific of the DTU Wind Energy Controller. Types are
    ! also defined in this module.
    !
    use misc_mod
@@ -73,7 +73,7 @@ function switch_spline(x, x0, x1)
       if (x .lt. x0) then
          switch_spline = 0.0_mk
       elseif (x .gt. x1) then
-         switch_spline = 1.0_mk 
+         switch_spline = 1.0_mk
       else
          switch_spline = 2.0_mk/(-x1 + x0)**3*x**3 + (-3.0_mk*x0 - 3.0_mk*x1)/(-x1 + x0)**3*x**2&
                          +6.0_mk*x1*x0/(-x1 + x0)**3*x + (x0 - 3.0_mk*x1)*x0**2/(-x1 + x0)**3
@@ -85,9 +85,9 @@ end function switch_spline
 function interpolate(x, x0, x1, f0, f1)
    ! Linear interpolation of x through the points (x0, f0) and (x1, f1)
    real(mk) interpolate, x, x0, x1, f0, f1
-   if (x0 .eq. x1) then 
+   if (x0 .eq. x1) then
       interpolate = f0
-   else 
+   else
       interpolate = (x - x1)/(x0 - x1)*f0 + (x - x0)/(x1 - x0)*f1
    endif
    return
@@ -103,7 +103,7 @@ function GetOptiPitch(wsp)
    do while((OPdatavar%wpdata(i, 1) .le. wsp) .and. (i .le. OPdatavar%lines))
       i=i+1
    enddo
-   if (i.eq.1) then 
+   if (i.eq.1) then
       GetOptiPitch = OPdatavar%wpdata(1, 2)
    elseif (i .gt. OPdatavar%lines) then
       GetOptiPitch = OPdatavar%wpdata(OPdatavar%lines, 2)
@@ -126,7 +126,7 @@ function PID(stepno, dt, kgain, PIDvar, error)
    type(Tpidvar) PIDvar
    ! Local vars
    real(mk) eps
-   parameter(eps = 1.d-6)
+   parameter(eps = 1.d-6_mk)
    ! Initiate
    if (stepno.eq.1) then
       PIDvar%outset1 = 0.0_mk
@@ -151,9 +151,9 @@ function PID(stepno, dt, kgain, PIDvar, error)
    ! Sum to up
    PIDvar%outres = PIDvar%outset+PIDvar%outpro + PIDvar%outdif
    ! Satisfy hard limits
-   if (PIDvar%outres .lt. PIDvar%outmin) then 
+   if (PIDvar%outres .lt. PIDvar%outmin) then
       PIDvar%outres = PIDvar%outmin
-   elseif (PIDvar%outres .gt. PIDvar%outmax) then 
+   elseif (PIDvar%outres .gt. PIDvar%outmax) then
       PIDvar%outres = PIDvar%outmax
    endif
    ! Satisfy max velocity
@@ -168,9 +168,9 @@ function PID(stepno, dt, kgain, PIDvar, error)
    PIDvar%error1 = error
    PIDvar%stepno1 = stepno
    ! Set output
-   if (stepno .eq. 0) then 
-      PID = 0
-   else 
+   if (stepno .eq. 0) then
+      PID = 0.0_mk
+   else
       PID = PIDvar%outres
    endif
    return
@@ -184,7 +184,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    type(Tpid2var) PIDvar
    ! Local vars
    real(mk) eps
-   parameter(eps=1.d-6)
+   parameter(eps=1.d-6_mk)
    ! Initiate
    if (stepno .eq. 1) then
       PIDvar%outset1 = 0.0_mk
@@ -211,9 +211,9 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    ! Sum up
    PIDvar%outres = PIDvar%outset + PIDvar%outpro + PIDvar%outdif
    ! Satisfy hard limits
-   if (PIDvar%outres .lt. PIDvar%outmin) then 
+   if (PIDvar%outres .lt. PIDvar%outmin) then
       PIDvar%outres = PIDvar%outmin
-   elseif (PIDvar%outres .gt. PIDvar%outmax) then 
+   elseif (PIDvar%outres .gt. PIDvar%outmax) then
       PIDvar%outres = PIDvar%outmax
    endif
    ! Write out values if the output is not-a-number
@@ -242,9 +242,9 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    PIDvar%error1 = error
    PIDvar%stepno1 = stepno
    ! Set output
-   if (stepno .eq. 0) then 
-      PID2 = 0
-   else 
+   if (stepno .eq. 0) then
+      PID2 = 0.0_mk
+   else
       PID2 = PIDvar%outres
    endif
    return
