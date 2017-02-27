@@ -3,8 +3,6 @@ module misc_mod
    ! Module where filters and the corresponding types are defined.
    !
    implicit none
-   ! Version number
-   character(len=32) :: vertext32 = '(ver. 2.0)'
    ! Constants
    integer, parameter :: mk = kind(1.0d0)
    real(mk) pi, degrad, raddeg

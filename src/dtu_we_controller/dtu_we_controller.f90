@@ -46,7 +46,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !  constant  13 ; Integral gain of torque controller [Nm/rad]
    !  constant  14 ; Differential gain of torque controller [Nm/(rad/s^2)]
    ! Full load control parameters
-   !  constant  15 ; Generator control switch [1=constant power, 2=constant torque]
+   !  constant  15 ; Generator control switch [1=constant power, 0=constant torque, or interpolation between the two]
    !  constant  16 ; Proportional gain of pitch controller [rad/(rad/s)]
    !  constant  17 ; Integral gain of pitch controller [rad/rad]
    !  constant  18 ; Differential gain of pitch controller [rad/(rad/s^2)]
