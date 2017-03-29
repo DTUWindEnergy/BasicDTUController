@@ -7,6 +7,7 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
    !DEC$ ATTRIBUTES DLLEXPORT :: discon
    !DEC$ END IF
    use dtu_we_controller
+   use iso_c_binding
    implicit none
    !
    ! ebra NOTE:  These real and integer types below are non-standard, platform and compiler dependent. 
