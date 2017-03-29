@@ -187,9 +187,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
      OPdatavar%wpdata(2,2) = minimum_pitch_angle
    else
      write(text32,'(i3)') int(minimum_pitch_angle*raddeg)
-     inquire(file='.\control\wpdata.'//trim(adjustl(text32)),exist=findes)
+     inquire(file='wpdata.'//trim(adjustl(text32)),exist=findes)
      if (findes) then
-       open(88,file='.\control\wpdata.'//trim(adjustl(text32)))
+       open(88,file='wpdata.'//trim(adjustl(text32)))
        read(88,*,iostat=ifejl) OPdatavar%lines
        if (ifejl.eq.0) then
          do i=1,OPdatavar%lines
