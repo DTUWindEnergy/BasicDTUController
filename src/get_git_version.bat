@@ -14,6 +14,7 @@ set /p rev_count_since_tag=<tmp.txt
 
 echo %last_tag%.dev%rev_count_since_tag%.%rev_hash% > git_version.txt
 echo text35='%last_tag%.dev%rev_count_since_tag%.%rev_hash%' > ./src/dtu_we_controller/git_version.inc
+
 del tmp.txt
 
 VersionScript.exe
