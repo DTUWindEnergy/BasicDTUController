@@ -7,14 +7,15 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
    !DEC$ ATTRIBUTES DLLEXPORT :: discon
    !DEC$ END IF
    use dtu_we_controller
+   use iso_c_binding
    implicit none
    !
    ! ebra NOTE:  These real and integer types below are non-standard, platform and compiler dependent. 
    ! Consider using iso_c_binding (C_DOUBLE, C_INT)  or iso_fortran_env (REAL32). Iso_c_binding is the best.
    !
    ! Passed Variables:
-   real(4),   dimension(*),  intent(inout) :: avrSWAP     ! The swap array, used to pass data to, and receive data from, the DLL controller.
-   integer(4), dimension(*), intent(out)   :: aviFAIL           ! A flag used to indicate the success of this DLL call set as follows: 0 if the DLL call was successful, >0 if the DLL call was successful but cMessage should be issued as a warning messsage, <0 if the DLL call was unsuccessful or for any other reason the simulation is to be stopped at this point with cMessage as the error message.
+   real(C_DOUBLE),   dimension(*),  intent(inout) :: avrSWAP     ! The swap array, used to pass data to, and receive data from, the DLL controller.
+   integer(C_INT), dimension(*), intent(out)   :: aviFAIL           ! A flag used to indicate the success of this DLL call set as follows: 0 if the DLL call was successful, >0 if the DLL call was successful but cMessage should be issued as a warning messsage, <0 if the DLL call was unsuccessful or for any other reason the simulation is to be stopped at this point with cMessage as the error message.
    integer(1), dimension(*), intent(in)    :: accINFILE     ! The address of the first record of an array of 1-byte CHARACTERs giving the name of the parameter input file, 'basic_dtu_we_controller.IN'.
    integer(1), dimension(*), intent(out)   :: avcMSG      ! The address of the first record of an array of 1-byte CHARACTERS giving the message contained in cMessage, which will be displayed by the calling program if aviFAIL <> 0.
    integer(1), dimension(*), intent(in)    :: avcOUTNAME    ! The address of the first record of an array of 1-byte CHARACTERS giving the simulation run name without extension.
@@ -22,7 +23,7 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
    integer(4) :: i, iostat, callno = 0
    
    if (callno .eq. 0) then
-      open(88, file='.\control\controller_input.dat')
+      open(88, file='controller_input.dat')
       do i = 1, 76
          read(88, *, iostat=iostat) array1(i)
          if (iostat .ne. 0) then
@@ -51,6 +52,8 @@ subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name=
       
       call update_regulation(array1, array2)
       
+      avrSWAP(15) = array2(5)     ! Power reference
+      avrSWAP(19) = array2(7)     ! Generator filtered speed
       avrSWAP(35) = 1.0e0          ! Generator contactor status: 1=main (high speed) variable-speed generator
       avrSWAP(36) = array2(25)   ! Shaft brake status: 0=off
       avrSWAP(41) = 0.0e0          ! Demanded yaw actuator torque
