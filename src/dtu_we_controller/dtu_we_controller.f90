@@ -68,8 +68,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !  constant  31 ; Time period of initial pitch stop phase [s] (maintains pitch speed specified in constant 30)
    !  constant  32 ; Maximum pitch velocity during final phase of stop [deg/s]
    ! Expert parameters (keep default values unless otherwise given)
-   !  constant  33 ; Lower angle above lowest minimum pitch angle for switch [deg]
-   !  constant  34 ; Upper angle above lowest minimum pitch angle for switch [deg], if equal then hard switch
+   !  constant  33 ; Time canstant for the maximum torque rate = Maximum allowable generator torque/(constant 33 + 0.01s) [s]
+   !  constant  34 ; Angle above lowest minimum pitch angle for switch to full load [deg]
    !  constant  35 ; Ratio between filtered speed and reference speed for fully open torque limits [%]
    !  constant  36 ; Time constant of 1st order filter on wind speed used for minimum pitch [1/1P]
    !  constant  37 ; Time constant of 1st order filter on pitch angle used for gain scheduling [1/1P]
@@ -158,7 +158,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
      generator_cutin=.false.
    endif
    ! Expert parameters (keep default values unless otherwise given)
-   SwitchVar%pitang_lower   = array1(33)*degrad
+   PID_gen_var%velmax   = GenTorqueMax/(array1(33)+0.001_mk)
    SwitchVar%pitang_upper   = array1(34)*degrad
    SwitchVar%rel_sp_open_Qg = array1(35)*0.01_mk
    wspfirstordervar%tau     = array1(36)*2.0_mk*pi/GenSpeedRefMax
@@ -173,7 +173,6 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ErrDot0    = array1(41)
    PitNonLin1 = array1(42)
    ! Default and derived parameters
-   PID_gen_var%velmax = 0.0_mk !No limit to generator torque change rate
    GenTorqueRated = PeRated/GenSpeedRefMax
    switchfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    MoniVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax

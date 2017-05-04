@@ -19,6 +19,8 @@ module turbine_controller_mod
    real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
    real(mk) GenSpeed_at_stop, GenTorque_at_stop
    real(mk) excl_flag
+   real(mk)::outmax_old=0.0_mk,outmin_old=0.0_mk
+   logical::fullload=.false.
    ! Types
    type(Tlowpass2order), save :: omega2ordervar
    type(Tlowpass2order), save :: power2ordervar
@@ -420,7 +422,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper
-   real(mk) kgain(3), GenSpeedFiltErr, outmin, outmax
+   real(mk) kgain(3), GenSpeedFiltErr, GenSpeedErr, outmin, outmax
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
@@ -436,6 +438,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
       GenSpeedRef = min(max(GenSpeedRef, GenSpeedRefMin), GenSpeedRefMax)
    end select
    ! Rotor speed error
+   GenSpeedErr = GenSpeed - GenSpeedRef
    GenSpeedFiltErr = GenSpeedFilt - GenSpeedRef
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
@@ -468,12 +471,20 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
        GenTorqueMin_partial = 0.0_mk
        GenTorqueMax_partial = GenTorqueMax_full
    end select
-   ! Switch based on pitch
-   switch_pitang_lower = SwitchVar%pitang_lower + PitchMin
+   ! Interpolation between partial and full load torque limits based on pitch
+   switch_pitang_lower = 0.01_mk + PitchMin
    switch_pitang_upper = SwitchVar%pitang_upper + PitchMin
-   switch = switch_spline(PitchMean, switch_pitang_lower, switch_pitang_upper)
-   switch = lowpass1orderfilt(deltat, stepno, switchfirstordervar, switch)
-   ! Interpolation between partial and full load torque limits based on switch 1
+   if (PitchMean.le.switch_pitang_lower) then
+     fullload=.false.
+   endif
+   if (PitchMean.ge.switch_pitang_upper) then
+     fullload=.true.
+   endif
+   if (.not.fullload) then
+     switch = switch_spline(PitchMean, PitchMin, switch_pitang_upper)
+   else
+     switch=1.0_mk
+   endif
    outmin = (1.0_mk - switch)*GenTorqueMin_partial + switch*GenTorqueMin_full
    outmax = (1.0_mk - switch)*GenTorqueMax_partial + switch*GenTorqueMax_full
    !***********************************************************************************************
@@ -481,6 +492,17 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !***********************************************************************************************
    call rotorspeedexcl(GenSpeedFilt, Pe/GenSpeed, GenTorqueMin_partial, GenTorqueMax_partial, GenSpeedFiltErr, &
                        outmax, outmin, dump_array)
+   !-----------------------------------------------------------------------------------------------
+   ! Check the generator torque limits
+   !-----------------------------------------------------------------------------------------------
+   if ((abs(outmax-outmax_old)/deltat) .gt. PID_gen_var%velmax) then
+     outmax = outmax_old + dsign(PID_gen_var%velmax*deltat, outmax-outmax_old)
+   endif
+   if ((abs(outmin-outmin_old)/deltat) .gt. PID_gen_var%velmax) then
+     outmin = outmin_old + dsign(PID_gen_var%velmax*deltat, outmin-outmin_old)
+   endif
+   outmax_old=outmax
+   outmin_old=outmin
    PID_gen_var%outmin = outmin
    PID_gen_var%outmax = outmax
    if (PID_gen_var%outmin .gt. PID_gen_var%outmax) PID_gen_var%outmin = PID_gen_var%outmax
@@ -488,7 +510,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    ! Compute PID feedback to generator torque demand
    !-----------------------------------------------------------------------------------------------
    kgain = 1.0_mk
-   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedFiltErr)
+   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedErr)
    ! Write into dump array
    dump_array(4) = GenSpeedFiltErr
    dump_array(6) = PID_gen_var%outpro
