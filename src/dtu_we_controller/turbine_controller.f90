@@ -421,7 +421,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
-   real(mk) x, switch, switch_pitang_lower, switch_pitang_upper
+   real(mk) x, switch, switch_pitang_lower, switch_pitang_upper,ConstantPowerTorque
    real(mk) kgain(3), GenSpeedFiltErr, GenSpeedErr, outmin, outmax
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
@@ -443,8 +443,8 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
-   GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) &
-                     + min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)*TorqueCtrlRatio
+   ConstantPowerTorque=min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)
+   GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) + ConstantPowerTorque*TorqueCtrlRatio
    GenTorqueMax_full = GenTorqueMin_full
    !-----------------------------------------------------------------------------------------------
    ! Limits for partial load that opens in both ends
@@ -458,14 +458,12 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
        GenSpeed_max1 = (2.0_mk*SwitchVar%rel_sp_open_Qg - 1.0_mk)*GenSpeedRefMax
        GenSpeed_max2 = SwitchVar%rel_sp_open_Qg*GenSpeedRefMax
        ! Compute lower torque limits
-       x = switch_spline(GenSpeedFilt, GenSpeed_min1, GenSpeed_min2)
-       GenTorqueMin_partial = (Kopt*GenSpeedFilt**2 - Kopt_dot*dGenSpeed_dtFilt)*x
+       x = switch_spline(GenSpeed, GenSpeed_min1, GenSpeed_min2)
+       GenTorqueMin_partial = (Kopt*GenSpeed**2 - Kopt_dot*dGenSpeed_dtFilt)*x
        GenTorqueMin_partial = min(GenTorqueMin_partial, Kopt*GenSpeed_max1**2)
-       x = switch_spline(GenSpeedFilt, GenSpeed_max1, GenSpeed_max2)
+       x = switch_spline(GenSpeed, GenSpeed_max1, GenSpeed_max2)
        ! Compute upper torque limits
-       GenTorqueMax_partial = (Kopt*GenSpeedFilt**2 - Kopt_dot*dGenSpeed_dtFilt)*(1.0_mk - x) + &
-                               GenTorqueMax_full*x
-       GenTorqueMax_partial = max(GenTorqueMax_partial, Kopt*GenSpeed_min2**2)
+       GenTorqueMax_partial = (Kopt*GenSpeed**2 - Kopt_dot*dGenSpeed_dtFilt)*(1.0_mk - x) + GenTorqueMax_full*x
      ! Torque limits for PID control of torque
      case (2)
        GenTorqueMin_partial = 0.0_mk
