@@ -186,9 +186,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
      OPdatavar%wpdata(2,2) = minimum_pitch_angle
    else
      write(text32,'(i3)') int(minimum_pitch_angle*raddeg)
-     inquire(file='.\control\wpdata.'//trim(adjustl(text32)),exist=findes)
+     inquire(file='./control/wpdata.'//trim(adjustl(text32)),exist=findes)
      if (findes) then
-       open(88,file='.\control\wpdata.'//trim(adjustl(text32)))
+       open(88,file='./control/wpdata.'//trim(adjustl(text32)))
        read(88,*,iostat=ifejl) OPdatavar%lines
        if (ifejl.eq.0) then
          do i=1,OPdatavar%lines
@@ -208,7 +208,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
        close(88)
      else
        write(6,*) ' *** ERROR *** File ''wpdata.'//trim(adjustl(text32))&
-                //''' does not exist in the .\control\ folder'
+                //''' does not exist in the ./control/ folder'
        stop
      endif
    endif
@@ -483,7 +483,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    ! Output
    !***********************************************************************************************
-   array2( 1) = GenTorqueRef*GearRatio !    1: Generator torque reference               [Nm]
+   array2( 1) = GenTorqueRef/GearRatio !    1: Generator torque reference               [Nm]
    array2( 2) = PitchColRef            !    2: Pitch angle reference of blade 1         [rad]
    array2( 3) = PitchColRef            !    3: Pitch angle reference of blade 2         [rad]
    array2( 4) = PitchColRef            !    4: Pitch angle reference of blade 3         [rad]
