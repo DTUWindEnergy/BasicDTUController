@@ -219,6 +219,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
    ! Write out values if the output is not-a-number
    ! NOTE: ebra: isnan is not standard
    if (isnan(PIDvar%outres)) then
+      write(*, *)  'NaN issue. Stop in DTU controller'
       write(*, *)  'PIDvar%outres=', PIDvar%outres
       write(*, *)  'PIDvar%outpro=', PIDvar%outpro
       write(*, *)  'PIDvar%outdif=', PIDvar%outdif
@@ -228,7 +229,7 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
       write(*, *)  'PIDvar%Kdif(1)=', PIDvar%Kdif(1)
       write(*, *)  'Padded_term=', added_term
       write(*, *)  'PIDvar%outset=', PIDvar%outset
-      pause
+      stop
    endif
    ! Satisfy max velocity
    if (PIDvar%velmax .gt. eps) then
