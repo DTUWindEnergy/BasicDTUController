@@ -257,7 +257,11 @@ subroutine start_up(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCol
       PID_gen_var%outmin = GenTorqueRef
       kgain_torque = 1.0_mk
       dummy = PID(stepno, deltat, kgain_torque, PID_gen_var, GenSpeedFiltErr)
+      ! Remember pitch reference for transition
+      PitchColRef0 = PitchColRef
    else
+      ! Set pitch reference
+      PitchColRef  = PitchColRef0
       GenTorqueRef = GenTorqueRef0
       ! Done with start-up
       CtrlStatus = 0
