@@ -549,7 +549,7 @@ subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt
    PID_pit_var%outmin = PitchMin
    PID_pit_var%outmax = PitchStopAng
    ! Aerodynamic gain scheduling dQ/dtheta
-   aero_gain = 1.0_mk + PitchGSVar%invkk1*PitchMeanFilt + PitchGSVar%invkk2*PitchMeanFilt**2
+   aero_gain = 1.0_mk + PitchMeanFilt/PitchGSVar%invkk1 + PitchMeanFilt**2/PitchGSVar%invkk2
    kgain = 1.0_mk/aero_gain
    ! Nonlinear gain to avoid large rotor speed excursion
    if ((rel_limit .ne. 0.0_mk).and.(GenSpeedFiltErr.gt.0.0_mk)) then
