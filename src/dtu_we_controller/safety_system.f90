@@ -29,6 +29,7 @@ subroutine safety_system(stepno, deltat, omega, TTAccVect, EmergPitchStop, Activ
    if (omegafilt .gt. SafetySystemVar%overspeed) then
       EmergPitchStop = 1
       ActiveMechBrake = 1
+      write(6,'(a,f6.2,a,f6.2,a)') 'Safety system alarm: Filtered generator speed = ',omegafilt,' rad/s. Threshold = ',SafetySystemVar%overspeed,' rad/s'
    endif
    !***********************************************************************************************
    ! Tower top acceleration monitoring
@@ -36,6 +37,7 @@ subroutine safety_system(stepno, deltat, omega, TTAccVect, EmergPitchStop, Activ
    if (TTAccFilt .gt. SafetySystemVar%RysteVagtLevel) then
       EmergPitchStop = 1
       ActiveMechBrake = 1
+      write(6,'(a,f6.2,a,f6.2,a)') 'Safety system alarm: Filtered tower acceleration = ',TTAccFilt,' m/s^2. Threshold = ',SafetySystemVar%RysteVagtLevel,' m/s^2'
    endif
 end subroutine
 end module safety_system_mod

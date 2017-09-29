@@ -12,7 +12,7 @@ contains
   include 'git_version.inc'
 ! Version
   vinfo(1) = 2
-  vinfo(2) = 2
+  vinfo(2) = 3
   write(text3a,'(I3)') vinfo(1)
   write(text3b,'(I3)') vinfo(2)
 ! Combine text

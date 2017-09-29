@@ -67,16 +67,13 @@ function switch_spline(x, x0, x1)
       else
          switch_spline = 1.0_mk
       endif
-   elseif (x0 .gt. x1) then
-      switch_spline = 0.0_mk
    else
       if (x .lt. x0) then
          switch_spline = 0.0_mk
       elseif (x .gt. x1) then
          switch_spline = 1.0_mk
       else
-         switch_spline = 2.0_mk/(-x1 + x0)**3*x**3 + (-3.0_mk*x0 - 3.0_mk*x1)/(-x1 + x0)**3*x**2&
-                         +6.0_mk*x1*x0/(-x1 + x0)**3*x + (x0 - 3.0_mk*x1)*x0**2/(-x1 + x0)**3
+         switch_spline = (x - x0)/(x1 - x0)
       endif
    endif
    return

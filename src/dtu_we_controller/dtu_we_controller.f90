@@ -28,8 +28,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Input array1 must contain
    ! Overall parameters
    !  constant   1 ; Rated power [kW]
-   !  constant   2 ; Minimum rotor speed [rad/s]
-   !  constant   3 ; Rated rotor speed [rad/s]
+   !  constant   2 ; Minimum rotor (LSS) speed [rad/s]
+   !  constant   3 ; Rated rotor (LSS) speed [rad/s]
    !  constant   4 ; Maximum allowable generator torque [Nm]
    !  constant   5 ; Minimum pitch angle, PitchMin [deg],
    !               ; if |PitchMin|>90, then a table of <wsp,PitchMin> is read ;
@@ -55,22 +55,22 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !  constant  21 ; Coefficient of linear term in aerodynamic gain scheduling, KK1 [deg]
    !  constant  22 ; Coefficient of quadratic term in aerodynamic gain scheduling, KK2 [deg^2] &
    !               ; (if zero, KK1 = pitch angle at double gain)
-   !  constant  23 ; Relative speed for double nonlinear gain [-]
+   !  constant  23 ; Normalized speed where the pitch controller gains are doubled [-]
    ! Cut-in simulation parameters
-   !  constant  24 ; Cut-in time [s]
+   !  constant  24 ; Cut-in time [s], if zero or negative cut-in is not simulated
    !  constant  25 ; Time delay for soft start of torque [1/1P]
    ! Cut-out simulation parameters
-   !  constant  26 ; Cut-out time [s]
-   !  constant  27 ; Time constant for linear torque cut-out [s]
+   !  constant  26 ; Cut-out time [s], if zero or negative cut-in is not simulated
+   !  constant  27 ; Time of linear torque cut-out during a generator assisted stop [s]
    !  constant  28 ; Stop type [1=normal, 2=emergency]
    !  constant  29 ; Time delay for pitch stop after shut-down signal [s]
    !  constant  30 ; Maximum pitch velocity during initial period of stop [deg/s]
-   !  constant  31 ; Time period of initial pitch stop phase [s] (maintains pitch speed specified in constant 30)
+   !  constant  31 ; Time of initial pitch stop phase [s] (maintains pitch speed specified in constant 30)
    !  constant  32 ; Maximum pitch velocity during final phase of stop [deg/s]
    ! Expert parameters (keep default values unless otherwise given)
-   !  constant  33 ; Time canstant for the maximum torque rate = Maximum allowable generator torque/(constant 33 + 0.01s) [s]
+   !  constant  33 ; Time for the maximum torque rate = Maximum allowable generator torque/(constant 33 + 0.01s) [s]
    !  constant  34 ; Angle above lowest minimum pitch angle for switch to full load [deg]
-   !  constant  35 ; Ratio between filtered speed and reference speed for fully open torque limits [%]
+   !  constant  35 ; Percentage of the rated speed when the torque limits are fully opened [%]
    !  constant  36 ; Time constant of 1st order filter on wind speed used for minimum pitch [1/1P]
    !  constant  37 ; Time constant of 1st order filter on pitch angle used for gain scheduling [1/1P]
    ! Drivetrain damper
@@ -78,9 +78,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Overspeed
    !  constant  39 ; Overspeed percentage before initiating turbine controller alarm (shut-down) [%]
    ! Additional non-linear pitch control term (not used when all zero)
-   !  constant  40 ; Err0 [rad/s]
-   !  constant  41 ; ErrDot0 [rad/s^2]
-   !  constant  42 ; PitNonLin1 [rad/s]
+   !  constant  40 ; Rotor speed error scaling factor [rad/s]
+   !  constant  41 ; Rotor acceleration error scaling factor [rad/s^2]
+   !  constant  42 ; Pitch rate gain [rad/s]
    ! Storm control command
    !  constant  43 ; Wind speed 'Vstorm' above which derating of rotor speed is used [m/s]
    !  constant  44 ; Cut-out wind speed (only used for derating of rotor speed in storm) [m/s]
@@ -94,7 +94,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Parameters for alternative partial load controller with PI regulated TSR tracking
    !  constant  49 ; Optimal tip speed ratio [-] (only used when K=constant 11 = 0 otherwise  Qg=K*Omega^2 is used)
    ! Parameters for adding aerodynamic drivetrain damping on gain scheduling
-   !  constant  50 ; Proportional gain of aerodynamic DT damping [Nm/(rad/s)]
+   !  constant  50 ; Aerodynamic DT damping coefficient at the operational point of zero pitch angle [Nm/(rad/s)] (not used when zero)
    !  constant  51 ; Coefficient of linear term in aerodynamic DT damping scheduling, KK1 [deg]
    !  constant  52 ; Coefficient of quadratic term in aerodynamic DT damping scheduling, KK2 [deg^2]
    !
@@ -172,9 +172,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    Err0       = array1(40)
    ErrDot0    = array1(41)
    PitNonLin1 = array1(42)
-   ! Default and derived parameters
+  ! Default and derived parameters
    GenTorqueRated = PeRated/GenSpeedRefMax
-   switchfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    MoniVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    SafetySystemVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    ! Wind speed table
@@ -262,13 +261,13 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    TTfa_damper%bandpass%zeta = 0.7_mk
    TTfa_damper%notch%zeta2   = 0.01_mk
    TTfa_damper%gain          = 0.0_mk
-   TTfa_damper%Td            = 1.0_mk
+   TTfa_damper%Td            = 0.0_mk
    TTfa_PWRfirstordervar%tau = 1.0_mk
-   TTfa_PWR_lower = array1(69)
-   TTfa_PWR_upper = array1(70)
+   TTfa_PWR_lower            = 0.0_mk
+   TTfa_PWR_upper            = 0.0_mk
    ! -Tower top side-to- mode filter
-   ExcluZone%notch%f0    = 100.0_mk
-   ExcluZone%notch%zeta2 = 0.01_mk
+   ExcluZone%notch%f0        = 100.0_mk
+   ExcluZone%notch%zeta2     = 0.01_mk
    ! -"Rystevagt" monitor for Safety System
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
@@ -277,6 +276,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    stepno = 0
    time_old = 0.0_mk
    AddedPitchRate = 0.0_mk
+   PitchAngles=0.0_mk
+   AveragedMeanPitchAngles=0.0_mk
+   AveragedPitchReference=0.0_mk
    ! No output
    array2 = 0.0_mk
    return
@@ -289,10 +291,10 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    real(mk), dimension(100), intent(inout)  ::  array1
    real(mk), dimension(1)  , intent(inout) ::  array2
    ! Torque exclusion zone
-   !  constant  53 ; Torque exclusion zone: Low speed [rad/s]
-   !  constant  54 ; Torque exclusion zone: Low speed generator toque [Nm]
-   !  constant  55 ; Torque exclusion zone: High speed [rad/s]
-   !  constant  56 ; Torque exclusion zone: High speed generator toque [Nm]
+   !  constant  53 ; Exclusion zone: Lower speed limit [rad/s]
+   !  constant  54 ; Exclusion zone: Generator torque at lower limit [Nm]
+   !  constant  55 ; Exclusion zone: Upper speed limit [rad/s] (if =< 0 then exclusion zone functionality is inactive)
+   !  constant  56 ; Exclusion zone: Generator torque at upper limit [Nm]
    !  constant  57 ; Time constant of reference switching at exclusion zone [s]
    ! DT torsion mode damper
    !  constant  58 ; Frequency of notch filter [Hz]
@@ -313,11 +315,12 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    !  constant  71 ; Frequency of Tower side-to-sede notch filter [Hz]
    !  constant  72 ; Damping of notch filter [-]
    !  constant  73 ; Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2]
-   ! Additional filters
-   !  constant  74 ; Time constant of 1st order filter on pitch angle used for switch [1/1P]
-   !  constant  75 ; Time constant of 1st order filter on tower top acceleration used for ShakeGuard [1/1P]
+   !  constant  74 ; Time constant of 1st order filter on tower top acceleration [1/1P]
+   ! Pitch deviation monitor parameters
+   !  constant  75 ; Parameters for pitch deviation monitoring. The format is 1,nnn,mmm 
+   !               ; where 'nnn' [s] is the period of the moving average and 'mmm' is threshold of the deviation [0.1 deg] (inactive if value $<$ 1,000,000)
    ! Gear ratio
-   !  constant  76 ; Gear ratio (To be used only if input #2 refers to HSS)
+   !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-]
    !
    call init_regulation(array1, array2)
    ! Generator torque exclusion zone
@@ -346,10 +349,11 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    ExcluZone%notch%zeta2 = array1(72)
    ! "Rystevagt" monitor for Safety System
    SafetySystemVar%RysteVagtLevel = array1(73)
-   ! Additional filters
-   switchfirstordervar%tau                    = array1(74)*2.0_mk*pi/GenSpeedRefMax
-   MoniVar%rystevagtfirstordervar%tau         = array1(75)*2.0_mk*pi/GenSpeedRefMax
+   MoniVar%rystevagtfirstordervar%tau         = array1(74)*2.0_mk*pi/GenSpeedRefMax
    SafetySystemVar%rystevagtfirstordervar%tau = MoniVar%rystevagtfirstordervar%tau
+   ! Pitch devaiation monitor
+   DeltaPitchThreshold = (array1(75)-floor(array1(75)/1000.0_mk)*1000.0_mk)*0.1_mk
+   TAve_Pitch = (array1(75)-1000000.0_mk-DeltaPitchThreshold*10.0_mk)/1000.0_mk
    ! Gear ratio
    GearRatio = array1(76)
    ! Initialization
@@ -413,6 +417,8 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !   28: Rotor speed exlusion zone region         [-]
    !   29: Filtered tower top acc. for tower damper [m/s^2]
    !   30: Reference pitch from tower damper        [rad]
+   !   31: Monitored average of reference pitch     [rad]
+   !   32: Monitored ave. of pitch (largest devia.) [rad]
    !
    ! Local variables
    integer GridFlag, EmergPitchStop, ActiveMechBrake
@@ -427,11 +433,10 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    if (time .gt. time_old) then
      deltat = time - time_old
-     if (deltat .eq. 0.0_mk) deltat = 0.01_mk
      time_old = time
      stepno = stepno + 1
    endif
-   ! Rotor speed
+   ! Rotor (Generator) speed in LSS
    GenSpeed = array1(2)/GearRatio
    ! Pitch angle
    PitchVect(1) = array1(3)
@@ -513,6 +518,8 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    array2(28) = dump_array(24)         !   28: Rotor speed exlusion zone region         [-]
    array2(29) = dump_array(25)         !   29: Filtered tower top acc. for tower damper [m/s^2]
    array2(30) = dump_array(26)         !   30: Reference pitch from tower damper        [rad]
+   array2(31) = dump_array(27)         !   31: Monitored average of reference pitch     [rad]
+   array2(32) = dump_array(28)         !   32: Monitored ave. of actual pitch (blade 1) [rad]
    return
 end subroutine update_regulation
 !**************************************************************************************************
