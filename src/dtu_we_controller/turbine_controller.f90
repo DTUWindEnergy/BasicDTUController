@@ -100,7 +100,7 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    PitchColRefOld = PitchColRef
    GenTorqueRefOld = GenTorqueRef
    return
-end subroutine
+end subroutine turbine_controller
 !**************************************************************************************************
 subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef, PitchColRef, dump_array)
    !
@@ -312,7 +312,7 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
    TimerShutdown2 = TimerShutdown2 + deltat
    ! Generator settings
    select case(CtrlStatus)
-      case(1, 3, 4)
+      case(1, 3, 4, 7)
          if (GenSpeed .gt. GenSpeed_at_stop*0.8_mk) then
             GenTorqueRef = GenTorque_at_stop
          else
@@ -414,37 +414,39 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchCol
    ! Pitch angle deviation 
    !***********************************************************************************************
    NAve_Pitch = floor(TAve_Pitch/deltat)
-   if (NAve_Pitch.gt.1000) then
-      write(6,'(a)') 'ERROR: Length of time window for pitch angle averaging in the pitch deviation monitor is too long (>1000 time steps)'
-      stop
-   else
-     ! Counter
-     CountPitchDeviation=CountPitchDeviation+1
-     ! Subtract last value
-     AveragedMeanPitchAngles=AveragedMeanPitchAngles-PitchAngles(NAve_Pitch,1:3)/dfloat(NAve_Pitch)
-     AveragedPitchReference=AveragedPitchReference-PitchRefs(NAve_Pitch,1:3)/dfloat(NAve_Pitch)
-     ! Shift all values
-     PitchAngles(2:NAve_Pitch,1:3)=PitchAngles(1:NAve_Pitch-1,1:3)
-     PitchRefs(2:NAve_Pitch,1:3)=PitchRefs(1:NAve_Pitch-1,1:3)
-     ! Update new values
-     PitchAngles(1,1:3)=PitchVect
-     PitchRefs(1,1)=PitchColRef
-     PitchRefs(1,2)=PitchColRef
-     PitchRefs(1,3)=PitchColRef
-     ! Add new values
-     AveragedMeanPitchAngles=AveragedMeanPitchAngles+PitchAngles(1,1:3)/dfloat(NAve_Pitch)
-     AveragedPitchReference=AveragedPitchReference+PitchRefs(1,1:3)/dfloat(NAve_Pitch)
-     ! Compute max difference
-     DiffPitch=maxval(abs(AveragedMeanPitchAngles-AveragedPitchReference))*raddeg
-     ! Output
-     dump_array(27) = AveragedPitchReference(1)
-     dump_array(28) = AveragedMeanPitchAngles(1)
-     ! Check if too big
-     if ((CountPitchDeviation.gt.2*NAve_Pitch) .and. (DiffPitch.gt. DeltaPitchThreshold) .and. (CtrlStatus .eq. 0)) then
-       CtrlStatus = 7
-       stoptype = 1
-       GenSpeed_at_stop = GenSpeed
-       GenTorque_at_stop = GenTorqueRefOld
+   if (DeltaPitchThreshold*TAve_Pitch.gt.0.0_mk) then
+     if (NAve_Pitch.gt.1000) then
+        write(6,'(a)') 'ERROR: Length of time window for pitch angle averaging in the pitch deviation monitor is too long (>1000 time steps)'
+        stop
+     else
+       ! Counter
+       CountPitchDeviation=CountPitchDeviation+1
+       ! Subtract last value
+       AveragedMeanPitchAngles=AveragedMeanPitchAngles-PitchAngles(NAve_Pitch,1:3)/dfloat(NAve_Pitch)
+       AveragedPitchReference=AveragedPitchReference-PitchRefs(NAve_Pitch,1:3)/dfloat(NAve_Pitch)
+       ! Shift all values
+       PitchAngles(2:NAve_Pitch,1:3)=PitchAngles(1:NAve_Pitch-1,1:3)
+       PitchRefs(2:NAve_Pitch,1:3)=PitchRefs(1:NAve_Pitch-1,1:3)
+       ! Update new values
+       PitchAngles(1,1:3)=PitchVect
+       PitchRefs(1,1)=PitchColRef
+       PitchRefs(1,2)=PitchColRef
+       PitchRefs(1,3)=PitchColRef
+       ! Add new values
+       AveragedMeanPitchAngles=AveragedMeanPitchAngles+PitchAngles(1,1:3)/dfloat(NAve_Pitch)
+       AveragedPitchReference=AveragedPitchReference+PitchRefs(1,1:3)/dfloat(NAve_Pitch)
+       ! Compute max difference
+       DiffPitch=maxval(abs(AveragedMeanPitchAngles-AveragedPitchReference))*raddeg
+       ! Output
+       dump_array(27) = AveragedPitchReference(1)
+       dump_array(28) = AveragedMeanPitchAngles(1)
+       ! Check if too big
+       if ((CountPitchDeviation.gt.2*NAve_Pitch) .and. (DiffPitch.gt. DeltaPitchThreshold) .and. (CtrlStatus .eq. 0)) then
+         CtrlStatus = 7
+         stoptype = 1
+         GenSpeed_at_stop = GenSpeed
+         GenTorque_at_stop = GenTorqueRefOld
+       endif
      endif
    endif
    !***********************************************************************************************

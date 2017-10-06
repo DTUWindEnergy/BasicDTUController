@@ -57,10 +57,10 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !               ; (if zero, KK1 = pitch angle at double gain)
    !  constant  23 ; Normalized speed where the pitch controller gains are doubled [-]
    ! Cut-in simulation parameters
-   !  constant  24 ; Cut-in time [s], if zero or negative cut-in is not simulated
+   !  constant  24 ; Cut-in time [s], no cut-in is simulated if zero or negative
    !  constant  25 ; Time delay for soft start of torque [1/1P]
    ! Cut-out simulation parameters
-   !  constant  26 ; Cut-out time [s], if zero or negative cut-in is not simulated
+   !  constant  26 ; Shut-down time [s], no shut-down is simulated if zero or negative
    !  constant  27 ; Time of linear torque cut-out during a generator assisted stop [s]
    !  constant  28 ; Stop type [1=normal, 2=emergency]
    !  constant  29 ; Time delay for pitch stop after shut-down signal [s]
@@ -252,17 +252,17 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ExcluZone%time_excl_delay = 0.0_mk
    ! -Drive train mode damper
    DT_damper%notch%f0   = 10.0_mk*DT_damper%notch%f0
-   DT_damper%bandpass%zeta = 0.7_mk
+   DT_damper%bandpass%zeta = 0.02_mk
    DT_damper%notch%zeta2   = 0.01_mk
    DT_damper%Td            = 0.0_mk
    ! -Tower top fore-aft mode damper
-   TTfa_damper%bandpass%f0   = 1.0_mk
-   TTfa_damper%notch%f0      = 1.0_mk
-   TTfa_damper%bandpass%zeta = 0.7_mk
+   TTfa_damper%bandpass%f0   = 10.0_mk
+   TTfa_damper%notch%f0      = 10.0_mk
+   TTfa_damper%bandpass%zeta = 0.02_mk
    TTfa_damper%notch%zeta2   = 0.01_mk
    TTfa_damper%gain          = 0.0_mk
    TTfa_damper%Td            = 0.0_mk
-   TTfa_PWRfirstordervar%tau = 1.0_mk
+   TTfa_PWRfirstordervar%tau = 10.0_mk
    TTfa_PWR_lower            = 0.0_mk
    TTfa_PWR_upper            = 0.0_mk
    ! -Tower top side-to- mode filter
@@ -272,6 +272,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
    GearRatio = 1.0_mk
+   ! Pitch devaiation monitor
+   DeltaPitchThreshold = 0.0_mk
+   TAve_Pitch = 0.0_mk
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
@@ -291,73 +294,76 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    real(mk), dimension(100), intent(inout)  ::  array1
    real(mk), dimension(1)  , intent(inout) ::  array2
    ! Torque exclusion zone
-   !  constant  53 ; Exclusion zone: Lower speed limit [rad/s]
-   !  constant  54 ; Exclusion zone: Generator torque at lower limit [Nm]
-   !  constant  55 ; Exclusion zone: Upper speed limit [rad/s] (if =< 0 then exclusion zone functionality is inactive)
-   !  constant  56 ; Exclusion zone: Generator torque at upper limit [Nm]
-   !  constant  57 ; Time constant of reference switching at exclusion zone [s]
+   !  constant  53 ; Exclusion zone: Lower speed limit [rad/s] (Default 0 used if zero)
+   !  constant  54 ; Exclusion zone: Generator torque at lower limit [Nm] (Default 0 used if zero)
+   !  constant  55 ; Exclusion zone: Upper speed limit [rad/s] (if =< 0 then exclusion zone functionality is inactive)               
+   !  constant  56 ; Exclusion zone: Generator torque at upper limit [Nm] (Default 0 used if zero) 
+   !  constant  57 ; Time constant of reference switching at exclusion zone [s] (Default 0 used if zero)
    ! DT torsion mode damper
-   !  constant  58 ; Frequency of notch filter [Hz]
-   !  constant  59 ; Damping of BP filter [-]
-   !  constant  60 ; Damping of notch filter [-]
-   !  constant  61 ; Phase lag of damper [s] =>  max 40*dt
+   !  constant  58 ; Frequency of notch filter [Hz] (Default 10 x input 10 used if zero)
+   !  constant  59 ; Damping of BP filter [-] (Default 0.02 used if zero) 
+   !  constant  60 ; Damping of notch filter [-] (Default 0.01 used if zero) 
+   !  constant  61 ; Phase lag of damper [s] =>  max 40*dt (Default 0 used if zero) 
    ! Fore-aft Tower mode damper
-   !  constant  62 ; Frequency of BP filter [Hz]
-   !  constant  63 ; Frequency of notch fiter [Hz]
-   !  constant  64 ; Damping of BP filter [-]
-   !  constant  65 ; Damping of notch filter [-]
-   !  constant  66 ; Gain of damper [-]
-   !  constant  67 ; Phase lag of damper [s] =>  max 40*dt
-   !  constant  68 ; Time constant of 1st order filter on PWR used for fore-aft Tower mode damper GS [Hz]
-   !  constant  69 ; Lower PWR limit used for fore-aft Tower mode damper GS [-]
-   !  constant  70 ; Upper PWR limit used for fore-aft Tower mode damper GS [-]
+   !  constant  62 ; Frequency of BP filter [Hz] (Default 10 used if zero)\\ 
+   !  constant  63 ; Frequency of notch fiter [Hz] (Default 10 used if zero)\\ 
+   !  constant  64 ; Damping of BP filter [-] (Default 0.02 used if zero)\\
+   !  constant  65 ; Damping of notch filter [-] (Default 0.01 used if zero)\\
+   !  constant  66 ; Gain of damper [-] (Default 0 used if zero)\\ 
+   !  constant  67 ; Phase lag of damper [s] =>  max 40*dt (Default 0 used if zero)\\ 
+   !  constant  68 ; Time constant of 1st order filter on PWR used for fore-aft Tower mode damper GS [Hz] (Default 10 used if zero)
+   !  constant  69 ; Lower PWR limit used for fore-aft Tower mode damper GS [-] (Default 0 used if zero)
+   !  constant  70 ; Upper PWR limit used for fore-aft Tower mode damper GS [-] (Default 0 used if zero) 
    ! Side-to-side Tower mode filter
-   !  constant  71 ; Frequency of Tower side-to-sede notch filter [Hz]
-   !  constant  72 ; Damping of notch filter [-]
-   !  constant  73 ; Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2]
-   !  constant  74 ; Time constant of 1st order filter on tower top acceleration [1/1P]
+   !  constant  71 ; Frequency of Tower side-to-sede notch filter [Hz] (Default 100 used if zero)
+   !  constant  72 ; Damping of notch filter [-] (Default 0.01 used if zero)
+   !  constant  73 ; Max low-pass filtered tower top acceleration level before initiating safety system alarm (shut-down) [m/s^2] (Default 1.1 x input 46 used if zero)
+   !  constant  74 ; Time constant of 1st order filter on tower top acceleration [1/1P] (Default 1 used if zero)
    ! Pitch deviation monitor parameters
    !  constant  75 ; Parameters for pitch deviation monitoring. The format is 1,nnn,mmm 
-   !               ; where 'nnn' [s] is the period of the moving average and 'mmm' is threshold of the deviation [0.1 deg] (inactive if value $<$ 1,000,000)
+   !               ; where 'nnn' [s] is the period of the moving average and 'mmm' is threshold of the deviation [0.1 deg] (functionality is inactive if value $<$ 1,000,000)
    ! Gear ratio
-   !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-]
+   !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-] (Default 1 if zero)
    !
    call init_regulation(array1, array2)
    ! Generator torque exclusion zone
-   ExcluZone%Lwr             = array1(53)
-   ExcluZone%Lwr_Tg          = array1(54)
-   ExcluZone%Hwr             = array1(55)
-   ExcluZone%Hwr_Tg          = array1(56)
-   ExcluZone%time_excl_delay = array1(57)
+   if (array1(53).gt.0.0_mk) ExcluZone%Lwr             = array1(53)
+   if (array1(54).gt.0.0_mk) ExcluZone%Lwr_Tg          = array1(54)
+   if (array1(55).gt.0.0_mk) ExcluZone%Hwr             = array1(55)
+   if (array1(56).gt.0.0_mk) ExcluZone%Hwr_Tg          = array1(56)
+   if (array1(57).gt.0.0_mk) ExcluZone%time_excl_delay = array1(57)
    ! Drive train mode damper
-   DT_damper%notch%f0      = array1(58)
-   DT_damper%bandpass%zeta = array1(59)
-   DT_damper%notch%zeta2   = array1(60)
-   DT_damper%Td            = array1(61)
+   if (array1(58).gt.0.0_mk) DT_damper%notch%f0      = array1(58)
+   if (array1(59).gt.0.0_mk) DT_damper%bandpass%zeta = array1(59)
+   if (array1(60).gt.0.0_mk) DT_damper%notch%zeta2   = array1(60)
+   if (array1(61).gt.0.0_mk) DT_damper%Td            = array1(61)
    ! Tower top fore-aft mode damper
-   TTfa_damper%bandpass%f0   = array1(62)
-   TTfa_damper%notch%f0      = array1(63)
-   TTfa_damper%bandpass%zeta = array1(64)
-   TTfa_damper%notch%zeta2   = array1(65)
-   TTfa_damper%gain          = array1(66)
-   TTfa_damper%Td            = array1(67)
-   TTfa_PWRfirstordervar%tau = 1.0_mk/(2.0_mk*pi*array1(68))
-   TTfa_PWR_lower = array1(69)
-   TTfa_PWR_upper = array1(70)
+   if (array1(62).gt.0.0_mk) TTfa_damper%bandpass%f0   = array1(62)
+   if (array1(63).gt.0.0_mk) TTfa_damper%notch%f0      = array1(63)
+   if (array1(64).gt.0.0_mk) TTfa_damper%bandpass%zeta = array1(64)
+   if (array1(65).gt.0.0_mk) TTfa_damper%notch%zeta2   = array1(65)
+   if (array1(66).gt.0.0_mk) TTfa_damper%gain          = array1(66)
+   if (array1(67).gt.0.0_mk) TTfa_damper%Td            = array1(67)
+   if (array1(68).gt.0.0_mk) TTfa_PWRfirstordervar%tau = 1.0_mk/(2.0_mk*pi*array1(68))
+   if (array1(69).gt.0.0_mk) TTfa_PWR_lower = array1(69)
+   if (array1(70).gt.0.0_mk) TTfa_PWR_upper = array1(70)
    !Tower top side-to- mode filter
-   ExcluZone%notch%f0    = array1(71)
-   ExcluZone%notch%zeta2 = array1(72)
+   if (array1(71).gt.0.0_mk) ExcluZone%notch%f0    = array1(71)
+   if (array1(72).gt.0.0_mk) ExcluZone%notch%zeta2 = array1(72)
    ! "Rystevagt" monitor for Safety System
-   SafetySystemVar%RysteVagtLevel = array1(73)
-   MoniVar%rystevagtfirstordervar%tau         = array1(74)*2.0_mk*pi/GenSpeedRefMax
+   if (array1(73).gt.0.0_mk) SafetySystemVar%RysteVagtLevel = array1(73)
+   if (array1(74).gt.0.0_mk) MoniVar%rystevagtfirstordervar%tau         = array1(74)*2.0_mk*pi/GenSpeedRefMax
    SafetySystemVar%rystevagtfirstordervar%tau = MoniVar%rystevagtfirstordervar%tau
    ! Pitch devaiation monitor
-   DeltaPitchThreshold = (array1(75)-floor(array1(75)/1000.0_mk)*1000.0_mk)*0.1_mk
-   TAve_Pitch = (array1(75)-1000000.0_mk-DeltaPitchThreshold*10.0_mk)/1000.0_mk
+   if (array1(75).gt.1000000.0_mk) then
+     DeltaPitchThreshold = (array1(75)-floor(array1(75)/1000.0_mk)*1000.0_mk)*0.1_mk
+     TAve_Pitch = (array1(75)-1000000.0_mk-DeltaPitchThreshold*10.0_mk)/1000.0_mk
+   endif
    ! Gear ratio
-   GearRatio = array1(76)
+   if (array1(76).gt.0.0_mk) GearRatio = array1(76)
    ! Initialization
    TimerExcl = -0.02_mk
+   return
 end subroutine init_regulation_advanced
 !**************************************************************************************************
 subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
