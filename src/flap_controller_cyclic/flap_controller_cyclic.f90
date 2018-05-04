@@ -1,4 +1,4 @@
-module cyclic_flap_controller_mod
+module flap_controller_cyclic_mod
 !
 ! Control Dll of type 2:
 ! Dll for applying cyclic flap control actions, based on cyclic pitch formulation by mhha in cyclic_pitch_controller
@@ -9,9 +9,9 @@ module cyclic_flap_controller_mod
 ! ******************************* example htc input *******************************
 !begin type2_dll; 
 !name cyclic_flap_controller ; 
-!filename  ./control/cyclic_flap_controller.dll ; 
-!dll_subroutine_init init_cyclic_flap_controller ; 
-!dll_subroutine_update update_cyclic_flap_controller ; 
+!filename  ./control/flap_controller_cyclic.dll ; 
+!dll_subroutine_init init_flap_controller_cyclic ; 
+!dll_subroutine_update update_flap_controller_cyclic ; 
 !arraysizes_init    19  1 ; 
 !arraysizes_update   8 14 ; 
 !begin init ; 
@@ -54,14 +54,14 @@ module cyclic_flap_controller_mod
 !end type2_dll; 
 ! *********************************************************************************
 !
-use cyclic_flap_controller_fcns_mod 
+use flap_controller_cyclic_fcns_mod 
 implicit none
 contains
 !**************************************************************************************************
-subroutine init_cyclic_flap_controller(array1,array2)
+subroutine init_flap_controller_cyclic(array1,array2)
 ! Initialize Cyclic Flap Controller
 implicit none
-!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_cyclic_flap_controller'::init_cyclic_flap_controller
+!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_flap_controller_cyclic'::init_flap_controller_cyclic
 real*8 array1(19),array2(1)
 ! Input parameters
 !   . Gains and Lead Angle
@@ -124,11 +124,11 @@ call setup_mbc_matrices
 ! -- Dummy Output -- !
 array2(1) = 1.d0
 return
-end subroutine init_cyclic_flap_controller
+end subroutine init_flap_controller_cyclic
 !**************************************************************************************************
-subroutine update_cyclic_flap_controller(array1,array2)
+subroutine update_flap_controller_cyclic(array1,array2)
 implicit none
-!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'update_cyclic_flap_controller'::update_cyclic_flap_controller
+!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'update_flap_controller_cyclic'::update_flap_controller_cyclic
 real*8 array1(8),array2(14)
 ! Input array1 must contains
 !
@@ -258,6 +258,6 @@ array2(12) = kgain(1)*PID_cos_var.Kpro   ! Gain scheduling factor: prop, int, de
 array2(13) = kgain(2)*PID_cos_var.Kint   ! Gain scheduling factor: prop, int, deriv.
 array2(14) = kgain(3)*PID_cos_var.Kdif   ! Gain scheduling factor: prop, int, deriv.
 return
-end subroutine update_cyclic_flap_controller
+end subroutine update_flap_controller_cyclic
 !**************************************************************************************************
-end module cyclic_flap_controller_mod
+end module flap_controller_cyclic_mod

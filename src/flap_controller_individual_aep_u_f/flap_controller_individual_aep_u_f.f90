@@ -1,4 +1,4 @@
-module aep_u_f_flap_ctrl_mod
+module flap_controller_individual_aep_u_f_mod
 !
 ! Control Dll of type 2:
 ! Dll for applying flap control actions for increasing power production in partial load based on optimal static beta tracking based on wind speed,
@@ -12,9 +12,9 @@ module aep_u_f_flap_ctrl_mod
    ! ******************************* example htc input *******************************
 !    begin type2_dll;
 !	name aep_u_flap_ctrl ;
-!   filename  ./control/aep_u_f_flap_controller.dll ;
-!	dll_subroutine_init init_aep_u_f_flap_controller ;
-!	dll_subroutine_update update_aep_u_f_flap_controller ;	
+!   filename  ./control/flap_controller_individual_aep_u_f.dll ;
+!	dll_subroutine_init init_flap_controller_individual_aep_u_f ;
+!	dll_subroutine_update update_flap_controller_individual_aep_u_f ;	
 !   arraysizes_init   22 1 ;
 !	arraysizes_update  6 4 ;
 !	begin init ;
@@ -106,9 +106,9 @@ real*8 fatigue_load_thres_2                 ! second threshold of blade root ben
 contains
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! ----------------------------- Initialization SubRoutine ---------------------------------
-subroutine init_aep_u_f_flap_ctrl(array1,array2)
+subroutine init_flap_controller_individual_aep_u_f(array1,array2)
 implicit none
-!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_aep_u_f_flap_ctrl' :: init_aep_u_f_flap_ctrl
+!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'init_flap_controller_individual_aep_u_f' :: init_flap_controller_individual_aep_u_f
 real*8 array1(22) ! Input array, from hawc2 to dll
 real*8 array2(1)  ! Array dll -> hawc2 In this case dummy 0
 !
@@ -173,13 +173,13 @@ mx_filt_old = mx_old
 
 ! dummy output to HAWC2
 array2(1) = 1.d0;
-end subroutine init_aep_u_f_flap_ctrl
+end subroutine init_flap_controller_individual_aep_u_f
 ! ------------------------------------------------------------------------------ !
 ! ----------------------------- Update SubRoutine -------------------------------!
 ! ------------------------------------------------------------------------------ !
-subroutine update_aep_u_f_flap_ctrl(array1,array2)
+subroutine update_flap_controller_individual_aep_u_f(array1,array2)
 implicit none
-!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'update_aep_u_f_flap_ctrl' :: update_aep_u_f_flap_ctrl
+!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'update_flap_controller_individual_aep_u_f' :: update_flap_controller_individual_aep_u_f
 real(8) array1(6)	! Input array, from hawc2 to dll
 real(8) array2(4)	! Array dll -> hawc2
 ! Input array1 must contain
@@ -306,6 +306,6 @@ gfl_d = offset_d+ gain1_d *gs_PD_V_filt
 
  array2(4)  = ctrl_mode_out
 
-end subroutine update_aep_u_f_flap_ctrl
+end subroutine update_flap_controller_individual_aep_u_f
 !**************************************************************************************************
-end module aep_u_f_flap_ctrl_mod
+end module flap_controller_individual_aep_u_f_mod

@@ -1,4 +1,4 @@
-module cyclic_flap_controller_fcns_mod
+module flap_controller_cyclic_fcns_mod
 !
 ! Types and functions used in cyclic flap control dll
 ! Copied from cyclic_pitch_controller_fcns
@@ -157,4 +157,4 @@ endif
 return
 end function PID
 !**************************************************************************************************
-end module cyclic_flap_controller_fcns_mod
+end module flap_controller__cyclicfcns_mod
