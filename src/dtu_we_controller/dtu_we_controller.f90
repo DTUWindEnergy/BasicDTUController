@@ -4,14 +4,22 @@ module dtu_we_controller
    !
    use dtu_we_controller_fcns
    use turbine_controller_mod
+   use turbine_controller_derate_mod
    use safety_system_mod
    use write_version_mod
    implicit none
    integer  CtrlStatus
    real(mk) dump_array(50)
    real(mk) time_old
-contains
+   real(mk) StrategyMode
+   !integer(1) :: istring256(256)
+   character (:), allocatable :: str   
+    contains
 !**************************************************************************************************
+
+
+
+    
 subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
    !DEC$ ATTRIBUTES DLLEXPORT :: init_regulation
@@ -25,6 +33,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    logical findes
    call write_textversion
    write(6, *) trim(adjustl(TextVersion))
+  
    ! Input array1 must contain
    ! Overall parameters
    !  constant   1 ; Rated power [kW]
@@ -100,7 +109,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    !
    ! Output array2 contains nothing for init
    !
-   ! Overall parameters
+
+   ! *** added by amur
    PeRated             = array1( 1)*1000.0_mk
    GenSpeedRefMin      = array1( 2)
    GenSpeedRefMax      = array1( 3)
@@ -174,6 +184,9 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    PitNonLin1 = array1(42)
   ! Default and derived parameters
    GenTorqueRated = PeRated/GenSpeedRefMax
+  ! *** amur
+   GenTorqueRated0 = GenTorqueRated
+  ! *** amur
    MoniVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    SafetySystemVar%rystevagtfirstordervar%tau = 2.0_mk*pi/GenSpeedRefMax
    ! Wind speed table
@@ -211,6 +224,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
        stop
      endif
    endif
+   
    ! Storm controller input
    Vstorm  = array1(43) ! [m/s] Vstorm (e.g. 25)
    Vcutout = array1(44) ! [m/s] Vcut-out (e.g. 45)
@@ -226,11 +240,17 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Alternative partial load controller
    Kopt_dot= array1(48)
    TSR_opt = array1(49)
+   
+   !
+   !
    if (array1(11) .le. 0.0_mk) then
      PartialLoadControlMode = 2
    else
      PartialLoadControlMode = 1
    endif
+   !
+   !
+   
    ! Gain scheduling dQdomega
    PitchGSVar%kp_speed = array1(50)
    if (array1(51) .gt. 0.0_mk) then
@@ -326,6 +346,7 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-] (Default 1 if zero)
    !
    call init_regulation(array1, array2)
+
    ! Generator torque exclusion zone
    if (array1(53).gt.0.0_mk) ExcluZone%Lwr             = array1(53)
    if (array1(54).gt.0.0_mk) ExcluZone%Lwr_Tg          = array1(54)
@@ -363,9 +384,44 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    if (array1(76).gt.0.0_mk) GearRatio = array1(76)
    ! Initialization
    TimerExcl = -0.02_mk
+   
+   Dr_F = array1(77)             
+  if (Dr_F.eq.1) then
+   PeRated0 = PeRated
+   Kopt_0 = array1(11)          ! WHAT? 
+   ! Routine to initialize the initialization...
+   call init_power_derate
+   endif
+   ! *** added by amur ***
+   ! *********************************************************************************
+   ! *********************************************************************************
+   ! *********************************************************************************
    return
 end subroutine init_regulation_advanced
 !**************************************************************************************************
+!**************************************************************************************************
+!**************************************************************************************************
+subroutine initstring(istring)
+implicit none
+!DEC$ ATTRIBUTES DLLEXPORT, C, ALIAS:'initstring'::initstring
+integer(1)    :: istring(*)
+integer(1)    :: istring256(256)
+character*256 :: cstring
+integer       :: i,numnonzero,var,ifejl
+equivalence(istring256,cstring)
+character, dimension(256) :: string_out
+character (:), allocatable :: str 
+! 
+istring256(1:256)=istring(1:256)
+do i = 1,256
+if (istring256(i).gt.0) then
+    var= i
+   string_out(var) = char(istring256(i)) 
+endif
+enddo
+Ref_der%str = trim(cstring)                           
+end subroutine initstring
+
 subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !
    ! Controller interface.
@@ -378,6 +434,9 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !DEC$ END IF
    real(mk), dimension(100), intent(inout) :: array1
    real(mk), dimension(100), intent(inout) :: array2
+   ! **** amur
+   
+   ! **** amur
    ! Input array1 must contain
    !
    !    1: general time                            [s]
@@ -460,11 +519,35 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    ! Tower top acceleration
    TT_acc(1) = array1(11)
    TT_acc(2) = array1(12)
+   
+    if (Dr_F.eq.1)  then
+            
+   Ref_der%array_ref(1) = DP_u%array_u(1)                   ! Flag 
+   Ref_der%array_ref(2) = Ref_der%Strategy                  ! Strategy Mode
+   Ref_der%array_ref(3) = Ref_der%Control_method            ! Control..
+   Ref_der%array_ref(4) = R                                 ! Radius
+   Ref_der%array_ref(5) = Ref_der%TSR                       ! TSR
+   Ref_der%array_ref(6) = GenSpeedRefMax                    ! GenSpeedRef_full_0 
+   Ref_der%array_ref(7) = Ref_der%MaxRate                   ! MaxRate 
+   Ref_der%array_ref(8) = Ref_Der%CPVal                     ! CPVal
+   Ref_der%array_ref(9) = Ref_der%Wrho                      ! Wind density 
+   Ref_der%array_ref(10) = Ref_der%DRmin                    ! Minimum de_rate value  
+ 
+
+   call set_power_derate(time,deltat,stepno,wsp,PeRated0,R)
+   endif
+   
+  if (Ref_der%array_ref(1).eq.1) then               
+  PeRated = min(DP_u%array_u(6),PeRated0)               
+  GenTorqueRated = PeRated/GenSpeedRefMax 
+  else
+   
+  endif
    !***********************************************************************************************
    ! Safety system
    !***********************************************************************************************
    if (time .gt. 5.0_mk) then
-      call safety_system(stepno, deltat, GenSpeed, TT_acc, EmergPitchStop, ActiveMechBrake, &
+      call safety_system(stepno, deltat, GenSpeed, TT_acc, EmergPitchStop, ActiveMechBrake,&
                          dump_array)
    endif
    !***********************************************************************************************
@@ -475,7 +558,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
      TimerStartup = deltat
    endif
    !***********************************************************************************************
-   ! Shut-down timer monitoring
+   ! Shut-down timer monitoringTur
    !***********************************************************************************************
    if ((CutoutVar%time .gt. 0.0_mk) .and. (time .gt. CutoutVar%time) .and. (CtrlStatus .eq. 0)) then
      if (stoptype.eq.1) CtrlStatus = 4
@@ -486,11 +569,12 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
      TimerShutdown = 0.0_mk
      TimerShutdown2 = 0.0_mk
    endif
-   !***********************************************************************************************
-   ! Wind turbine controller
-   !***********************************************************************************************
+
    call turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe, TT_acc, &
-                           GenTorqueRef, PitchColRef, dump_array)
+                           GenTorqueRef,GenTorqueRef0,Ref_der%array_ref, &
+                           PitchColRef, dump_array)
+   
+ 
    !***********************************************************************************************
    ! Output
    !***********************************************************************************************
@@ -526,6 +610,25 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    array2(30) = dump_array(26)         !   30: Reference pitch from tower damper        [rad]
    array2(31) = dump_array(27)         !   31: Monitored average of reference pitch     [rad]
    array2(32) = dump_array(28)         !   32: Monitored ave. of actual pitch (blade 1) [rad]
+   ! Outputs added de-rated case
+   if (Dr_F.eq.1) then 
+    array2(33) =  DP_u%array_u(1)      ! Flag Derate [-] , based on DR value from input file 
+    array2(34) =  DP_u%array_u(2)      ! Reference Value De-rate
+    array2(35) =  DP_u%array_u(3)      ! Power before limits and filters
+    array2(36) =  DP_u%array_u(4)      ! Power after limits (applying min derate)
+    array2(37) =  DP_u%array_u(5)      ! Power after limit kW/s
+    array2(38) =  DP_u%array_u(6)      ! Power after filtering
+    array2(39) =  DP_u%array_u(7)      ! Pe_av
+    array2(40) =  DP_u%array_u(8)      ! Power Reference Previous Step
+    array2(41) = GenTorqueRated
+    array2(42) = PeRated
+    array2(43) = dump_array(49)         ! Kopt 
+    array2(44) = dump_array(50)         ! Kopt_pre
+    array2(45) = dump_array(48)         ! GenSpeedRef
+    array2(46) = dump_array(47)         ! Partial Load Flag
+    array2(47) = dump_array(46)         ! GenSpeedErr
+    array2(48) = dump_array(45)         ! GenSpeedFiltErr
+    endif
    return
 end subroutine update_regulation
 !**************************************************************************************************

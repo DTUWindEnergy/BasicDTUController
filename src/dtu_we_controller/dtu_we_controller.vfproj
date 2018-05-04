@@ -31,6 +31,8 @@
 		<File RelativePath=".\dtu_we_controller_fcns.f90"/>
 		<File RelativePath=".\misc_mod.f90"/>
 		<File RelativePath=".\safety_system.f90"/>
+		<File RelativePath=".\SharedVar.f90"/>
 		<File RelativePath=".\turbine_controller.f90"/>
+		<File RelativePath=".\turbine_controller_derate.f90"/>
 		<File RelativePath=".\write_version.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>

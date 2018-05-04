@@ -9,6 +9,8 @@ module turbine_controller_mod
    integer PartialLoadControlMode, stoptype
    real(mk) deltat
    real(mk) GenSpeedRefMax, GenSpeedRefMin, PeRated, GenTorqueRated, PitchStopAng, GenTorqueMax
+   ! ***amur
+   real(mk) GenTorqueRated0
    real(mk) TTfa_PWR_lower, TTfa_PWR_upper, TorqueCtrlRatio
    real(mk) Kopt, Kopt_dot, TSR_opt, R, GearRatio
    real(mk) Vcutout, Vstorm
@@ -16,6 +18,9 @@ module turbine_controller_mod
    integer  NAve_Pitch
    real(mk) PitchAngles(1000,3),PitchRefs(1000,3)
    real(mk) TAve_Pitch,DeltaPitchThreshold,AveragedMeanPitchAngles(3),AveragedPitchReference(3)
+   ! amur (** added variables **)
+   real(mk) PeRated0, Kopt_0 , Dr_F
+   ! ****   
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0, PitchColRefOld, GenTorqueRefOld
@@ -42,16 +47,15 @@ module turbine_controller_mod
    type(Tswitch), save        :: SwitchVar
    type(TSafetySystem), save  :: MoniVar
    type(TPitchGSvar), save    :: PitchGSVar
+
 !**************************************************************************************************
-contains
+    contains
 !**************************************************************************************************
+     
 subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe, TTAccVect, &
-                              GenTorqueRef, PitchColRef, dump_array)
-   !
-   ! Main subroutine of the wind turbine controller.
-   ! It calls the system monitoring and selects the controller status (normal operation, start-up,
-   ! and shut-down).
-   !
+                              GenTorqueRef,GenTorqueRef0,array_ref, &
+                              PitchColRef, dump_array)
+ 
    integer , intent(inout) :: CtrlStatus ! Integer indicating the status of the controller.&
                                          !  (0: Normal operation, <0: Start-up., >0: Shutdown)
    integer , intent(inout) :: GridFlag   ! Integer indicating the status of the grid.
@@ -62,9 +66,12 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    real(mk), intent(in)    :: Pe           ! Measured electrical power [W].
    real(mk), intent(in)    :: TTAccVect(2) ! Measured tower top acceleration. Longitudinal and &
                                            !  lateral components [m/s**2].
-   real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm] (Derate)
+   real(mk), intent(in)    :: GenTorqueRef0 ! Generator torque reference nominal condition 
    real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
    real(mk) TTAcc
+  real(mk), dimension(10)  :: array_ref
+ 
    !***********************************************************************************************
    ! Wind turbine monitoring
    !***********************************************************************************************
@@ -75,7 +82,8 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    !***********************************************************************************************
    if (CtrlStatus .eq. 0) then
       call normal_operation(GenSpeed, PitchVect, wsp, Pe, TTAccVect(2), GenTorqueRef, PitchColRef,&
-                            dump_array)
+                            array_ref,dump_array)
+   !
    endif
    !***********************************************************************************************
    ! Cut-in procedure for control status CtrlStatus = -1
@@ -102,7 +110,8 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    return
 end subroutine turbine_controller
 !**************************************************************************************************
-subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef, PitchColRef, dump_array)
+subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef,PitchColRef,&
+                            array_ref, dump_array)
    !
    ! Controller for normal operation.
    !
@@ -120,6 +129,11 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    real(mk) GenSpeedRef_full
    real(mk) Qdamp_ref, theta_dam_ref, P_filt
    real(mk) x, y(2)
+   ! *** amur
+   real(mk), dimension(10)  :: array_ref
+   real(mk) :: Flag_DR
+   integer :: StrategyMode
+   ! *** amur
    !***********************************************************************************************
    ! Inputs and their filtering
    !***********************************************************************************************
@@ -148,12 +162,24 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    else
       GenSpeedRef_full = GenSpeedRefMax
    endif
+  
    GenSpeedRef_full = max(min(GenSpeedRef_full, GenSpeedRefMax), GenSpeedRefMin)
    !***********************************************************************************************
    ! PID regulation of generator torque
    !***********************************************************************************************
+   
    call torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, WSPfilt, PitchMin, &
-                         GenSpeedRef_full, Pe, GenTorqueRef, dump_array)
+                         GenSpeedRef_full, Pe, GenTorqueRef, array_ref,dump_array)
+   
+   
+   
+   dump_array(49) = dump_array(11)    ! Kopt
+   dump_array(50) = dump_array(12)     ! Kopt_pre
+   dump_array(48) = dump_array(13)    ! Omega_ref
+   dump_array(47) = dump_array(14)    ! Partial Load Flag 
+   dump_array(46) = dump_array(15)
+   dump_array(45) = dump_array(16)
+   
    !***********************************************************************************************
    ! Active DT damping based on filtered rotor speed
    !***********************************************************************************************
@@ -457,8 +483,13 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchCol
    return
 end subroutine monitoring
 !**************************************************************************************************
+! **  changed by amur 
+! ** ...
 subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, WSPfilt, &
-                            PitchMin, GenSpeedRef_full, Pe, GenTorqueRef, dump_array)
+                            PitchMin, GenSpeedRef_full,Pe, GenTorqueRef,array_ref,dump_array)
+   
+  ! Inclusion of de-rating Flag
+  ! New parameter to include reference torque value when turbine is not derating... 
    !
    ! Generator torque controller. Controller that computes the generator torque reference.
    !
@@ -468,7 +499,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk), intent(in) :: PitchMean         ! Mean pitch angle [rad].
    real(mk), intent(in) :: PitchMin          ! Minimum pitch angle [rad].
    real(mk), intent(in) :: WSPfilt           ! Filtered wind speed [m/s].
-   real(mk), intent(in) :: GenSpeedRef_full  ! Reference generator speed [rad/s].
+   real(mk), intent(inout) :: GenSpeedRef_full  ! Reference generator speed [rad/s].
    real(mk), intent(in) :: Pe                ! Measured electrical power [W].
    real(mk), intent(out) :: GenTorqueRef     ! Generator torque reference [Nm].
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
@@ -476,11 +507,24 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper,ConstantPowerTorque
    real(mk) kgain(3), GenSpeedFiltErr, GenSpeedErr, outmin, outmax
+   ! ** amur
+   real(mk) :: Flag_DR,R,TSR_for_derate
+   real(mk), dimension(10)  :: array_ref
+   integer :: StrategyMode
+   real(mk) :: GenSpeedRef_full_0
+   ! ** changed by amur 
+   !
+   Flag_DR = array_ref(1)
+   StrategyMode = array_ref(2)
+   R = array_ref(4)
+   TSR_for_derate = array_ref(5)
+   GenSpeedRef_full_0 = array_ref(6)
+   ! ** amur
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
-   select case (PartialLoadControlMode)
-   case (1)
+   select case (PartialLoadControlMode) ! By default always this one is called... 
+    case (1)
       if (GenSpeedFilt .gt. 0.5_mk*(GenSpeedRefMax + GenSpeedRefMin)) then
          GenSpeedRef = GenSpeedRefMax
       else
@@ -491,21 +535,63 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
       GenSpeedRef = min(max(GenSpeedRef, GenSpeedRefMin), GenSpeedRefMax)
    end select
    ! Rotor speed error
+   
    GenSpeedErr = GenSpeed - GenSpeedRef
    GenSpeedFiltErr = GenSpeedFilt - GenSpeedRef
+  
+   
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
+   ! *** amur
+   ! *** amur
+   
+   if(Flag_DR.eq.0) then
+       
    ConstantPowerTorque=min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)
    GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) + ConstantPowerTorque*TorqueCtrlRatio
    GenTorqueMax_full = GenTorqueMin_full
-   !-----------------------------------------------------------------------------------------------
-   ! Limits for partial load that opens in both ends
-   !-----------------------------------------------------------------------------------------------
+   
+   else
+   ! De-rating limits 
+   GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) &
+                     + min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)*TorqueCtrlRatio
+   GenTorqueMax_full = GenTorqueMin_full    
+   
+   ! Generator Torque limits.... ! 
+   endif
+           
    select case (PartialLoadControlMode)
      ! Torque limits for K Omega^2 control of torque
      case (1)
-       ! Calculate the constant limits for opening and closing of torque limits
+     
+    if (Flag_DR.eq.1) then
+     Kopt_pre = min(Kopt_0*GenSpeed**3,PeRated)/GenSpeed**3
+        if(Koptfirstordervar%tau.eq.-1) then
+            Kopt = Kopt_pre
+         else
+        Kopt = lowpass1orderfilt(deltat, stepno, Koptfirstordervar, Kopt_pre)
+        endif
+    
+     select case (StrategyMode)
+     
+     case(1)
+      GenSpeedRef_full = min(GenSpeedRef_full_0,WSPfilt*TSR_for_derate/R)    
+     case(2)
+     case(3)
+      GenSpeedRef_full = min(GenSpeedRef_full_0,(PeRated/Kopt_0)**0.3333_mk) 
+      endselect    
+   
+      
+    else
+       
+        Kopt_pre = Kopt
+        Koptfirstordervar%x1 = Kopt
+        Koptfirstordervar%y1 = Kopt
+        Koptfirstordervar%stepno1 = stepno
+       endif
+       
+       
        GenSpeed_min1 = GenSpeedRefMin
        GenSpeed_min2 = GenSpeedRefMin/SwitchVar%rel_sp_open_Qg
        GenSpeed_max1 = (2.0_mk*SwitchVar%rel_sp_open_Qg - 1.0_mk)*GenSpeedRefMax
@@ -517,7 +603,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
        x = switch_spline(GenSpeed, GenSpeed_max1, GenSpeed_max2)
        ! Compute upper torque limits
        GenTorqueMax_partial = (Kopt*GenSpeed**2 - Kopt_dot*dGenSpeed_dtFilt)*(1.0_mk - x) + GenTorqueMax_full*x
-     ! Torque limits for PID control of torque
+     
      case (2)
        GenTorqueMin_partial = 0.0_mk
        GenTorqueMax_partial = GenTorqueMax_full
@@ -561,14 +647,22 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    ! Compute PID feedback to generator torque demand
    !-----------------------------------------------------------------------------------------------
    kgain = 1.0_mk
-   GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedErr)
-   ! Write into dump array
+    GenTorqueRef = PID(stepno, deltat, kgain, PID_gen_var, GenSpeedErr)
+  
    dump_array(4) = GenSpeedFiltErr
    dump_array(6) = PID_gen_var%outpro
    dump_array(7) = PID_gen_var%outset
    dump_array(8) = PID_gen_var%outmin
    dump_array(9) = PID_gen_var%outmax
    dump_array(10) = switch
+   
+   
+   dump_array(11) = Kopt
+   dump_array(12) = Kopt_pre
+   dump_array(13) = GenSpeedRef
+   dump_array(14) = PartialLoadControlMode
+   dump_array(15) = GenSpeedErr
+   dump_array(16) = GenSpeedFiltErr
    return
 end subroutine torquecontroller
 !**************************************************************************************************
@@ -598,7 +692,6 @@ subroutine pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt
    ! Limits
    PID_pit_var%outmin = PitchMin
    PID_pit_var%outmax = PitchStopAng
-   ! Aerodynamic gain scheduling dQ/dtheta
    aero_gain = 1.0_mk + PitchGSVar%invkk1*PitchMeanFilt + PitchGSVar%invkk2*PitchMeanFilt**2
    kgain = 1.0_mk/aero_gain
    ! Nonlinear gain to avoid large rotor speed excursion
