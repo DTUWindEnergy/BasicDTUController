@@ -7,7 +7,6 @@ module dtu_we_controller_fcns
    implicit none
    ! Constants
    integer maxwplines
-   integer ::IndTimePT
    parameter(maxwplines=100)
    ! Types
    type Tpidvar
@@ -53,33 +52,9 @@ module dtu_we_controller_fcns
       real(mk) invkk1, invkk2
       real(mk) kp_speed, invkk1_speed, invkk2_speed
    end type
-   ! Type for loading initial values of ppddata // Future expansible for other values of Control type
-   !
-    type pddata
-      real(mk) pdata(1000,2)
-      character (:), allocatable :: str 
-      integer lines,Control_method,Strategy
-      real(mk) array_ref(10)
-      real(mk) tau,TSR,MaxRate,CPVal,Wrho,DRmin 
-    end type pddata
-   
-  ! new type for Updating Rated Power Variables 
-   type DP_ut
-      real(mk) PeRated_old 
-      real(mk) Output_DR
-      real(mk) array_c(10)           ! array of constant values for general operation
-      real(mk) array_u(10)           ! array of update values for pr dll
-      real(mk) Kopt_array(2)         ! array of Kopt....
-   end type DP_ut
    ! Custom Types
    type(Twpdata), save   :: OPdatavar
    type(Texclzone), save :: ExcluZone
-   type(pddata), save   :: Ref_der  
-   type(DP_ut) , save   :: DP_u            ! Derate Power Update
-   type(Tfirstordervar) , save :: PratedF  ! Filter Power
-      ! ** added amur
-   type(Tfirstordervar), save :: Koptfirstordervar
-   real(mk) Kopt_pre
 !**************************************************************************************************
 contains
 !**************************************************************************************************
