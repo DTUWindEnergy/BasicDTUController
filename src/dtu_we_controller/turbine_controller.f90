@@ -557,8 +557,10 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    if ((abs(outmin-outmin_old)/deltat) .gt. PID_gen_var%velmax) then
      outmin = outmin_old + dsign(PID_gen_var%velmax*deltat, outmin-outmin_old)
    endif
-   outmax_old=outmax
-   outmin_old=outmin
+   if (newtimestep) then
+        outmax_old=outmax
+        outmin_old=outmin
+   endif
    PID_gen_var%outmin = outmin
    PID_gen_var%outmax = outmax
    if (PID_gen_var%outmin .gt. PID_gen_var%outmax) PID_gen_var%outmin = PID_gen_var%outmax
