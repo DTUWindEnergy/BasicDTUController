@@ -11,31 +11,31 @@ module misc_mod
    !  First order filter
    type Tfirstordervar
       real(mk) tau, x1, x1_old, y1, y1_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tfirstordervar
    !  Second order low pass filter filter
    type Tlowpass2order
       real(mk) zeta, f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tlowpass2order
    !  Second order notch filter
    type Tnotch2order
       real(mk) :: zeta1 = 0.1_mk
       real(mk) :: zeta2 = 0.001_mk
       real(mk) f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tnotch2order
    !  Second order band-pass filter
    type Tbandpassfilt
       real(mk) :: zeta = 0.02_mk
       real(mk) :: tau = 0.0_mk
       real(mk) f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tbandpassfilt
    !  Time delay
    type Ttdelay
       real(mk) xz(40)
-      integer stepno1
+      integer :: stepno1 = 0
    end type Ttdelay
 contains
 !**************************************************************************************************
