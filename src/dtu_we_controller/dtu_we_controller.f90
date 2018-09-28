@@ -441,6 +441,9 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
      deltat = time - time_old
      time_old = time
      stepno = stepno + 1
+     newtimestep = .TRUE.
+   else 
+     newtimestep = .FALSE.
    endif
    ! Rotor (Generator) speed in LSS
    GenSpeed = array1(2)/GearRatio

@@ -18,6 +18,7 @@ module turbine_controller_mod
    real(mk) TAve_Pitch,DeltaPitchThreshold,AveragedMeanPitchAngles(3),AveragedPitchReference(3)
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
+   logical :: newtimestep
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0, PitchColRefOld, GenTorqueRefOld
    real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
    real(mk) GenSpeed_at_stop, GenTorque_at_stop
@@ -158,7 +159,7 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    ! Active DT damping based on filtered rotor speed
    !***********************************************************************************************
    call drivetraindamper(GenSpeed, Qdamp_ref, dump_array)
-   TimerGenCutin = TimerGenCutin + deltat
+   if (newtimestep) TimerGenCutin = TimerGenCutin + deltat
    x = switch_spline(TimerGenCutin, CutinVar%delay, 2.0_mk*CutinVar%delay)
    GenTorqueRef = min(max(GenTorqueRef + Qdamp_ref*x, 0.0_mk), GenTorqueMax)
    !***********************************************************************************************
@@ -244,7 +245,7 @@ subroutine start_up(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCol
       dummy = PID(stepno, deltat, kgain_torque, PID_gen_var, GenSpeedFiltErr)
    elseif (TimerStartup.lt.CutinVar%delay) then
       ! Start increasing the timer for the delay
-      TimerStartup = TimerStartup + deltat
+      if (newtimestep) TimerStartup = TimerStartup + deltat
       ! Generator is cut-in
       generator_cutin = .true.
       ! Gradually set the minimum pitch angle to optimal pitch
@@ -309,14 +310,14 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
    PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
    PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad) ! Maximum of 30 deg
    ! Start increasing the timer for the delay
-   TimerShutdown2 = TimerShutdown2 + deltat
+   if (newtimestep) TimerShutdown2 = TimerShutdown2 + deltat
    ! Generator settings
    select case(CtrlStatus)
       case(1, 3, 4, 7)
          if (GenSpeed .gt. GenSpeed_at_stop*0.8_mk) then
             GenTorqueRef = GenTorque_at_stop
          else
-            TimerShutdown = TimerShutdown + deltat
+            if (newtimestep) TimerShutdown = TimerShutdown + deltat
             GenTorqueRef = max(0.0_mk, GenTorque_at_stop*(1.0_mk - TimerShutdown/CutoutVar%torquedelay))
          endif
       case(2, 5, 6)
@@ -325,21 +326,25 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
          GenTorqueRef = 0.0_mk
    end select
    ! Pitch seetings
-   select case(CtrlStatus)
-     case(1, 3, 4, 7) ! Two pitch speed stop
-       if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then
-         PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax2)
-       elseif (TimerShutdown2 .gt. CutoutVar%pitchdelay) then
-         PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
-       elseif (TimerShutdown2 .gt. 0.0_mk) then
-         PitchColRef = PitchColRefOld
-       endif
-     case(2, 5, 6) ! Pitch out at maximum speed
-       PitchColRef = min(PitchStopAng, PitchColRefOld + &
-                         deltat*max(CutoutVar%pitchvelmax, CutoutVar%pitchvelmax2))
-     case(-2) ! Pitch-out before cut-in
-        PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
-   end select
+   if (newtimestep) then
+       select case(CtrlStatus)
+         case(1, 3, 4, 7) ! Two pitch speed stop
+           if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then
+             PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax2)
+           elseif (TimerShutdown2 .gt. CutoutVar%pitchdelay) then
+             PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
+           elseif (TimerShutdown2 .gt. 0.0_mk) then
+             PitchColRef = PitchColRefOld
+           endif
+         case(2, 5, 6) ! Pitch out at maximum speed
+           PitchColRef = min(PitchStopAng, PitchColRefOld + &
+                             deltat*max(CutoutVar%pitchvelmax, CutoutVar%pitchvelmax2))
+         case(-2) ! Pitch-out before cut-in
+            PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
+         end select
+   else
+       PitchColRef = PitchColRefOld
+   endif
    ! Write into dump array
    dump_array(1) = GenTorqueRef*GenSpeed
    dump_array(3) = y(1)
@@ -660,7 +665,7 @@ subroutine rotorspeedexcl(GenSpeedFilt, GenTorque, Qg_min_partial, GenTorqueMax_
    x = 0.0_mk
    y = notch2orderfilt(deltat, stepno, ExcluZone%notch, GenSpeedFilt)
    GenSpeedFiltNotch = y(1)
-   TimerExcl = TimerExcl + deltat
+   if (newtimestep) TimerExcl = TimerExcl + deltat
    select case (w_region)
        case (0)
          if ((GenSpeedFilt .gt. Lwr*0.99_mk) .and. (TimerGenCutin .gt. CutinVar%delay))then
