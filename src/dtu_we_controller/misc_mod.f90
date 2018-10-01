@@ -35,6 +35,7 @@ module misc_mod
    !  Time delay
    type Ttdelay
       real(mk) xz(40)
+      real(mk) xz_old(40)
       integer :: stepno1 = 0
    end type Ttdelay
 contains
@@ -223,11 +224,12 @@ function timedelay(dt, stepno, filt, Td, x)
       end do
    endif
    if (stepno .gt. filt%stepno1) then
-       do k = 40, 2, -1
-          filt%xz(k) = filt%xz(k - 1)
-       end do
-       filt%xz(1) = x
+      filt%xz_old = filt%xz
    endif
+   do k = 40, 2, -1
+       filt%xz(k) = filt%xz_old(k - 1)
+   end do
+   filt%xz(1) = x
    ! Output
    if (Td .eq. 0.0_mk) then
       timedelay = x
