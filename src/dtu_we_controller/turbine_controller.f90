@@ -69,6 +69,13 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
    real(mk) TTAcc
    !***********************************************************************************************
+   ! Save reference signals
+   !***********************************************************************************************
+   if (newtimestep) then
+       PitchColRefOld = PitchColRef
+       GenTorqueRefOld = GenTorqueRef
+   endif
+   !***********************************************************************************************
    ! Wind turbine monitoring
    !***********************************************************************************************
    TTAcc = dsqrt(TTAccVect(1)**2 + TTAccVect(2)**2)
@@ -96,13 +103,6 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    !***********************************************************************************************
    if (CtrlStatus .gt. 0) then
       call shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchColRef, dump_array)
-   endif
-   !***********************************************************************************************
-   ! Save reference signals
-   !***********************************************************************************************
-   if (newtimestep) then
-       PitchColRefOld = PitchColRef
-       GenTorqueRefOld = GenTorqueRef
    endif
    return
 end subroutine turbine_controller
@@ -484,6 +484,10 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
+   if (newtimestep) then
+        outmax_old=PID_gen_var%outmax
+        outmin_old=PID_gen_var%outmin
+   endif
    select case (PartialLoadControlMode)
    case (1)
       if (GenSpeedFilt .gt. 0.5_mk*(GenSpeedRefMax + GenSpeedRefMin)) then
@@ -556,10 +560,6 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    endif
    if ((abs(outmin-outmin_old)/deltat) .gt. PID_gen_var%velmax) then
      outmin = outmin_old + dsign(PID_gen_var%velmax*deltat, outmin-outmin_old)
-   endif
-   if (newtimestep) then
-        outmax_old=outmax
-        outmin_old=outmin
    endif
    PID_gen_var%outmin = outmin
    PID_gen_var%outmax = outmax
