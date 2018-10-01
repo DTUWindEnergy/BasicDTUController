@@ -19,7 +19,9 @@ module turbine_controller_mod
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
    logical :: newtimestep
-   real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0, PitchColRefOld, GenTorqueRefOld
+   real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0
+   real(mk) :: PitchColRefOld=0.0_mk
+   real(mk) :: GenTorqueRefOld=0.0_mk
    real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
    real(mk) GenSpeed_at_stop, GenTorque_at_stop
    real(mk) excl_flag
@@ -98,8 +100,10 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    !***********************************************************************************************
    ! Save reference signals
    !***********************************************************************************************
-   PitchColRefOld = PitchColRef
-   GenTorqueRefOld = GenTorqueRef
+   if (newtimestep) then
+       PitchColRefOld = PitchColRef
+       GenTorqueRefOld = GenTorqueRef
+   endif
    return
 end subroutine turbine_controller
 !**************************************************************************************************
@@ -326,25 +330,21 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
          GenTorqueRef = 0.0_mk
    end select
    ! Pitch seetings
-   if (newtimestep) then
-       select case(CtrlStatus)
-         case(1, 3, 4, 7) ! Two pitch speed stop
-           if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then
-             PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax2)
-           elseif (TimerShutdown2 .gt. CutoutVar%pitchdelay) then
-             PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
-           elseif (TimerShutdown2 .gt. 0.0_mk) then
-             PitchColRef = PitchColRefOld
-           endif
-         case(2, 5, 6) ! Pitch out at maximum speed
-           PitchColRef = min(PitchStopAng, PitchColRefOld + &
-                             deltat*max(CutoutVar%pitchvelmax, CutoutVar%pitchvelmax2))
-         case(-2) ! Pitch-out before cut-in
-            PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
-         end select
-   else
-       PitchColRef = PitchColRefOld
-   endif
+   select case(CtrlStatus)
+     case(1, 3, 4, 7) ! Two pitch speed stop
+       if (TimerShutdown2 .gt. CutoutVar%pitchdelay + CutoutVar%pitchdelay2) then
+         PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax2)
+       elseif (TimerShutdown2 .gt. CutoutVar%pitchdelay) then
+         PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
+       elseif (TimerShutdown2 .gt. 0.0_mk) then
+         PitchColRef = PitchColRefOld
+       endif
+     case(2, 5, 6) ! Pitch out at maximum speed
+       PitchColRef = min(PitchStopAng, PitchColRefOld + &
+                         deltat*max(CutoutVar%pitchvelmax, CutoutVar%pitchvelmax2))
+     case(-2) ! Pitch-out before cut-in
+        PitchColRef = min(PitchStopAng, PitchColRefOld + deltat*CutoutVar%pitchvelmax)
+     end select
    ! Write into dump array
    dump_array(1) = GenTorqueRef*GenSpeed
    dump_array(3) = y(1)

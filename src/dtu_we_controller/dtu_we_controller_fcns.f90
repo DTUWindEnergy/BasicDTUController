@@ -140,9 +140,9 @@ function PID(stepno, dt, kgain, PIDvar, error)
       PIDvar%error1_old = PIDvar%error1
    endif
    ! Update the integral term
-   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*(error + PIDvar%error1)*Kgain(2)*PIDvar%Kint*dt
+   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*(error + PIDvar%error1_old)*Kgain(2)*PIDvar%Kint*dt
    ! Update proportional term
-   PIDvar%outpro = Kgain(1)*PIDvar%Kpro*0.5_mk*(error + PIDvar%error1)
+   PIDvar%outpro = Kgain(1)*PIDvar%Kpro*0.5_mk*(error + PIDvar%error1_old)
    ! Update differential term
    PIDvar%outdif = Kgain(3)*PIDvar%Kdif*(error - PIDvar%error1_old)/dt
    ! Sum to up
@@ -198,11 +198,11 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
       PIDvar%error1_old = PIDvar%error1
    endif
    ! Update the integral term
-   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*dt*(Kgain(2, 1)*PIDvar%Kint(1)*(error(1) + PIDvar%error1(1))&
-                                                  +Kgain(2, 2)*PIDvar%Kint(2)*(error(2) + PIDvar%error1(2)))
+   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*dt*(Kgain(2, 1)*PIDvar%Kint(1)*(error(1) + PIDvar%error1_old(1))&
+                                                  +Kgain(2, 2)*PIDvar%Kint(2)*(error(2) + PIDvar%error1_old(2)))
    ! Update proportional term
-   PIDvar%outpro = 0.5_mk*(Kgain(1, 1)*PIDvar%Kpro(1)*(error(1) + PIDvar%error1(1))&
-                          +Kgain(1, 2)*PIDvar%Kpro(2)*(error(2) + PIDvar%error1(2)))
+   PIDvar%outpro = 0.5_mk*(Kgain(1, 1)*PIDvar%Kpro(1)*(error(1) + PIDvar%error1_old(1))&
+                          +Kgain(1, 2)*PIDvar%Kpro(2)*(error(2) + PIDvar%error1_old(2)))
    ! Update differential term
    PIDvar%outdif = (Kgain(3, 1)*PIDvar%Kdif(1)*(error(1) - PIDvar%error1_old(1)))/dt + added_term*dt
    ! Sum up
