@@ -353,7 +353,7 @@ subroutine shut_down(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchCo
    return
 end subroutine shut_down
 !**************************************************************************************************
-subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchColRef, dump_array)
+subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchColRefmonitor, dump_array)
    !
    ! Lower level system monitoring. It changes the controller status to:
    ! - (1) if filtered GenSpeed is higher than the overspeed limit.
@@ -368,7 +368,7 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchCol
    real(mk), intent(in)    :: TTAcc     ! Tower top acceleration [m/s**2].
    real(mk), intent(in)    :: GenSpeed  ! Measured generator speed [rad/s].
    real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
-   real(mk), intent(in)    :: PitchColRef  ! Reference collective pitch [rad].
+   real(mk), intent(in)    :: PitchColRefmonitor  ! Reference collective pitch [rad].
    real(mk), intent(inout) :: dump_array(50) ! Array for output.
    real(mk) GenSpeedFilt, dGenSpeed_dtFilt, TTAccFilt
    real(mk) y(2),DiffPitch
@@ -433,9 +433,9 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchCol
        PitchRefs(2:NAve_Pitch,1:3)=PitchRefs(1:NAve_Pitch-1,1:3)
        ! Update new values
        PitchAngles(1,1:3)=PitchVect
-       PitchRefs(1,1)=PitchColRef
-       PitchRefs(1,2)=PitchColRef
-       PitchRefs(1,3)=PitchColRef
+       PitchRefs(1,1)=PitchColRefmonitor
+       PitchRefs(1,2)=PitchColRefmonitor
+       PitchRefs(1,3)=PitchColRefmonitor
        ! Add new values
        AveragedMeanPitchAngles=AveragedMeanPitchAngles+PitchAngles(1,1:3)/dfloat(NAve_Pitch)
        AveragedPitchReference=AveragedPitchReference+PitchRefs(1,1:3)/dfloat(NAve_Pitch)

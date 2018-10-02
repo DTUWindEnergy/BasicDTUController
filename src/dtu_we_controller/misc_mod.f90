@@ -106,9 +106,9 @@ function lowpass2orderfilt(dt, stepno, filt, x)
      y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1=stepno
    ! Output
@@ -154,9 +154,9 @@ function notch2orderfilt(dt,stepno,filt,x)
       y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1 = stepno
    ! Output
@@ -201,9 +201,9 @@ function bandpassfilt(dt, stepno, filt, x)
       y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1 = stepno
    ! Output
