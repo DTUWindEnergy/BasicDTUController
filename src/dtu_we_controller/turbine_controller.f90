@@ -18,7 +18,6 @@ module turbine_controller_mod
    real(mk) TAve_Pitch,DeltaPitchThreshold,AveragedMeanPitchAngles(3),AveragedPitchReference(3)
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
-   logical :: newtimestep
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0
    real(mk) :: PitchColRefOld=0.0_mk
    real(mk) :: GenTorqueRefOld=0.0_mk

@@ -277,7 +277,6 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    TAve_Pitch = 0.0_mk
    ! Initiate the dynamic variables
    stepno = 0
-   newtimestep = .TRUE.
    time_old = 0.0_mk
    AddedPitchRate = 0.0_mk
    PitchAngles=0.0_mk

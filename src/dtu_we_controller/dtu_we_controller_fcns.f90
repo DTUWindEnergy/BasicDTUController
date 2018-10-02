@@ -8,6 +8,7 @@ module dtu_we_controller_fcns
    ! Constants
    integer maxwplines
    parameter(maxwplines=100)
+   logical :: newtimestep=.TRUE.
    ! Types
    type Tpidvar
       real(mk) Kpro,Kdif,Kint,outmin,outmax,velmax,error1,outset1,outres1
