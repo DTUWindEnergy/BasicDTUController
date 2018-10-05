@@ -10,6 +10,7 @@ module dtu_we_controller
    integer  CtrlStatus
    real(mk) dump_array(50)
    real(mk) time_old
+   logical repeated
 contains
 !**************************************************************************************************
 subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
@@ -278,6 +279,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
+   repeated=.FALSE.
    AddedPitchRate = 0.0_mk
    PitchAngles=0.0_mk
    AveragedMeanPitchAngles=0.0_mk
@@ -429,7 +431,6 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    ! Local variables
    integer GridFlag, EmergPitchStop, ActiveMechBrake
    real(mk) GenSpeed, wsp, PitchVect(3), Pe, TT_acc(2), time
-   real(mk) GenTorqueRef, PitchColRef
    EmergPitchStop = 0
    ActiveMechBrake = 0
    ! Time
@@ -437,11 +438,18 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    ! Increment time step (may actually not be necessary in type2 DLLs)
    !***********************************************************************************************
+   !somehow the controller gets called twice in the very first time step...
+   if ((time==deltat).AND. (repeated==.FALSE.)) then
+       time_old=0.0_mk
+       repeated=.TRUE.
+   endif
    if (time .gt. time_old) then
      deltat = time - time_old
      time_old = time
      stepno = stepno + 1
      newtimestep = .TRUE.
+     PitchColRefOld = PitchColRef
+     GenTorqueRefOld = GenTorqueRef
    else 
      newtimestep = .FALSE.
    endif

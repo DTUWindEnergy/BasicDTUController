@@ -19,9 +19,15 @@ module turbine_controller_mod
    ! Dynamic variables
    integer :: stepno = 0, w_region = 0
    real(mk) AddedPitchRate, PitchColRef0, GenTorqueRef0
-   real(mk) :: PitchColRefOld=0.0_mk
-   real(mk) :: GenTorqueRefOld=0.0_mk
-   real(mk) TimerGenCutin, TimerStartup, TimerExcl, TimerShutdown, TimerShutdown2
+   real(mk) :: PitchColRef = 0.0_mk
+   real(mk) :: GenTorqueRef = 0.0_mk
+   real(mk) :: PitchColRefOld = 0.0_mk
+   real(mk) :: GenTorqueRefOld = 0.0_mk
+   real(mk) :: TimerGenCutin = 0.0_mk
+   real(mk) :: TimerStartup = 0.0_mk
+   real(mk) :: TimerExcl = 0.0_mk
+   real(mk) :: TimerShutdown = 0.0_mk
+   real(mk) :: TimerShutdown2 = 0.0_mk
    real(mk) GenSpeed_at_stop, GenTorque_at_stop
    real(mk) excl_flag
    real(mk)::outmax_old=0.0_mk,outmin_old=0.0_mk
@@ -67,13 +73,6 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    real(mk), intent(out)   :: GenTorqueRef ! Generator torque reference [Nm].
    real(mk), intent(out)   :: PitchColRef  ! Reference collective pitch [rad].
    real(mk) TTAcc
-   !***********************************************************************************************
-   ! Save reference signals
-   !***********************************************************************************************
-   if (newtimestep) then
-       PitchColRefOld = PitchColRef
-       GenTorqueRefOld = GenTorqueRef
-   endif
    !***********************************************************************************************
    ! Wind turbine monitoring
    !***********************************************************************************************
