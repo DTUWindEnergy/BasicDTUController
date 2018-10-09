@@ -121,6 +121,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Drivetrain mode notch filters for pitch controller
    DT_mode_filt%f0     = array1(10)
    pwr_DT_mode_filt%f0 = DT_mode_filt%f0
+   DT_mode_filt_torque%f0     = 3.55
    ! Partial load control parameters
    Kopt             = array1(11)
    PID_gen_var%Kpro = array1(12)

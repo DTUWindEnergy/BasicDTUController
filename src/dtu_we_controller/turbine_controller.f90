@@ -40,6 +40,7 @@ module turbine_controller_mod
    type(Tfirstordervar), save :: wspfirstordervar
    type(Tpidvar), save        :: PID_gen_var
    type(Tnotch2order), save   :: DT_mode_filt
+   type(Tnotch2order), save   :: DT_mode_filt_torque
    type(Tnotch2order), save   :: pwr_DT_mode_filt
    type(Tpid2var), save       :: PID_pit_var
    type(Tdamper), save        :: DT_damper
@@ -478,7 +479,7 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    real(mk) GenTorqueMin_full, GenTorqueMax_full, GenTorqueMin_partial, GenTorqueMax_partial
    real(mk) GenSpeed_min1, GenSpeed_min2, GenSpeed_max1, GenSpeed_max2, GenSpeedRef
    real(mk) x, switch, switch_pitang_lower, switch_pitang_upper,ConstantPowerTorque
-   real(mk) kgain(3), GenSpeedFiltErr, GenSpeedErr, outmin, outmax
+   real(mk) kgain(3), GenSpeedFiltErr, GenSpeedErr, outmin, outmax, GenSpeedFiltTorque
    !***********************************************************************************************
    ! Speed ref. changes max. <-> min. for torque contr. and remains at rated for pitch contr.
    !***********************************************************************************************
@@ -503,7 +504,9 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
-   ConstantPowerTorque=min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeed, GenSpeedRefMin),GenTorqueMax)
+   GenSpeedFiltTorque=notch2orderfilt(deltat, stepno, DT_mode_filt_torque, Genspeed)
+   
+   ConstantPowerTorque=min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeedFiltTorque, GenSpeedRefMin),GenTorqueMax)
    GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) + ConstantPowerTorque*TorqueCtrlRatio
    GenTorqueMax_full = GenTorqueMin_full
    !-----------------------------------------------------------------------------------------------
