@@ -14,7 +14,7 @@ module dtu_we_controller
 contains
 !**************************************************************************************************
 subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT :: init_regulation
    !DEC$ END IF
    real(mk), dimension(100), intent(inout) :: array1
@@ -290,7 +290,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
 end subroutine init_regulation
 !**************************************************************************************************
 subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation_advanced')
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT::init_regulation_advanced
    !DEC$ END IF
    real(mk), dimension(100), intent(inout)  ::  array1
@@ -375,7 +375,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !  - sets controller timers.
    !  - calls the safety system monitor (higher level).
    !
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT :: update_regulation
    !DEC$ END IF
    real(mk), dimension(100), intent(inout) :: array1

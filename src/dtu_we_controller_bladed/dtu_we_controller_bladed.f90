@@ -3,7 +3,7 @@ module dtu_we_controller_bladed
 contains
 !**************************************************************************************************
 subroutine DISCON (avrSWAP, aviFAIL, accINFILE, avcOUTNAME, avcMSG) bind(c,name='discon')
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT :: discon
    !DEC$ END IF
    use dtu_we_controller

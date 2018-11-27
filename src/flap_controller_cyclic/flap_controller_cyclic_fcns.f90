@@ -157,4 +157,4 @@ endif
 return
 end function PID
 !**************************************************************************************************
-end module flap_controller__cyclicfcns_mod
+end module flap_controller_cyclic_fcns_mod
