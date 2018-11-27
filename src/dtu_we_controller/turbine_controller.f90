@@ -504,7 +504,11 @@ subroutine torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean,
    !-----------------------------------------------------------------------------------------------
    ! Limits for full load
    !-----------------------------------------------------------------------------------------------
-   GenSpeedFiltTorque=notch2orderfilt(deltat, stepno, DT_mode_filt_torque, Genspeed)
+   if (DT_mode_filt_torque%f0 .gt. 0.0_mk) then
+      GenSpeedFiltTorque=notch2orderfilt(deltat, stepno, DT_mode_filt_torque, Genspeed)
+   else
+      GenSpeedFiltTorque= Genspeed
+   endif    
    
    ConstantPowerTorque=min((GenTorqueRated*GenSpeedRef_full)/max(GenSpeedFiltTorque, GenSpeedRefMin),GenTorqueMax)
    GenTorqueMin_full = GenTorqueRated*(1.0_mk-TorqueCtrlRatio) + ConstantPowerTorque*TorqueCtrlRatio
