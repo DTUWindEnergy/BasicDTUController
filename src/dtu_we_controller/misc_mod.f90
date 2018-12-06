@@ -113,7 +113,7 @@ function lowpass2orderfilt(dt, stepno, filt, x)
    filt%stepno1=stepno
    ! Output
    lowpass2orderfilt(1) = y
-   lowpass2orderfilt(2) = (y - filt%y2_old)/dt
+   lowpass2orderfilt(2) = (y - filt%y1_old)/dt
    return
 end function lowpass2orderfilt
 !**************************************************************************************************

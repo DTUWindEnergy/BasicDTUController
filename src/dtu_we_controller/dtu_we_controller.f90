@@ -273,6 +273,8 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    SafetySystemVar%RysteVagtLevel = MoniVar%RysteVagtLevel*1.1_mk
    ! Gear Ratio
    GearRatio = 1.0_mk
+   ! Deactivate the filter on rotor speed for generator torque computation above rated
+   DT_mode_filt_torque%f0 = 0.0_mk
    ! Pitch devaiation monitor
    DeltaPitchThreshold = 0.0_mk
    TAve_Pitch = 0.0_mk
@@ -326,7 +328,9 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    !               ; where 'nnn' [s] is the period of the moving average and 'mmm' is threshold of the deviation [0.1 deg] (functionality is inactive if value $<$ 1,000,000)
    ! Gear ratio
    !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-] (Default 1 if zero)
-   !
+   ! Rotor speed notch filter
+   !  constant  77 ; Frequency of notch filter [Hz] applied on the rotor speed before computing torque above rated (constant power), if zero no notch filter used
+   !  constant  78 ; Damping of notch filter [-] applied on the rotor speed before computing torque above rated (constant power), (Default 0.01 used if zero)
    call init_regulation(array1, array2)
    ! Generator torque exclusion zone
    if (array1(53).gt.0.0_mk) ExcluZone%Lwr             = array1(53)
@@ -363,6 +367,9 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    endif
    ! Gear ratio
    if (array1(76).gt.0.0_mk) GearRatio = array1(76)
+   ! Notch filter on rotor speed signal used for constant power tracking above rated
+   if (array1(77).gt.0.0_mk) DT_mode_filt_torque%f0     = array1(77)
+   if (array1(78).gt.0.0_mk) DT_mode_filt_torque%zeta2     = array1(78)
    ! Initialization
    TimerExcl = -0.02_mk
    return

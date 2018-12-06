@@ -448,6 +448,9 @@ begin dll;
       constant 75  1 ;
 ; Gear ratio
       constant 76  1 ;
+; rotor speed notch filter for constant power operation above rated
+      constant 77  3.55 ; Frequency of notch filter [Hz] applied on the rotor speed before computing torque above rated (constant power), if zero no notch filter used
+      constant 78  0.0 ; Damping of notch filter [-] applied on the rotor speed before computing torque above rated (constant power), (Default 0.01 used if zero)	  
     end init ;
 ;
     begin output ;
