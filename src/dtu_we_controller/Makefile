@@ -1,33 +1,24 @@
-# --------------------------------------------------------------------------------
-# --- Init makefile 
-# --------------------------------------------------------------------------------
-include ../_mkf/MakefileDllInit.mk
-# --------------------------------------------------------------------------------
-# --- Makefile flags
-# --------------------------------------------------------------------------------
-LIB_NAME_BASE=dtu_we_controller
-SRC= write_version.f90 misc_mod.f90 dtu_we_controller_fcns.f90 turbine_controller.f90 safety_system.f90 dtu_we_controller.f90
 
-ifeq ($(FCOMPILER),1)
-    FFLAGS_EXTRA= -libs:static -threads
-    ARFLAGS_EXTRA=
-    ifeq ($(OS_NAME),windows)
-         LDFLAGS_EXTRA+=/INCREMENTAL:NO
-#          LIBS_EXTRA+=libifcoremt.lib
-    endif
-    ifeq ($(OS_NAME),linux)
-		 # USING Static Intel libs to avoid dependencies
-         LIBS_EXTRA+=-lifcore_pic
-         LDFLAGS_EXTRA+=-static-intel
-    endif
-endif
-ifeq ($(FCOMPILER),0)
-    ifeq ($(OS_NAME),windows)
-        LDFLAGS_EXTRA+= -static-libgfortran -static-libgcc 
-    endif
-endif
+include ../config.mk
 
-# --------------------------------------------------------------------------------
-# --- Default makefile to compile dll 
-# --------------------------------------------------------------------------------
-include ../_mkf/MakefileDll.mk
+.PHONY: all
+
+all: dtu_we_controller
+
+.PHONY: clean
+
+clean:
+	rm -f dtu_we_controller.so *.mod *.o
+
+.PHONY: dtu_we_controller
+
+dtu_we_controller: dtu_we_controller.so
+
+dtu_we_controller.o: dtu_we_controller_fcns.o turbine_controller.o safety_system.o write_version.o
+
+dtu_we_controller_fcns.o: misc_mod.o
+
+dtu_we_controller.so: dtu_we_controller.o dtu_we_controller_fcns.o turbine_controller.o safety_system.o write_version.o misc_mod.o
+	$(FC) $(LFLAGS) $^ -o $@
+
+

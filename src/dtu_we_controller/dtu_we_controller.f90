@@ -10,10 +10,11 @@ module dtu_we_controller
    integer  CtrlStatus
    real(mk) dump_array(50)
    real(mk) time_old
+   logical repeated
 contains
 !**************************************************************************************************
 subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT :: init_regulation
    !DEC$ END IF
    real(mk), dimension(100), intent(inout) :: array1
@@ -278,6 +279,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
    ! Initiate the dynamic variables
    stepno = 0
    time_old = 0.0_mk
+   repeated=.FALSE.
    AddedPitchRate = 0.0_mk
    PitchAngles=0.0_mk
    AveragedMeanPitchAngles=0.0_mk
@@ -288,7 +290,7 @@ subroutine init_regulation(array1, array2) bind(c, name='init_regulation')
 end subroutine init_regulation
 !**************************************************************************************************
 subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation_advanced')
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT::init_regulation_advanced
    !DEC$ END IF
    real(mk), dimension(100), intent(inout)  ::  array1
@@ -325,6 +327,8 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    ! Gear ratio
    !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-] (Default 1 if zero)
    !
+   !  constant  79 ; Derate strategy. 0 = No Derating, 1 = constant rotation, 2 = max rotation  
+   !  constant  80 ; Derate percentage (eg. 70 means 70% of nominal power)
    call init_regulation(array1, array2)
    ! Generator torque exclusion zone
    if (array1(53).gt.0.0_mk) ExcluZone%Lwr             = array1(53)
@@ -363,6 +367,9 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    if (array1(76).gt.0.0_mk) GearRatio = array1(76)
    ! Initialization
    TimerExcl = -0.02_mk
+   ! Derating parameters
+   Deratevar%strat = array1(79)             
+   Deratevar%dr    = array1(80)/100.0       
    return
 end subroutine init_regulation_advanced
 !**************************************************************************************************
@@ -373,7 +380,7 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !  - sets controller timers.
    !  - calls the safety system monitor (higher level).
    !
-   !DEC$ IF .NOT. DEFINED(__MAKEFILE__)
+   !DEC$ IF .NOT. DEFINED(__LINUX__)
    !DEC$ ATTRIBUTES DLLEXPORT :: update_regulation
    !DEC$ END IF
    real(mk), dimension(100), intent(inout) :: array1
@@ -429,7 +436,6 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    ! Local variables
    integer GridFlag, EmergPitchStop, ActiveMechBrake
    real(mk) GenSpeed, wsp, PitchVect(3), Pe, TT_acc(2), time
-   real(mk) GenTorqueRef, PitchColRef
    EmergPitchStop = 0
    ActiveMechBrake = 0
    ! Time
@@ -437,10 +443,20 @@ subroutine update_regulation(array1, array2) bind(c,name='update_regulation')
    !***********************************************************************************************
    ! Increment time step (may actually not be necessary in type2 DLLs)
    !***********************************************************************************************
+   !somehow the controller gets called twice in the very first time step...
+   if ((time==deltat).AND. (repeated==.FALSE.)) then
+       time_old=0.0_mk
+       repeated=.TRUE.
+   endif
    if (time .gt. time_old) then
      deltat = time - time_old
      time_old = time
      stepno = stepno + 1
+     newtimestep = .TRUE.
+     PitchColRefOld = PitchColRef
+     GenTorqueRefOld = GenTorqueRef
+   else 
+     newtimestep = .FALSE.
    endif
    ! Rotor (Generator) speed in LSS
    GenSpeed = array1(2)/GearRatio

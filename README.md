@@ -8,16 +8,15 @@ The controller features both partial and full load operation capabilities as wel
 Blade pitch servo and generator models are not included in this controller. They can be found in the project  [ServoAndUtilities](https://github.com/DTUWindEnergy/ServosAndUtilities).
 
 ## Compatibility
-The repository includes Visual Studio project (for Windows) and Makefiles (for Windows and Linux) to create DLLs to interface the controller to HAWC2 and Bladed.
+The repository includes Visual Studio project (for Windows) and Makefiles (for Linux) to create DLLs to interface the controller to HAWC2 and Bladed.
 
 The controller is written in Fortran and it is compatible with Intel and GFortran compilers. It can be compiled both on Windows and Linux. 
 
 ## Compilation
 
-- For compilation using Visual Studio open the Visual Studio Solution or Projec files (*.sln, *.vfproj)
+- For compilation in Windows (as a dll), use the Visual Studio Solution or Project files provided (*.sln, *.vfproj)
 
-- For compilation using Makefile, read the instructions in src/Makefile.README.txt
-
+- For compilation in Unix (as a so file), go to the /src subfolder and type `make FC=compiler`. Where 'compiler' should be replaced by an already installed compiler (e.g. ifort, mpif90).
 
 ## Documentation
 
@@ -31,14 +30,6 @@ The documentation is written in [Sphinx](http://sphinx-doc.org/) and can be buil
 The documentations requires the [Fortran Sphynx](https://github.com/VACUMM/sphinx-fortran) extension that can be pip installed by typing:
 
     $ pip install sphinx-fortran
-
-## Tests
-
-For users that compiled using the shipped makefiles a set of tests are present in the folder "src/_tests". 
-- Rudimentary matlab and fortran tests are present in this folder to dynamically load the compiled dlls and perform a simple call.
-- Running `make` within this folder will perform the Fortran tests using different "Fortran" method to load a dll (i.e. cray-pointer or C-integer handles).
-
-
 
 ## License
 

@@ -11,31 +11,32 @@ module misc_mod
    !  First order filter
    type Tfirstordervar
       real(mk) tau, x1, x1_old, y1, y1_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tfirstordervar
    !  Second order low pass filter filter
    type Tlowpass2order
       real(mk) zeta, f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tlowpass2order
    !  Second order notch filter
    type Tnotch2order
       real(mk) :: zeta1 = 0.1_mk
       real(mk) :: zeta2 = 0.001_mk
       real(mk) f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tnotch2order
    !  Second order band-pass filter
    type Tbandpassfilt
       real(mk) :: zeta = 0.02_mk
       real(mk) :: tau = 0.0_mk
       real(mk) f0, x1, x2, x1_old, x2_old, y1, y2, y1_old, y2_old
-      integer stepno1
+      integer :: stepno1 = 0
    end type Tbandpassfilt
    !  Time delay
    type Ttdelay
       real(mk) xz(40)
-      integer stepno1
+      real(mk) xz_old(40)
+      integer :: stepno1 = 0
    end type Ttdelay
 contains
 !**************************************************************************************************
@@ -105,9 +106,9 @@ function lowpass2orderfilt(dt, stepno, filt, x)
      y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1=stepno
    ! Output
@@ -153,9 +154,9 @@ function notch2orderfilt(dt,stepno,filt,x)
       y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1 = stepno
    ! Output
@@ -200,9 +201,9 @@ function bandpassfilt(dt, stepno, filt, x)
       y = a1*filt%y1_old + a2*filt%y2_old + b0*x + b1*filt%x1_old + b2*filt%x2_old
    endif
    ! Save previous values
-   filt%x2 = filt%x1
+   filt%x2 = filt%x1_old
    filt%x1 = x
-   filt%y2 = filt%y1
+   filt%y2 = filt%y1_old
    filt%y1 = y
    filt%stepno1 = stepno
    ! Output
@@ -222,8 +223,11 @@ function timedelay(dt, stepno, filt, Td, x)
          filt%xz(k) = x
       end do
    endif
+   if (stepno .gt. filt%stepno1) then
+      filt%xz_old = filt%xz
+   endif
    do k = 40, 2, -1
-      filt%xz(k) = filt%xz(k - 1)
+       filt%xz(k) = filt%xz_old(k - 1)
    end do
    filt%xz(1) = x
    ! Output
@@ -232,6 +236,7 @@ function timedelay(dt, stepno, filt, Td, x)
    else
       timedelay = filt%xz(n)
    endif
+   filt%stepno1 = stepno
    return
 end function timedelay
 !**************************************************************************************************
