@@ -327,6 +327,8 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    ! Gear ratio
    !  constant  76 ; Gear ratio used for the calculation of the LSS rotational speeds and the HSS generator torque reference [-] (Default 1 if zero)
    !
+   !  constant  79 ; Derate strategy. 0 = No Derating, 1 = constant rotation, 2 = max rotation  
+   !  constant  80 ; Derate percentage (eg. 70 means 70% of nominal power)
    call init_regulation(array1, array2)
    ! Generator torque exclusion zone
    if (array1(53).gt.0.0_mk) ExcluZone%Lwr             = array1(53)
@@ -365,6 +367,9 @@ subroutine init_regulation_advanced(array1, array2) bind(c,name='init_regulation
    if (array1(76).gt.0.0_mk) GearRatio = array1(76)
    ! Initialization
    TimerExcl = -0.02_mk
+   ! Derating parameters
+   Deratevar%strat = array1(79)             
+   Deratevar%dr    = array1(80)/100.0       
    return
 end subroutine init_regulation_advanced
 !**************************************************************************************************

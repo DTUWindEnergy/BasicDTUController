@@ -50,6 +50,7 @@ module turbine_controller_mod
    type(Tswitch), save        :: SwitchVar
    type(TSafetySystem), save  :: MoniVar
    type(TPitchGSvar), save    :: PitchGSVar
+   type(TDeratevar), save     :: Deratevar
 !**************************************************************************************************
 contains
 !**************************************************************************************************
@@ -79,10 +80,21 @@ subroutine turbine_controller(CtrlStatus, GridFlag, GenSpeed, PitchVect, wsp, Pe
    TTAcc = dsqrt(TTAccVect(1)**2 + TTAccVect(2)**2)
    call monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchColRefOld, dump_array)
    !***********************************************************************************************
-   ! Normal operation for control status CtrlStatus = 0
-   !***********************************************************************************************
-   if (CtrlStatus .eq. 0) then
+   ! Control Status CtrlStatus = 0
+   !-----------------------------------------------------------------------------------------------
+   ! Normal operation
+   !-----------------------------------------------------------------------------------------------
+
+   if (CtrlStatus .eq. 0 .and. Deratevar%strat .eq. 0) then
+
       call normal_operation(GenSpeed, PitchVect, wsp, Pe, TTAccVect(2), GenTorqueRef, PitchColRef,&
+                            dump_array)
+   !-----------------------------------------------------------------------------------------------
+   ! Derate operation
+   !-----------------------------------------------------------------------------------------------
+   elseif (CtrlStatus .eq. 0 .and. Deratevar%strat .gt. 0) then
+
+    call derate_operation(GenSpeed, PitchVect, wsp, Pe, TTAccVect(2), GenTorqueRef, PitchColRef,&
                             dump_array)
    endif
    !***********************************************************************************************
@@ -183,6 +195,106 @@ subroutine normal_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef
    dump_array(20) = PitchMeanFilt
    return
 end subroutine normal_operation
+!**************************************************************************************************
+subroutine derate_operation(GenSpeed, PitchVect, wsp, Pe, TTfa_acc, GenTorqueRef, PitchColRef,dump_array)
+   ! Controller for derate operation.
+   !
+   real(mk), intent(in)    :: PitchVect(3) ! Measured pitch angles [rad].
+   real(mk), intent(in)    :: GenSpeed     ! Measured generator speed [rad/s].
+   real(mk), intent(in)    :: wsp          ! Measured wind speed [m/s].
+   real(mk), intent(in)    :: Pe           ! Measured electrical power [W].
+   real(mk), intent(in)    :: TTfa_acc     ! Measured tower top longitudinal acceleration.
+   real(mk), intent(out)   :: GenTorqueRef   ! Generator torque reference [Nm].
+   real(mk), intent(out)   :: PitchColRef    ! Reference collective pitch [rad].
+   real(mk), intent(inout) :: dump_array(50) ! Array for output.
+   real(mk) WSPfilt
+   real(mk) GenSpeedFilt, dGenSpeed_dtFilt,PeFilt
+   real(mk) PitchMean, PitchMeanFilt, PitchMin
+   real(mk) GenSpeedRef_full , GenSpeedDerate
+   real(mk) Qdamp_ref, theta_dam_ref, P_filt
+   real(mk) x, y(2)
+
+
+
+   !***********************************************************************************************
+   ! Inputs and their filtering
+   !***********************************************************************************************
+   ! Mean pitch angle
+   PitchMean = (PitchVect(1) + PitchVect(2) + PitchVect(3)) / 3.0_mk
+   ! Low-pass filtering of the rotor speed
+   y = lowpass2orderfilt(deltat, stepno, omega2ordervar, GenSpeed)
+   GenSpeedFilt = y(1)
+   dGenSpeed_dtFilt = y(2)
+   ! Low pass filtered power
+   y = lowpass2orderfilt(deltat, stepno, power2ordervar, Pe)
+   PeFilt=y(1)
+   ! Low-pass filtering of the mean pitch angle for gain scheduling
+   PitchMeanFilt = lowpass1orderfilt(deltat, stepno, pitchfirstordervar, PitchMean)
+   PitchMeanFilt = min(PitchMeanFilt, 30.0_mk*degrad)
+   ! Low-pass filtering of the nacelle wind speed
+   WSPfilt = lowpass1orderfilt(deltat, stepno, wspfirstordervar, wsp)
+   ! Minimum pitch angle may vary with filtered wind speed
+   PitchMin = GetOptiPitch(WSPfilt)
+   !***********************************************************************************************
+   ! Limit reference speed for storm control
+   !***********************************************************************************************
+   if (Vcutout .gt. Vstorm) then
+      GenSpeedRef_full = GenSpeedRefMax - max(0.0_mk, &
+                         (WSPfilt - Vstorm)/(Vcutout - Vstorm)*(GenSpeedRefMax - GenSpeedRefMin))
+   else
+      GenSpeedRef_full = GenSpeedRefMax
+   endif
+   !***********************************************************************************************
+   ! Select Case based on derate strategy
+   !***********************************************************************************************
+
+   select case (Deratevar%strat)
+
+   case(1)  ! constant rotation
+   
+	   GenSpeedDerate = ((Deratevar%dr*PeRated)/Kopt)**(1.0/3)		    ! Derated Rotor Speed    
+	   GenSpeedRefMax =   min(GenSpeedRefMax,GenSpeedDerate)		    
+	   GenTorqueRated  =  (Deratevar%dr*PeRated)/GenSpeedRefMax
+   
+   case(2)  ! maximum rotation
+		
+	   GenTorqueRated  =  (Deratevar%dr*PeRated)/GenSpeedRefMax  
+   end select
+
+
+   GenSpeedRef_full = max(min(GenSpeedRef_full, GenSpeedRefMax), GenSpeedRefMin)
+   
+   !***********************************************************************************************
+   ! PID regulation of generator torque
+   !***********************************************************************************************
+   call torquecontroller(GenSpeed, GenSpeedFilt, dGenSpeed_dtFilt, PitchMean, WSPfilt, PitchMin, &
+                         GenSpeedRef_full, Pe, GenTorqueRef, dump_array)
+   !***********************************************************************************************
+   ! Active DT damping based on filtered rotor speed
+   !***********************************************************************************************
+   call drivetraindamper(GenSpeed, Qdamp_ref, dump_array)
+   if (newtimestep) TimerGenCutin = TimerGenCutin + deltat
+   x = switch_spline(TimerGenCutin, CutinVar%delay, 2.0_mk*CutinVar%delay)
+   GenTorqueRef = min(max(GenTorqueRef + Qdamp_ref*x, 0.0_mk), GenTorqueMax)
+   !***********************************************************************************************
+   ! PID regulation of collective pitch angle
+   !***********************************************************************************************
+   call pitchcontroller(GenSpeedFilt, dGenSpeed_dtFilt, PitchMeanFilt, PeFilt, PitchMin, &
+                        GenSpeedRef_full, PitchColRef, dump_array)
+   !***********************************************************************************************
+   ! Active Tower damping based on filtered tower top aceleration
+   !***********************************************************************************************
+   P_filt = lowpass1orderfilt(deltat, stepno, TTfa_PWRfirstordervar, GenTorqueRef*GenSpeedFilt)
+   call towerdamper(TTfa_acc, theta_dam_ref, dump_array)
+   x = switch_spline(P_filt, TTfa_PWR_lower*PeRated, TTfa_PWR_upper*PeRated)
+   PitchColRef = min(max(PitchColRef + theta_dam_ref*x, PID_pit_var%outmin), PID_pit_var%outmax)
+   ! Write into dump array
+   dump_array(1) = GenTorqueRef*GenSpeed
+   dump_array(2) = WSPfilt
+   dump_array(3) = GenSpeedFilt
+   dump_array(20) = PitchMeanFilt
+   return
+end subroutine derate_operation
 !**************************************************************************************************
 subroutine start_up(CtrlStatus, GenSpeed, PitchVect, wsp, GenTorqueRef, PitchColRef, dump_array)
    !
@@ -414,7 +526,7 @@ subroutine monitoring(CtrlStatus, GridFlag, GenSpeed, TTAcc, PitchVect, PitchCol
       GenTorque_at_stop = GenTorqueRefOld
    endif
    !***********************************************************************************************
-   ! Pitch angle deviation 
+   ! Pitch angle deviation
    !***********************************************************************************************
    NAve_Pitch = floor(TAve_Pitch/deltat)
    if (DeltaPitchThreshold*TAve_Pitch.gt.0.0_mk) then

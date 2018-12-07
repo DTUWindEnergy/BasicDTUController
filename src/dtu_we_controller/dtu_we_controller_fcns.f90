@@ -53,6 +53,10 @@ module dtu_we_controller_fcns
       real(mk) invkk1, invkk2
       real(mk) kp_speed, invkk1_speed, invkk2_speed
    end type
+   type TDeratevar
+      integer  :: strat          
+      real(mk) :: dr 
+    end type
    ! Custom Types
    type(Twpdata), save   :: OPdatavar
    type(Texclzone), save :: ExcluZone
