@@ -1,13 +1,4 @@
-
 *.mod
-*.obj
-*.dll
-*.u2d
-*.lib
-*.suo
-*.res
-*.manifest
-src/dtu_we_controller/Release/BuildLog.htm
-src/dtu_we_controller_bladed/Release/BuildLog.htm
-*.rc
-*.exp
+*.o
+*.so
+.*.swp

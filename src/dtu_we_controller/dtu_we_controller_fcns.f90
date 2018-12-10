@@ -7,17 +7,17 @@ module dtu_we_controller_fcns
    implicit none
    ! Constants
    integer maxwplines
-   integer ::IndTimePT
    parameter(maxwplines=100)
+   logical :: newtimestep=.TRUE.
    ! Types
    type Tpidvar
       real(mk) Kpro,Kdif,Kint,outmin,outmax,velmax,error1,outset1,outres1
-      integer stepno1
+      integer :: stepno1 = 0
       real(mk) outset,outpro,outdif,error1_old,outset1_old,outres1_old,outres
    end type Tpidvar
    type Tpid2var
       real(mk) Kpro(2),Kdif(2),Kint(2),outmin,outmax,velmax,error1(2),outset1,outres1
-      integer stepno1
+      integer :: stepno1 = 0
       real(mk) outset,outpro,outdif,error1_old(2),outset1_old,outres1_old,outres
    end type Tpid2var
    type Twpdata
@@ -53,33 +53,13 @@ module dtu_we_controller_fcns
       real(mk) invkk1, invkk2
       real(mk) kp_speed, invkk1_speed, invkk2_speed
    end type
-   ! Type for loading initial values of ppddata // Future expansible for other values of Control type
-   !
-    type pddata
-      real(mk) pdata(1000,2)
-      character (:), allocatable :: str 
-      integer lines,Control_method,Strategy
-      real(mk) array_ref(10)
-      real(mk) tau,TSR,MaxRate,CPVal,Wrho,DRmin 
-    end type pddata
-   
-  ! new type for Updating Rated Power Variables 
-   type DP_ut
-      real(mk) PeRated_old 
-      real(mk) Output_DR
-      real(mk) array_c(10)           ! array of constant values for general operation
-      real(mk) array_u(10)           ! array of update values for pr dll
-      real(mk) Kopt_array(2)         ! array of Kopt....
-   end type DP_ut
+   type TDeratevar
+      integer  :: strat          
+      real(mk) :: dr 
+    end type
    ! Custom Types
    type(Twpdata), save   :: OPdatavar
    type(Texclzone), save :: ExcluZone
-   type(pddata), save   :: Ref_der  
-   type(DP_ut) , save   :: DP_u            ! Derate Power Update
-   type(Tfirstordervar) , save :: PratedF  ! Filter Power
-      ! ** added amur
-   type(Tfirstordervar), save :: Koptfirstordervar
-   real(mk) Kopt_pre
 !**************************************************************************************************
 contains
 !**************************************************************************************************
@@ -165,9 +145,9 @@ function PID(stepno, dt, kgain, PIDvar, error)
       PIDvar%error1_old = PIDvar%error1
    endif
    ! Update the integral term
-   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*(error + PIDvar%error1)*Kgain(2)*PIDvar%Kint*dt
+   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*(error + PIDvar%error1_old)*Kgain(2)*PIDvar%Kint*dt
    ! Update proportional term
-   PIDvar%outpro = Kgain(1)*PIDvar%Kpro*0.5_mk*(error + PIDvar%error1)
+   PIDvar%outpro = Kgain(1)*PIDvar%Kpro*0.5_mk*(error + PIDvar%error1_old)
    ! Update differential term
    PIDvar%outdif = Kgain(3)*PIDvar%Kdif*(error - PIDvar%error1_old)/dt
    ! Sum to up
@@ -223,11 +203,11 @@ function PID2(stepno,dt,kgain,PIDvar,error,added_term)
       PIDvar%error1_old = PIDvar%error1
    endif
    ! Update the integral term
-   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*dt*(Kgain(2, 1)*PIDvar%Kint(1)*(error(1) + PIDvar%error1(1))&
-                                                  +Kgain(2, 2)*PIDvar%Kint(2)*(error(2) + PIDvar%error1(2)))
+   PIDvar%outset = PIDvar%outset1_old + 0.5_mk*dt*(Kgain(2, 1)*PIDvar%Kint(1)*(error(1) + PIDvar%error1_old(1))&
+                                                  +Kgain(2, 2)*PIDvar%Kint(2)*(error(2) + PIDvar%error1_old(2)))
    ! Update proportional term
-   PIDvar%outpro = 0.5_mk*(Kgain(1, 1)*PIDvar%Kpro(1)*(error(1) + PIDvar%error1(1))&
-                          +Kgain(1, 2)*PIDvar%Kpro(2)*(error(2) + PIDvar%error1(2)))
+   PIDvar%outpro = 0.5_mk*(Kgain(1, 1)*PIDvar%Kpro(1)*(error(1) + PIDvar%error1_old(1))&
+                          +Kgain(1, 2)*PIDvar%Kpro(2)*(error(2) + PIDvar%error1_old(2)))
    ! Update differential term
    PIDvar%outdif = (Kgain(3, 1)*PIDvar%Kdif(1)*(error(1) - PIDvar%error1_old(1)))/dt + added_term*dt
    ! Sum up
